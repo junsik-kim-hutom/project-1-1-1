@@ -1,0 +1,164 @@
+{
+  "@@locale": "ko",
+  "appTitle": "TruePair",
+  "appSubtitle": "특별한 사람과의 만남,\n지금 시작하세요",
+  "loginSuccess": "로그인 성공!",
+  "loginFailed": "로그인 실패",
+  "unknownError": "알 수 없는 오류",
+  "comingSoon": "준비 중",
+  "comingSoonMessage": "{provider} 로그인은 곧 지원될 예정입니다.",
+  "@comingSoonMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "confirm": "확인",
+  "startWithGoogle": "Google로 시작하기",
+  "startWithLine": "LINE으로 시작하기",
+  "startWithYahoo": "Yahoo로 시작하기",
+  "termsAgreement": "로그인하시면 ",
+  "termsOfService": "서비스 이용약관",
+  "and": " 및 ",
+  "privacyPolicy": "개인정보 처리방침",
+  "termsAgreementEnd": "에\n동의하는 것으로 간주됩니다.",
+  "login": "로그인",
+  "loginWithGoogle": "Google로 로그인",
+  "loginWithLine": "LINE으로 로그인",
+  "loginWithYahoo": "Yahoo로 로그인",
+  "profile": "프로필",
+  "createProfile": "프로필 작성",
+  "editProfile": "프로필 수정",
+  "name": "이름",
+  "gender": "성별",
+  "male": "남성",
+  "female": "여성",
+  "other": "기타",
+  "birthDate": "생년월일",
+  "height": "키",
+  "occupation": "직업",
+  "education": "학력",
+  "smoking": "흡연",
+  "drinking": "음주",
+  "yes": "예",
+  "no": "아니오",
+  "sometimes": "가끔",
+  "bio": "자기소개",
+  "save": "저장",
+  "cancel": "취소",
+  "location": "위치",
+  "setLocation": "위치 설정",
+  "currentLocation": "현재 위치",
+  "matching": "매칭",
+  "matchList": "매칭 목록",
+  "balanceGame": "밸런스 게임",
+  "compatibility": "매칭률",
+  "chat": "채팅",
+  "chatList": "채팅 목록",
+  "sendMessage": "메시지 전송",
+  "typing": "입력 중...",
+  "payment": "결제",
+  "subscribe": "구독하기",
+  "premium": "프리미엄",
+  "upgrade": "업그레이드",
+  "settings": "설정",
+  "logout": "로그아웃",
+  "error": "오류",
+  "success": "성공",
+  "loading": "로딩 중...",
+  "retry": "다시 시도",
+  "close": "닫기",
+
+  "home": "홈",
+  "notifications": "알림",
+  "hello": "안녕하세요! 👋",
+  "todayMessage": "오늘은 어떤 특별한 만남이 기다리고 있을까요?",
+  "findMatching": "매칭 찾기",
+  "eqTest": "EQ 테스트",
+  "myActivity": "나의 활동",
+  "profileViews": "프로필 조회",
+  "likesReceived": "받은 좋아요",
+  "ongoingChats": "진행 중인 채팅",
+  "recommendedMatches": "추천 매칭",
+  "seeMore": "더보기",
+  "eqTestTitle": "EQ 감성 지능 테스트",
+  "eqTestSubtitle": "나의 성격 유형을 알아보세요",
+  "eqTestDescription": "25개의 간단한 질문으로 당신의 감성 지능을 분석하고, 더 잘 맞는 상대를 찾아드립니다.",
+  "startTest": "테스트 시작하기",
+  "years": "세",
+  "km": "km",
+  "matchPercent": "{percent}% 매칭",
+  "@matchPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+
+  "matchingTitle": "매칭",
+  "filters": "필터",
+  "settings": "설정",
+  "filterSettings": "필터 설정",
+  "age": "나이",
+  "apply": "적용",
+  "allMatchesViewed": "모든 매칭을 확인했어요",
+  "findingNewMatches": "새로운 매칭을 찾고 있습니다",
+  "viewAgain": "다시 보기",
+  "superLike": "슈퍼 좋아요!",
+  "likeSent": "좋아요를 보냈습니다!",
+  "nextMatch": "다음 매칭으로 넘어갑니다",
+  "user": "사용자",
+  "developer": "개발자",
+  "designer": "디자이너",
+  "marketer": "마케터",
+  "planner": "기획자",
+  "teacher": "교사",
+  "seoulGangnam": "서울시 강남구",
+  "greeting": "안녕하세요! 특별한 만남을 기대합니다.",
+
+  "chatTitle": "채팅",
+  "noChatsYet": "아직 채팅이 없습니다",
+  "startMatchingToChat": "매칭을 시작하고 대화를 나눠보세요",
+  "goToMatching": "매칭하러 가기",
+  "online": "온라인",
+  "justNow": "방금",
+  "minutesAgo": "{minutes}분 전",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}시간 전",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days}일 전",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+
+  "myProfile": "내 프로필",
+  "editProfile": "프로필 수정",
+  "profileCompleteness": "프로필 완성도",
+  "completeProfile": "프로필을 완성해주세요",
+  "premiumMember": "프리미엄 회원",
+  "upgradeToPremium": "프리미엄으로 업그레이드",
+  "accountSettings": "계정 설정",
+  "privacySettings": "개인정보 설정",
+  "notificationSettings": "알림 설정",
+  "help": "도움말",
+  "aboutApp": "앱 정보",
+  "version": "버전"
+}

@@ -1,0 +1,62 @@
+{
+  "name": "marriage-matching-backend",
+  "version": "1.0.0",
+  "description": "Backend for Marriage Matching App",
+  "main": "dist/app.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "dev:japan": "DEPLOY_COUNTRY=japan nodemon --exec ts-node src/app.ts",
+    "dev:korea": "DEPLOY_COUNTRY=korea nodemon --exec ts-node src/app.ts",
+    "dev:usa": "DEPLOY_COUNTRY=usa nodemon --exec ts-node src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "start:japan": "DEPLOY_COUNTRY=japan node dist/app.js",
+    "start:korea": "DEPLOY_COUNTRY=korea node dist/app.js",
+    "start:usa": "DEPLOY_COUNTRY=usa node dist/app.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "test": "jest"
+  },
+  "keywords": [
+    "marriage",
+    "matching",
+    "location"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "5.22.0",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "googleapis": "^132.0.0",
+    "ioredis": "^5.3.2",
+    "joi": "^17.12.0",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "socket.io": "^4.6.1",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.5",
+    "@types/passport": "^1.0.16",
+    "@types/passport-google-oauth20": "^2.0.14",
+    "@types/uuid": "^9.0.7",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.3",
+    "prisma": "5.22.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "@@locale": "ja",
+  "appTitle": "結婚できるはず",
+  "appSubtitle": "特別な人との出会い、\n今始めましょう",
+  "loginSuccess": "ログイン成功！",
+  "loginFailed": "ログイン失敗",
+  "unknownError": "不明なエラー",
+  "comingSoon": "準備中",
+  "comingSoonMessage": "{provider}ログインは近日対応予定です。",
+  "@comingSoonMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "confirm": "確認",
+  "startWithGoogle": "Googleで始める",
+  "startWithLine": "LINEで始める",
+  "startWithYahoo": "Yahooで始める",
+  "termsAgreement": "ログインすると、",
+  "termsOfService": "利用規約",
+  "and": "と",
+  "privacyPolicy": "プライバシーポリシー",
+  "termsAgreementEnd": "に\n同意したものとみなされます.",
+  "login": "ログイン",
+  "loginWithGoogle": "Googleでログイン",
+  "loginWithLine": "LINEでログイン",
+  "loginWithYahoo": "Yahooでログイン",
+  "profile": "プロフィール",
+  "createProfile": "プロフィール作成",
+  "editProfile": "プロフィール編集",
+  "name": "名前",
+  "gender": "性別",
+  "male": "男性",
+  "female": "女性",
+  "other": "その他",
+  "birthDate": "生年月日",
+  "height": "身長",
+  "occupation": "職業",
+  "education": "学歴",
+  "smoking": "喫煙",
+  "drinking": "飲酒",
+  "yes": "はい",
+  "no": "いいえ",
+  "sometimes": "時々",
+  "bio": "自己紹介",
+  "save": "保存",
+  "cancel": "キャンセル",
+  "location": "位置",
+  "setLocation": "位置設定",
+  "currentLocation": "現在地",
+  "matching": "マッチング",
+  "matchList": "マッチングリスト",
+  "balanceGame": "バランスゲーム",
+  "compatibility": "相性",
+  "chat": "チャット",
+  "chatList": "チャットリスト",
+  "sendMessage": "メッセージ送信",
+  "typing": "入力中...",
+  "payment": "お支払い",
+  "subscribe": "購読する",
+  "premium": "プレミアム",
+  "upgrade": "アップグレード",
+  "settings": "設定",
+  "logout": "ログアウト",
+  "error": "エラー",
+  "success": "成功",
+  "loading": "読み込み中...",
+  "retry": "再試行",
+  "close": "閉じる",
+
+  "home": "ホーム",
+  "notifications": "通知",
+  "hello": "こんにちは！ 👋",
+  "todayMessage": "今日はどんな特別な出会いが待っているでしょうか？",
+  "findMatching": "マッチングを探す",
+  "eqTest": "EQテスト",
+  "myActivity": "私の活動",
+  "profileViews": "プロフィール閲覧",
+  "likesReceived": "受け取ったいいね",
+  "ongoingChats": "進行中のチャット",
+  "recommendedMatches": "おすすめマッチング",
+  "seeMore": "もっと見る",
+  "eqTestTitle": "EQ感性知能テスト",
+  "eqTestSubtitle": "あなたの性格タイプを知りましょう",
+  "eqTestDescription": "25個の簡単な質問であなたの感性知能を分析し、よりマッチする相手を見つけます。",
+  "startTest": "テスト開始",
+  "years": "歳",
+  "km": "km",
+  "matchPercent": "{percent}%マッチング",
+  "@matchPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+
+  "matchingTitle": "マッチング",
+  "filters": "フィルター",
+  "filterSettings": "フィルター設定",
+  "age": "年齢",
+  "apply": "適用",
+  "allMatchesViewed": "すべてのマッチングを確認しました",
+  "findingNewMatches": "新しいマッチングを探しています",
+  "viewAgain": "もう一度見る",
+  "superLike": "スーパーいいね！",
+  "likeSent": "いいねを送りました！",
+  "nextMatch": "次のマッチングに進みます",
+  "user": "ユーザー",
+  "developer": "開発者",
+  "designer": "デザイナー",
+  "marketer": "マーケター",
+  "planner": "プランナー",
+  "teacher": "教師",
+  "seoulGangnam": "ソウル市江南区",
+  "greeting": "こんにちは！特別な出会いを期待しています。",
+
+  "chatTitle": "チャット",
+  "noChatsYet": "まだチャットがありません",
+  "startMatchingToChat": "マッチングを始めて会話しましょう",
+  "goToMatching": "マッチングへ",
+  "online": "オンライン",
+  "justNow": "たった今",
+  "minutesAgo": "{minutes}分前",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}時間前",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days}日前",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+
+  "myProfile": "マイプロフィール",
+  "profileCompleteness": "プロフィール完成度",
+  "completeProfile": "プロフィールを完成させてください",
+  "premiumMember": "プレミアム会員",
+  "upgradeToPremium": "プレミアムにアップグレード",
+  "accountSettings": "アカウント設定",
+  "privacySettings": "プライバシー設定",
+  "notificationSettings": "通知設定",
+  "help": "ヘルプ",
+  "aboutApp": "アプリについて",
+  "version": "バージョン"
+}

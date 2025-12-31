@@ -1,0 +1,164 @@
+{
+  "@@locale": "en",
+  "appTitle": "I Can Get Married",
+  "appSubtitle": "Start your journey to find\nsomeone special",
+  "loginSuccess": "Login successful!",
+  "loginFailed": "Login failed",
+  "unknownError": "Unknown error",
+  "comingSoon": "Coming Soon",
+  "comingSoonMessage": "{provider} login will be available soon.",
+  "@comingSoonMessage": {
+    "placeholders": {
+      "provider": {
+        "type": "String"
+      }
+    }
+  },
+  "confirm": "Confirm",
+  "startWithGoogle": "Continue with Google",
+  "startWithLine": "Continue with LINE",
+  "startWithYahoo": "Continue with Yahoo",
+  "termsAgreement": "By logging in, you agree to our ",
+  "termsOfService": "Terms of Service",
+  "and": " and ",
+  "privacyPolicy": "Privacy Policy",
+  "termsAgreementEnd": ".",
+  "login": "Login",
+  "loginWithGoogle": "Login with Google",
+  "loginWithLine": "Login with LINE",
+  "loginWithYahoo": "Login with Yahoo",
+  "profile": "Profile",
+  "createProfile": "Create Profile",
+  "editProfile": "Edit Profile",
+  "name": "Name",
+  "gender": "Gender",
+  "male": "Male",
+  "female": "Female",
+  "other": "Other",
+  "birthDate": "Birth Date",
+  "height": "Height",
+  "occupation": "Occupation",
+  "education": "Education",
+  "smoking": "Smoking",
+  "drinking": "Drinking",
+  "yes": "Yes",
+  "no": "No",
+  "sometimes": "Sometimes",
+  "bio": "Bio",
+  "save": "Save",
+  "cancel": "Cancel",
+  "location": "Location",
+  "setLocation": "Set Location",
+  "currentLocation": "Current Location",
+  "matching": "Matching",
+  "matchList": "Match List",
+  "balanceGame": "Balance Game",
+  "compatibility": "Compatibility",
+  "chat": "Chat",
+  "chatList": "Chat List",
+  "sendMessage": "Send Message",
+  "typing": "Typing...",
+  "payment": "Payment",
+  "subscribe": "Subscribe",
+  "premium": "Premium",
+  "upgrade": "Upgrade",
+  "settings": "Settings",
+  "logout": "Logout",
+  "error": "Error",
+  "success": "Success",
+  "loading": "Loading...",
+  "retry": "Retry",
+  "close": "Close",
+
+  "home": "Home",
+  "notifications": "Notifications",
+  "hello": "Hello! 👋",
+  "todayMessage": "What special encounters await you today?",
+  "findMatching": "Find Match",
+  "eqTest": "EQ Test",
+  "myActivity": "My Activity",
+  "profileViews": "Profile Views",
+  "likesReceived": "Likes Received",
+  "ongoingChats": "Ongoing Chats",
+  "recommendedMatches": "Recommended Matches",
+  "seeMore": "See More",
+  "eqTestTitle": "EQ Emotional Intelligence Test",
+  "eqTestSubtitle": "Discover your personality type",
+  "eqTestDescription": "25 simple questions to analyze your emotional intelligence and find better matches for you.",
+  "startTest": "Start Test",
+  "years": "years old",
+  "km": "km",
+  "matchPercent": "{percent}% Match",
+  "@matchPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+
+  "matchingTitle": "Matching",
+  "filters": "Filters",
+  "settings": "Settings",
+  "filterSettings": "Filter Settings",
+  "age": "Age",
+  "apply": "Apply",
+  "allMatchesViewed": "You've viewed all matches",
+  "findingNewMatches": "Finding new matches",
+  "viewAgain": "View Again",
+  "superLike": "Super Like!",
+  "likeSent": "Like sent!",
+  "nextMatch": "Moving to next match",
+  "user": "User",
+  "developer": "Developer",
+  "designer": "Designer",
+  "marketer": "Marketer",
+  "planner": "Planner",
+  "teacher": "Teacher",
+  "seoulGangnam": "Gangnam, Seoul",
+  "greeting": "Hello! Looking forward to special encounters.",
+
+  "chatTitle": "Chat",
+  "noChatsYet": "No chats yet",
+  "startMatchingToChat": "Start matching and have conversations",
+  "goToMatching": "Go to Matching",
+  "online": "Online",
+  "justNow": "Just now",
+  "minutesAgo": "{minutes}m ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{hours}h ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{days}d ago",
+  "@daysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+
+  "myProfile": "My Profile",
+  "editProfile": "Edit Profile",
+  "profileCompleteness": "Profile Completeness",
+  "completeProfile": "Please complete your profile",
+  "premiumMember": "Premium Member",
+  "upgradeToPremium": "Upgrade to Premium",
+  "accountSettings": "Account Settings",
+  "privacySettings": "Privacy Settings",
+  "notificationSettings": "Notification Settings",
+  "help": "Help",
+  "aboutApp": "About App",
+  "version": "Version"
+}

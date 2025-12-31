@@ -1,0 +1,801 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// Enum 타입 정의
+// ========================================
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum AuthProvider {
+  GOOGLE
+  LINE
+  YAHOO
+  KAKAO
+  APPLE
+  FACEBOOK
+}
+
+enum ChatRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum ChatRoomStatus {
+  ACTIVE
+  EXPIRED
+  CLOSED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  SYSTEM
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAUSED
+}
+
+enum ProfileFieldType {
+  TEXT
+  NUMBER
+  SELECT
+  MULTI_SELECT
+  RANGE
+  DATE
+  BOOLEAN
+}
+
+enum ProfileFieldCategory {
+  BASIC
+  LIFESTYLE
+  FAMILY
+  CAREER
+  PREFERENCES
+  VALUES
+  PERSONALITY
+}
+
+enum AnswerType {
+  SCALE_5
+  SCALE_7
+  YES_NO
+  MULTIPLE_CHOICE
+}
+
+enum EQCategory {
+  EMPATHY
+  SELF_AWARENESS
+  SOCIAL_SKILLS
+  MOTIVATION
+  EMOTION_REGULATION
+}
+
+enum PersonalityType {
+  EMPATHETIC
+  RATIONAL
+  BALANCED
+  SOCIAL
+  INTROSPECTIVE
+  ACHIEVER
+}
+
+enum ImageType {
+  MAIN
+  SUB
+  VERIFICATION
+}
+
+enum MatchingAction {
+  LIKE
+  PASS
+  SUPER_LIKE
+  BLOCK
+}
+
+enum NotificationType {
+  // 매칭
+  MATCH_LIKE
+  MATCH_SUPER_LIKE
+  MATCH_MUTUAL
+  MATCH_PROFILE_VIEW
+
+  // 채팅
+  CHAT_REQUEST_RECEIVED
+  CHAT_REQUEST_ACCEPTED
+  CHAT_REQUEST_REJECTED
+  CHAT_NEW_MESSAGE
+  CHAT_MESSAGE_READ
+  CHAT_ROOM_EXPIRING
+  CHAT_ROOM_EXPIRED
+
+  // 프로필
+  PROFILE_IMAGE_APPROVED
+  PROFILE_IMAGE_REJECTED
+  PROFILE_VERIFIED
+  PROFILE_INCOMPLETE
+
+  // 결제
+  PAYMENT_COMPLETED
+  PAYMENT_FAILED
+  SUBSCRIPTION_RENEWED
+  SUBSCRIPTION_EXPIRING
+  SUBSCRIPTION_EXPIRED
+
+  // 시스템
+  SYSTEM_ANNOUNCEMENT
+  SYSTEM_EVENT
+  SYSTEM_NEW_FEATURE
+  SYSTEM_SECURITY_ALERT
+}
+
+enum DevicePlatform {
+  IOS
+  ANDROID
+  WEB
+}
+
+// ========================================
+// 사용자 테이블
+// ========================================
+
+model User {
+  id              String       @id @default(uuid())
+  email           String       @unique
+  emailVerified   Boolean      @default(false) @map("email_verified")
+  phoneNumber     String?      @unique @map("phone_number")
+  phoneVerified   Boolean      @default(false) @map("phone_verified")
+  authProvider    AuthProvider @map("auth_provider")
+  authProviderId  String       @map("auth_provider_id")
+  status          UserStatus   @default(ACTIVE)
+  lastLoginAt     DateTime?    @map("last_login_at")
+  lastLoginIp     String?      @map("last_login_ip")
+  loginCount      Int          @default(0) @map("login_count")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  deletedAt       DateTime?    @map("deleted_at")
+
+  profile              Profile?
+  locationAreas        LocationArea[]
+  sentChatRequests     ChatRequest[]           @relation("SentChatRequests")
+  receivedChatRequests ChatRequest[]           @relation("ReceivedChatRequests")
+  chatRoomParticipants ChatRoomParticipant[]
+  chatMessages         ChatMessage[]
+  balanceGameAnswers   UserBalanceGameAnswer[]
+  payments             Payment[]
+  subscriptions        Subscription[]
+  eqTestAnswers        EQTestAnswer[]          @relation("UserEQAnswers")
+  eqTestResults        EQTestResult[]
+  matchingHistoryAsUser   MatchingHistory[]       @relation("MatchingUser")
+  matchingHistoryAsTarget MatchingHistory[]       @relation("MatchingTarget")
+  blockingUsers        UserBlock[]                @relation("BlockingUser")
+  blockedByUsers       UserBlock[]                @relation("BlockedUser")
+  notifications        Notification[]
+  deviceTokens         DeviceToken[]
+  notificationSettings NotificationSettings?
+  messageReadStatus    MessageReadStatus[]
+
+  @@unique([authProvider, authProviderId])
+  @@index([email])
+  @@index([phoneNumber])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+// ========================================
+// 프로필 테이블
+// ========================================
+
+model Profile {
+  id          String   @id @default(uuid())
+  userId      String   @unique @map("user_id")
+  displayName String   @map("display_name")
+  gender      Gender
+  birthDate   DateTime @map("birth_date") @db.Date
+  bio         String?  @db.Text
+
+  // 검색 최적화 필드
+  age         Int? // Computed from birthDate
+  height      Int? // cm
+  occupation  String?
+  education   String?
+  income      String?
+  smoking     String?
+  drinking    String?
+
+  // 프로필 상태
+  isComplete  Boolean   @default(false) @map("is_complete")
+  isVerified  Boolean   @default(false) @map("is_verified")
+  verifiedAt  DateTime? @map("verified_at")
+  profileViews Int      @default(0) @map("profile_views")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images        ProfileImage[]
+  profileValues UserProfileValue[]
+
+  @@index([userId])
+  @@index([gender])
+  @@index([birthDate])
+  @@index([age])
+  @@index([height])
+  @@index([isVerified])
+  @@index([isComplete])
+  @@map("profiles")
+}
+
+// ========================================
+// 프로필 이미지 테이블 (JSON에서 분리)
+// ========================================
+
+model ProfileImage {
+  id           String    @id @default(uuid())
+  profileId    String    @map("profile_id")
+  imageUrl     String    @map("image_url")
+  thumbnailUrl String?   @map("thumbnail_url")
+  imageType    ImageType @default(SUB) @map("image_type")
+  displayOrder Int       @default(0) @map("display_order")
+  isApproved   Boolean   @default(false) @map("is_approved")
+  approvedBy   String?   @map("approved_by")
+  approvedAt   DateTime? @map("approved_at")
+  uploadedAt   DateTime  @default(now()) @map("uploaded_at")
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([isApproved])
+  @@index([imageType])
+  @@map("profile_images")
+}
+
+// ========================================
+// 프로필 필드 정의 테이블
+// ========================================
+
+model ProfileField {
+  id           String               @id @default(uuid())
+  fieldKey     String               @unique @map("field_key")
+  fieldType    ProfileFieldType     @map("field_type")
+  category     ProfileFieldCategory
+  label        Json
+  options      Json?
+  isRequired   Boolean              @default(false) @map("is_required")
+  displayOrder Int                  @map("display_order")
+  isActive     Boolean              @default(true) @map("is_active")
+  validation   Json?
+  placeholder  Json?
+  helpText     Json?                @map("help_text")
+  createdAt    DateTime             @default(now()) @map("created_at")
+  updatedAt    DateTime             @updatedAt @map("updated_at")
+
+  userValues UserProfileValue[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([displayOrder])
+  @@map("profile_fields")
+}
+
+// ========================================
+// 사용자 프로필 값 테이블
+// ========================================
+
+model UserProfileValue {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  fieldId   String   @map("field_id")
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  profile Profile      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  field   ProfileField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fieldId])
+  @@index([userId])
+  @@index([fieldId])
+  @@map("user_profile_values")
+}
+
+// ========================================
+// 활동 지역 테이블
+// ========================================
+
+model LocationArea {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  latitude   Float
+  longitude  Float
+  address    String
+  radius     Int      @default(10000) // 미터 단위
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  verifiedAt DateTime @map("verified_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([latitude, longitude])
+  @@index([verifiedAt])
+  @@map("location_areas")
+}
+
+// ========================================
+// 밸런스 게임
+// ========================================
+
+model BalanceGame {
+  id           String   @id @default(uuid())
+  question     Json
+  optionA      Json     @map("option_a")
+  optionB      Json     @map("option_b")
+  category     String?
+  displayOrder Int?     @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  userAnswers UserBalanceGameAnswer[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([displayOrder])
+  @@map("balance_games")
+}
+
+model UserBalanceGameAnswer {
+  id             String   @id @default(uuid())
+  userId         String   @map("user_id")
+  gameId         String   @map("game_id")
+  selectedOption String   @map("selected_option")
+  answeredAt     DateTime @default(now()) @map("answered_at")
+
+  user User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  game BalanceGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameId])
+  @@index([userId])
+  @@index([gameId])
+  @@map("user_balance_game_answers")
+}
+
+// ========================================
+// 매칭 히스토리 (신규 추가)
+// ========================================
+
+model MatchingHistory {
+  id            String         @id @default(uuid())
+  userId        String         @map("user_id")
+  targetUserId  String         @map("target_user_id")
+  matchScore    Int            @map("match_score") // 0-100
+  action        MatchingAction
+  viewedProfile Boolean        @default(false) @map("viewed_profile")
+  viewDuration  Int?           @map("view_duration") // 초 단위
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  user   User @relation("MatchingUser", fields: [userId], references: [id], onDelete: Cascade)
+  target User @relation("MatchingTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, targetUserId])
+  @@index([userId, createdAt])
+  @@index([targetUserId])
+  @@index([action])
+  @@map("matching_history")
+}
+
+// ========================================
+// 차단 관리 (신규 추가)
+// ========================================
+
+model UserBlock {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  blockedUserId String   @map("blocked_user_id")
+  reason        String?
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  user    User @relation("BlockingUser", fields: [userId], references: [id], onDelete: Cascade)
+  blocked User @relation("BlockedUser", fields: [blockedUserId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blockedUserId])
+  @@index([userId])
+  @@index([blockedUserId])
+  @@map("user_blocks")
+}
+
+// ========================================
+// 채팅 시스템
+// ========================================
+
+model ChatRequest {
+  id             String            @id @default(uuid())
+  senderId       String            @map("sender_id")
+  receiverId     String            @map("receiver_id")
+  initialMessage String            @map("initial_message") @db.Text
+  status         ChatRequestStatus @default(PENDING)
+  createdAt      DateTime          @default(now()) @map("created_at")
+  expiresAt      DateTime          @map("expires_at")
+  respondedAt    DateTime?         @map("responded_at")
+
+  sender   User @relation("SentChatRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedChatRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+  @@index([expiresAt])
+  @@index([receiverId, status, expiresAt]) // 복합 인덱스
+  @@map("chat_requests")
+}
+
+model ChatRoom {
+  id        String         @id @default(uuid())
+  roomType  String         @default("direct") @map("room_type") // 'direct', 'group'
+  name      String?
+  startedAt DateTime       @default(now()) @map("started_at")
+  expiresAt DateTime?      @map("expires_at")
+  isPremium Boolean        @default(false) @map("is_premium")
+  status    ChatRoomStatus @default(ACTIVE)
+  createdAt DateTime       @default(now()) @map("created_at")
+
+  participants ChatRoomParticipant[]
+  messages     ChatMessage[]
+
+  @@index([status])
+  @@index([expiresAt])
+  @@map("chat_rooms")
+}
+
+model ChatRoomParticipant {
+  id       String    @id @default(uuid())
+  roomId   String    @map("room_id")
+  userId   String    @map("user_id")
+  role     String    @default("member") // 'owner', 'admin', 'member'
+
+  // 읽음 상태 추적
+  lastReadMessageId String?   @map("last_read_message_id")
+  lastReadAt        DateTime? @map("last_read_at")
+  unreadCount       Int       @default(0) @map("unread_count")
+
+  joinedAt DateTime  @default(now()) @map("joined_at")
+  leftAt   DateTime? @map("left_at")
+
+  room ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@index([roomId, leftAt])
+  @@index([userId, unreadCount])
+  @@map("chat_room_participants")
+}
+
+model ChatMessage {
+  id          String      @id @default(uuid())
+  roomId      String      @map("room_id")
+  senderId    String      @map("sender_id")
+  content     String      @db.Text
+  messageType MessageType @default(TEXT) @map("message_type")
+
+  // Deprecated: 1:1 호환성 유지용
+  isRead      Boolean     @default(false) @map("is_read")
+  readAt      DateTime?   @map("read_at")
+
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  room   ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  sender User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  // 새로운 읽음 상태 관리
+  readStatus MessageReadStatus[]
+
+  @@index([roomId])
+  @@index([createdAt(sort: Desc)])
+  @@index([isRead])
+  @@index([roomId, createdAt(sort: Desc)]) // 복합 인덱스
+  @@map("chat_messages")
+}
+
+// ========================================
+// 결제 및 구독
+// ========================================
+
+model SubscriptionPlan {
+  id             String   @id @default(uuid())
+  planKey        String   @unique @map("plan_key") // 'basic_monthly', 'premium_monthly'
+  name           Json
+  description    Json
+  price          Decimal  @db.Decimal(10, 2)
+  currency       String   @default("JPY")
+  durationDays   Int      @map("duration_days")
+  features       Json
+  maxChatRooms   Int?     @map("max_chat_rooms")
+  unlimitedChat  Boolean  @default(false) @map("unlimited_chat")
+  prioritySupport Boolean @default(false) @map("priority_support")
+  isActive       Boolean  @default(true) @map("is_active")
+  displayOrder   Int      @default(0) @map("display_order")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  payments      Payment[]
+  subscriptions Subscription[]
+
+  @@index([isActive])
+  @@index([displayOrder])
+  @@map("subscription_plans")
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  userId          String        @map("user_id")
+  planId          String        @map("plan_id")
+  amount          Decimal       @db.Decimal(10, 2)
+  currency        String        @default("JPY")
+  paymentMethod   String        @map("payment_method") // 'stripe', 'paypay', 'toss', etc
+  paymentProvider String        @map("payment_provider")
+  transactionId   String?       @unique @map("transaction_id")
+  status          PaymentStatus @default(PENDING)
+
+  // 추가 정보
+  billingAddress Json?         @map("billing_address")
+  taxAmount      Decimal?      @db.Decimal(10, 2) @map("tax_amount")
+  discountAmount Decimal?      @db.Decimal(10, 2) @map("discount_amount")
+
+  // 환불 정보
+  refundedAmount Decimal?      @db.Decimal(10, 2) @map("refunded_amount")
+  refundedAt     DateTime?     @map("refunded_at")
+  refundReason   String?       @map("refund_reason")
+
+  // 메타데이터
+  metadata   Json?
+
+  createdAt  DateTime  @default(now()) @map("created_at")
+  completedAt DateTime? @map("completed_at")
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([paymentMethod])
+  @@index([userId, createdAt]) // 복합 인덱스
+  @@map("payments")
+}
+
+model Subscription {
+  id        String             @id @default(uuid())
+  userId    String             @map("user_id")
+  planId    String             @map("plan_id")
+  status    SubscriptionStatus @default(ACTIVE)
+  startedAt DateTime           @default(now()) @map("started_at")
+  expiresAt DateTime           @map("expires_at")
+  autoRenew Boolean            @default(true) @map("auto_renew")
+  createdAt DateTime           @default(now()) @map("created_at")
+  updatedAt DateTime           @updatedAt @map("updated_at")
+  cancelledAt DateTime?        @map("cancelled_at")
+
+  user User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([status])
+  @@index([userId, status, expiresAt]) // 복합 인덱스
+  @@map("subscriptions")
+}
+
+// ========================================
+// EQ 테스트
+// ========================================
+
+model EQTestQuestion {
+  id           String     @id @default(uuid())
+  questionKey  String     @unique @map("question_key")
+  category     EQCategory
+  questionText Json       @map("question_text")
+  answerType   AnswerType @map("answer_type")
+  options      Json?
+  scoring      Json
+  displayOrder Int        @map("display_order")
+  isActive     Boolean    @default(true) @map("is_active")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  userAnswers EQTestAnswer[]
+
+  @@index([category])
+  @@index([isActive])
+  @@index([displayOrder])
+  @@map("eq_test_questions")
+}
+
+model EQTestAnswer {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  questionId String   @map("question_id")
+  answer     Json
+  score      Int
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user     User           @relation("UserEQAnswers", fields: [userId], references: [id], onDelete: Cascade)
+  question EQTestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId])
+  @@index([questionId])
+  @@map("eq_test_answers")
+}
+
+model EQTestResult {
+  id                     String          @id @default(uuid())
+  userId                 String          @map("user_id")
+  totalScore             Int             @map("total_score")
+  empathyScore           Int             @map("empathy_score")
+  selfAwarenessScore     Int             @map("self_awareness_score")
+  socialSkillsScore      Int             @map("social_skills_score")
+  motivationScore        Int             @map("motivation_score")
+  emotionRegulationScore Int             @map("emotion_regulation_score")
+  personalityType        PersonalityType @map("personality_type")
+  insights               Json
+  completedAt            DateTime        @default(now()) @map("completed_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([personalityType])
+  @@map("eq_test_results")
+}
+
+// ========================================
+// 알림 시스템
+// ========================================
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  title     Json             // 다국어 지원
+  message   Json             // 다국어 지원
+  data      Json?
+
+  // 원본 데이터 연결
+  relatedUserId        String? @map("related_user_id")
+  relatedChatRequestId String? @map("related_chat_request_id")
+  relatedMessageId     String? @map("related_message_id")
+  relatedMatchingId    String? @map("related_matching_id")
+
+  // 읽음 상태
+  isRead    Boolean   @default(false) @map("is_read")
+  readAt    DateTime? @map("read_at")
+
+  // 푸시 알림 상태
+  isPushSent Boolean   @default(false) @map("is_push_sent")
+  pushSentAt DateTime? @map("push_sent_at")
+  pushError  String?   @map("push_error")
+
+  // 액션 상태
+  isActionable Boolean   @default(true) @map("is_actionable")
+  actionUrl    String?   @map("action_url")
+  expiresAt    DateTime? @map("expires_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([userId, type])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([expiresAt])
+  @@index([isPushSent])
+  @@map("notifications")
+}
+
+model MessageReadStatus {
+  id        String   @id @default(uuid())
+  messageId String   @map("message_id")
+  userId    String   @map("user_id")
+  readAt    DateTime @default(now()) @map("read_at")
+
+  message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId])
+  @@index([messageId])
+  @@index([userId])
+  @@index([userId, readAt])
+  @@map("message_read_status")
+}
+
+model DeviceToken {
+  id         String         @id @default(uuid())
+  userId     String         @map("user_id")
+  token      String         @unique
+  platform   DevicePlatform
+  isActive   Boolean        @default(true) @map("is_active")
+  lastUsedAt DateTime       @default(now()) @map("last_used_at")
+  createdAt  DateTime       @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isActive])
+  @@map("device_tokens")
+}
+
+model NotificationSettings {
+  id     String @id @default(uuid())
+  userId String @unique @map("user_id")
+
+  // 매칭 알림
+  matchLikeEnabled        Boolean @default(true) @map("match_like_enabled")
+  matchMutualEnabled      Boolean @default(true) @map("match_mutual_enabled")
+  matchProfileViewEnabled Boolean @default(true) @map("match_profile_view_enabled")
+
+  // 채팅 알림
+  chatRequestEnabled     Boolean @default(true) @map("chat_request_enabled")
+  chatMessageEnabled     Boolean @default(true) @map("chat_message_enabled")
+  chatReadReceiptEnabled Boolean @default(true) @map("chat_read_receipt_enabled")
+
+  // 프로필 알림
+  profileApprovalEnabled Boolean @default(true) @map("profile_approval_enabled")
+
+  // 결제 알림
+  paymentEnabled      Boolean @default(true) @map("payment_enabled")
+  subscriptionEnabled Boolean @default(true) @map("subscription_enabled")
+
+  // 시스템 알림
+  systemAnnouncementEnabled Boolean @default(true) @map("system_announcement_enabled")
+  systemEventEnabled        Boolean @default(true) @map("system_event_enabled")
+
+  // 푸시 알림 활성화
+  pushEnabled  Boolean @default(true) @map("push_enabled")
+  emailEnabled Boolean @default(false) @map("email_enabled")
+  smsEnabled   Boolean @default(false) @map("sms_enabled")
+
+  // 조용한 시간 (Do Not Disturb)
+  quietHoursEnabled Boolean @default(false) @map("quiet_hours_enabled")
+  quietHoursStart   String? @map("quiet_hours_start") // "22:00"
+  quietHoursEnd     String? @map("quiet_hours_end") // "08:00"
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_settings")
+}
