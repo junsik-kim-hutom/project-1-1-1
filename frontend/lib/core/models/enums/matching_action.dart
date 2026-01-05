@@ -2,13 +2,13 @@
 ///
 /// 사용자가 다른 프로필에 대해 취할 수 있는 행동
 enum MatchingAction {
-  /// 좋아요
+  /// 관심
   like('LIKE'),
 
   /// 패스 (관심 없음)
   pass('PASS'),
 
-  /// 슈퍼 좋아요
+  /// 부스트
   superLike('SUPER_LIKE'),
 
   /// 차단
@@ -29,11 +29,11 @@ enum MatchingAction {
   String get icon {
     switch (this) {
       case MatchingAction.like:
-        return '❤️';
+        return '✨';
       case MatchingAction.pass:
         return '👎';
       case MatchingAction.superLike:
-        return '⭐';
+        return '⚡';
       case MatchingAction.block:
         return '🚫';
     }
@@ -43,11 +43,11 @@ enum MatchingAction {
   String get colorHex {
     switch (this) {
       case MatchingAction.like:
-        return '#E91E63'; // Pink
+        return '#FF6B6B'; // Warm Coral
       case MatchingAction.pass:
         return '#9E9E9E'; // Grey
       case MatchingAction.superLike:
-        return '#2196F3'; // Blue
+        return '#2BB0A0'; // Teal
       case MatchingAction.block:
         return '#F44336'; // Red
     }
@@ -57,11 +57,11 @@ enum MatchingAction {
   String get displayText {
     switch (this) {
       case MatchingAction.like:
-        return '좋아요';
+        return '관심';
       case MatchingAction.pass:
         return '패스';
       case MatchingAction.superLike:
-        return '슈퍼 좋아요';
+        return '부스트';
       case MatchingAction.block:
         return '차단';
     }

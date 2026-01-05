@@ -6,6 +6,7 @@ const authService = new AuthService();
 export class AuthController {
   async googleLogin(req: Request, res: Response) {
     try {
+      console.log('[CONTROLLER] Google login request received');
       const { idToken } = req.body;
 
       if (!idToken) {
@@ -14,12 +15,22 @@ export class AuthController {
 
       const result = await authService.authenticateWithGoogle(idToken);
 
-      return res.status(200).json({
+      console.log('[CONTROLLER] AuthService result:', JSON.stringify({
+        isNewUser: result.isNewUser,
+        hasProfile: result.hasProfile,
+        userId: result.user.id,
+      }));
+
+      const response = {
         success: true,
         data: result,
-      });
+      };
+
+      console.log('[CONTROLLER] Sending response with hasProfile:', result.hasProfile);
+
+      return res.status(200).json(response);
     } catch (error) {
-      console.error('Google login error:', error);
+      console.error('[CONTROLLER] Google login error:', error);
       return res.status(401).json({ error: 'Authentication failed' });
     }
   }

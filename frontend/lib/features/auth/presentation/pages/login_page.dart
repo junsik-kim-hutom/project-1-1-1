@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
-import '../../../home/presentation/pages/main_navigation_page.dart';
-import '../../../profile/presentation/pages/profile_create_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -48,6 +47,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }
 
   Future<void> _handleGoogleSignIn() async {
+    print('[LOGIN] Starting Google Sign-In');
     setState(() {
       _isLoading = true;
     });
@@ -56,12 +56,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
       if (account != null) {
+        print('[LOGIN] Google account obtained');
         final GoogleSignInAuthentication auth = await account.authentication;
         final String? idToken = auth.idToken;
 
         if (idToken != null) {
+          print('[LOGIN] ID token obtained, calling googleLogin');
           final authNotifier = ref.read(authProvider.notifier);
           final response = await authNotifier.googleLogin(idToken);
+
+          print('[LOGIN] Login response: ${response != null ? "Success" : "Failed"}');
+          if (response != null) {
+            print('[LOGIN] Response hasProfile: ${response.hasProfile}');
+          }
 
           if (response != null && mounted) {
             final l10n = AppLocalizations.of(context)!;
@@ -76,21 +83,18 @@ class _LoginPageState extends ConsumerState<LoginPage>
               ),
             );
 
-            // Navigate based on user status
+            // Navigate to permissions page first for new users
             if (response.isNewUser) {
-              // Navigate to profile creation page for new users
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const ProfileCreatePage(),
-                ),
-              );
+              print('[LOGIN] Navigating to /permissions (new user)');
+              context.go('/permissions');
+            } else if (!response.hasProfile) {
+              // Navigate to profile creation page for users without profile
+              print('[LOGIN] Navigating to /profile/create (hasProfile: false)');
+              context.go('/profile/create');
             } else {
-              // Navigate to home page for existing users
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const MainNavigationPage(),
-                ),
-              );
+              // Navigate to home page for users with profile
+              print('[LOGIN] Navigating to /main (hasProfile: true)');
+              context.go('/main');
             }
           } else if (mounted) {
             final l10n = AppLocalizations.of(context)!;
@@ -167,7 +171,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
-                        Icons.favorite_rounded,
+                        Icons.auto_awesome_rounded,
                         size: 40,
                         color: AppColors.white,
                       ),
@@ -286,7 +290,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }) {
     return Container(
       width: double.infinity,
-      height: 52,
+      height: 48,
       decoration: BoxDecoration(
         gradient: gradient,
         borderRadius: BorderRadius.circular(12),
@@ -321,14 +325,14 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   Icon(
                     icon,
                     color: AppColors.white,
-                    size: 24,
+                    size: 22,
                   ),
                   const SizedBox(width: 10),
                   Text(
                     label,
                     style: AppTextStyles.button.copyWith(
                       color: AppColors.white,
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -349,7 +353,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }) {
     return Container(
       width: double.infinity,
-      height: 52,
+      height: 48,
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
@@ -371,14 +375,14 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 Icon(
                   icon,
                   color: color,
-                  size: 24,
+                  size: 22,
                 ),
                 const SizedBox(width: 10),
                 Text(
                   label,
                   style: AppTextStyles.button.copyWith(
                     color: AppColors.textPrimary,
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

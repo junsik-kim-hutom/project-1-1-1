@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 
 class DynamicProfileCreatePage extends ConsumerStatefulWidget {
   const DynamicProfileCreatePage({super.key});
@@ -115,18 +116,30 @@ class _DynamicProfileCreatePageState
 
   Widget _buildDynamicField(Map<String, dynamic> field) {
     final fieldType = field['fieldType'] as String;
-    final label = (field['label'] as Map<String, dynamic>)['ko'] as String;
+    final l10n = AppLocalizations.of(context)!;
+    final localeCode = Localizations.localeOf(context).languageCode;
+    final baseLabel = _pickLocalizedString(
+      field['label'] as Map<String, dynamic>,
+      localeCode,
+    );
     final isRequired = field['isRequired'] as bool;
 
     switch (fieldType) {
       case 'text':
         return TextFormField(
           decoration: InputDecoration(
-            labelText: label + (isRequired ? ' *' : ''),
-            hintText: (field['placeholder'] as Map?)?['ko'],
+            labelText: baseLabel + (isRequired ? ' *' : ''),
+            hintText: (field['placeholder'] as Map?) != null
+                ? _pickLocalizedString(
+                    (field['placeholder'] as Map).cast<String, dynamic>(),
+                    localeCode,
+                  )
+                : null,
           ),
           validator: isRequired
-              ? (value) => value?.isEmpty ?? true ? '$label을(를) 입력해주세요' : null
+              ? (value) => (value?.isEmpty ?? true)
+                  ? l10n.pleaseEnterField(baseLabel)
+                  : null
               : null,
           onChanged: (value) {
             _fieldValues[field['fieldKey']] = value;
@@ -135,10 +148,10 @@ class _DynamicProfileCreatePageState
 
       case 'select':
         final options =
-            (field['options'] as Map<String, dynamic>)['ko'] as List;
+            _pickLocalizedList(field['options'] as Map<String, dynamic>, localeCode);
         return DropdownButtonFormField<String>(
           decoration: InputDecoration(
-            labelText: label + (isRequired ? ' *' : ''),
+            labelText: baseLabel + (isRequired ? ' *' : ''),
           ),
           items: options
               .cast<String>()
@@ -148,7 +161,8 @@ class _DynamicProfileCreatePageState
                   ))
               .toList(),
           validator: isRequired
-              ? (value) => value == null ? '$label을(를) 선택해주세요' : null
+              ? (value) =>
+                  value == null ? l10n.pleaseSelectField(baseLabel) : null
               : null,
           onChanged: (value) {
             _fieldValues[field['fieldKey']] = value;
@@ -157,12 +171,12 @@ class _DynamicProfileCreatePageState
 
       case 'multi_select':
         final options =
-            (field['options'] as Map<String, dynamic>)['ko'] as List;
+            _pickLocalizedList(field['options'] as Map<String, dynamic>, localeCode);
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              label + (isRequired ? ' *' : ''),
+              baseLabel + (isRequired ? ' *' : ''),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 8),
@@ -199,6 +213,24 @@ class _DynamicProfileCreatePageState
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  String _pickLocalizedString(Map<String, dynamic> map, String localeCode) {
+    final value = map[localeCode] ?? map['en'] ?? map['ko'];
+    if (value is String && value.isNotEmpty) return value;
+    for (final v in map.values) {
+      if (v is String && v.isNotEmpty) return v;
+    }
+    return '';
+  }
+
+  List<dynamic> _pickLocalizedList(Map<String, dynamic> map, String localeCode) {
+    final value = map[localeCode] ?? map['en'] ?? map['ko'];
+    if (value is List) return value;
+    for (final v in map.values) {
+      if (v is List) return v;
+    }
+    return const [];
   }
 
   List<Widget> _buildFieldsByCategory(String category) {

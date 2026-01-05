@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
 
 class AppTextStyles {
   // Display Styles - 큰 제목
@@ -7,7 +6,6 @@ class AppTextStyles {
     fontSize: 57,
     fontWeight: FontWeight.w700,
     letterSpacing: -0.25,
-    color: AppColors.textPrimary,
     height: 1.12,
   );
 
@@ -15,7 +13,6 @@ class AppTextStyles {
     fontSize: 45,
     fontWeight: FontWeight.w700,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.16,
   );
 
@@ -23,7 +20,6 @@ class AppTextStyles {
     fontSize: 36,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.22,
   );
 
@@ -32,7 +28,6 @@ class AppTextStyles {
     fontSize: 32,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.25,
   );
 
@@ -40,7 +35,6 @@ class AppTextStyles {
     fontSize: 28,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.29,
   );
 
@@ -48,7 +42,6 @@ class AppTextStyles {
     fontSize: 24,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.33,
   );
 
@@ -57,7 +50,6 @@ class AppTextStyles {
     fontSize: 22,
     fontWeight: FontWeight.w600,
     letterSpacing: 0,
-    color: AppColors.textPrimary,
     height: 1.27,
   );
 
@@ -65,7 +57,6 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.15,
-    color: AppColors.textPrimary,
     height: 1.5,
   );
 
@@ -73,7 +64,6 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.1,
-    color: AppColors.textPrimary,
     height: 1.43,
   );
 
@@ -82,7 +72,6 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.5,
-    color: AppColors.textPrimary,
     height: 1.5,
   );
 
@@ -90,7 +79,6 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.25,
-    color: AppColors.textPrimary,
     height: 1.43,
   );
 
@@ -98,7 +86,6 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.4,
-    color: AppColors.textSecondary,
     height: 1.33,
   );
 
@@ -107,7 +94,6 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.1,
-    color: AppColors.textPrimary,
     height: 1.43,
   );
 
@@ -115,7 +101,6 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
-    color: AppColors.textPrimary,
     height: 1.33,
   );
 
@@ -123,7 +108,6 @@ class AppTextStyles {
     fontSize: 11,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
-    color: AppColors.textSecondary,
     height: 1.45,
   );
 
@@ -132,7 +116,6 @@ class AppTextStyles {
     fontSize: 16,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.5,
-    color: AppColors.white,
     height: 1.25,
   );
 
@@ -140,7 +123,6 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w400,
     letterSpacing: 0.4,
-    color: AppColors.textSecondary,
     height: 1.33,
   );
 
@@ -148,7 +130,6 @@ class AppTextStyles {
     fontSize: 10,
     fontWeight: FontWeight.w600,
     letterSpacing: 1.5,
-    color: AppColors.textSecondary,
     height: 1.6,
   );
 }

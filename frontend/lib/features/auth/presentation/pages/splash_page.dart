@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
-import 'login_page.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
@@ -39,24 +39,35 @@ class _SplashPageState extends ConsumerState<SplashPage>
   }
 
   Future<void> _checkAuthStatus() async {
+    print('[SPLASH] Starting auth check');
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
+      print('[SPLASH] Calling checkAuthStatus');
       await ref.read(authProvider.notifier).checkAuthStatus();
       final authState = ref.read(authProvider);
 
+      print('[SPLASH] Auth state - isAuthenticated: ${authState.isAuthenticated}, hasProfile: ${authState.hasProfile}');
+
       if (mounted) {
         if (authState.isAuthenticated) {
-          // TODO: Navigate to home page
-          debugPrint('User is authenticated - should navigate to home');
-          // For now, stay on login page since home is not implemented
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const LoginPage()),
-          );
+          // Check if user has profile
+          if (authState.hasProfile == null) {
+            // Profile status unknown - need to check from backend
+            print('[SPLASH] hasProfile is null, redirecting to profile/create to be safe');
+            context.go('/profile/create');
+          } else if (authState.hasProfile == false) {
+            // No profile - redirect to profile creation
+            print('[SPLASH] Navigating to /profile/create (hasProfile: false)');
+            context.go('/profile/create');
+          } else {
+            // Has profile - go to main
+            print('[SPLASH] Navigating to /main (hasProfile: true)');
+            context.go('/main');
+          }
         } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const LoginPage()),
-          );
+          print('[SPLASH] Navigating to /login (not authenticated)');
+          context.go('/login');
         }
       }
     }
@@ -78,8 +89,8 @@ class _SplashPageState extends ConsumerState<SplashPage>
             end: Alignment.bottomRight,
             colors: [
               AppColors.primary,
+              AppColors.accent,
               AppColors.secondary,
-              Color(0xFFE91E63),
             ],
           ),
         ),
@@ -98,7 +109,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
-                      Icons.favorite,
+                      Icons.auto_awesome_rounded,
                       size: 100,
                       color: AppColors.white,
                     ),

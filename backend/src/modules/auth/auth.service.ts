@@ -85,6 +85,17 @@ export class AuthService {
       });
     }
 
+    // 프로필 존재 여부 확인
+    console.log('[AUTH] Checking profile for userId:', user.id);
+    const profile = await prisma.profile.findUnique({
+      where: { userId: user.id },
+    });
+    console.log('[AUTH] Profile query result:', profile ? 'Profile found' : 'Profile NOT found');
+    console.log('[AUTH] Profile data:', JSON.stringify(profile, null, 2));
+
+    const hasProfile = !!profile;
+    console.log('[AUTH] hasProfile value:', hasProfile);
+
     const accessToken = generateAccessToken({
       userId: user.id,
       email: user.email,
@@ -95,13 +106,18 @@ export class AuthService {
       email: user.email,
     });
 
-    // DTO로 변환하여 반환
-    return {
+    const response = {
       user: toUserResponseDto(user),
       accessToken,
       refreshToken,
       isNewUser,
+      hasProfile,
     };
+
+    console.log('[AUTH] Final response - isNewUser:', isNewUser, 'hasProfile:', hasProfile);
+
+    // DTO로 변환하여 반환
+    return response;
   }
 
   /**

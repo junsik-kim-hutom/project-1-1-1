@@ -1,6 +1,6 @@
 {
   "@@locale": "ja",
-  "appTitle": "結婚できるはず",
+  "appTitle": "TruePair(トゥルーペア)",
   "appSubtitle": "特別な人との出会い、\n今始めましょう",
   "loginSuccess": "ログイン成功！",
   "loginFailed": "ログイン失敗",
@@ -98,16 +98,25 @@
   },
 
   "matchingTitle": "マッチング",
+  "distance": "距離",
   "filters": "フィルター",
   "filterSettings": "フィルター設定",
   "age": "年齢",
+  "cm": "cm",
+  "educationHighSchool": "高校",
+  "educationCollege": "大学",
+  "educationGraduate": "大学院",
+  "pass": "パス",
+  "interest": "関心",
+  "boost": "ブースト",
+  "swipeHint": "左右にスワイプ",
   "apply": "適用",
   "allMatchesViewed": "すべてのマッチングを確認しました",
   "findingNewMatches": "新しいマッチングを探しています",
   "viewAgain": "もう一度見る",
-  "superLike": "スーパーいいね！",
-  "likeSent": "いいねを送りました！",
-  "nextMatch": "次のマッチングに進みます",
+  "superLike": "ブーストを送りました！",
+  "likeSent": "関心を送りました",
+  "nextMatch": "次のプロフィールへ",
   "user": "ユーザー",
   "developer": "開発者",
   "designer": "デザイナー",
@@ -158,5 +167,186 @@
   "notificationSettings": "通知設定",
   "help": "ヘルプ",
   "aboutApp": "アプリについて",
-  "version": "バージョン"
+  "version": "バージョン",
+  "appSettings": "アプリ設定",
+  "subscriptionAndPayment": "サブスクリプションと決済",
+  "support": "サポート",
+  "account": "アカウント",
+  "manageLocations": "活動地域管理",
+  "languageSettings": "言語設定",
+  "themeSettings": "テーマ設定",
+  "myPasses": "利用券",
+  "paymentHistory": "決済履歴",
+  "customerSupport": "カスタマーサポート",
+  "languageChanged": "言語が変更されました。",
+  "languageKorean": "韓国語",
+  "languageJapanese": "日本語",
+  "languageEnglish": "英語",
+  "themeLight": "ライトモード",
+  "themeDark": "ダークモード",
+  "themeSystem": "システム設定に従う",
+  "navigateToPrivacySettings": "プライバシー設定画面に移動します。",
+  "navigateToNotificationSettings": "通知設定画面に移動します。",
+  "navigateToCustomerSupport": "カスタマーサポート画面に移動します。",
+  "navigateToTermsOfService": "利用規約画面に移動します。",
+  "navigateToPrivacyPolicy": "プライバシーポリシー画面に移動します。",
+  "aboutDescription": "位置情報を利用した結婚相手マッチングサービス。",
+  "aboutLegal": "© 2025 Marriage Matching. All rights reserved.",
+  "deleteAccount": "アカウント削除",
+  "deleteAccountConfirm": "アカウントを削除してもよろしいですか？\n\n削除するとすべてのデータが消去され、復元できません。",
+  "deleteAccountCompleted": "アカウント削除が完了しました。",
+  "deleteAccountAction": "削除",
+  "logoutConfirm": "ログアウトしてもよろしいですか？",
+
+  "profileNotFoundMessage": "まずプロフィールを作成してください。",
+  "failedToLoadProfile": "プロフィールを読み込めませんでした。",
+  "notEntered": "未入力",
+  "seeLess": "折りたたむ",
+  "loginRequired": "ログインが必要です。",
+  "pleaseSelect": "選択してください",
+  "pleaseSelectBirthDate": "生年月日を選択してください。",
+  "pleaseEnterField": "{field}を入力してください",
+  "@pleaseEnterField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectField": "{field}を選択してください",
+  "@pleaseSelectField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+
+  "residence": "居住地",
+  "residenceHint": "例：東京都渋谷区",
+  "bodyType": "体型",
+  "bodyTypeSlim": "スリム",
+  "bodyTypeAverage": "普通",
+  "bodyTypeGlamorous": "グラマー",
+  "bodyTypeMuscular": "筋肉質",
+  "bodyTypeChubby": "ぽっちゃり",
+  "marriageIntention": "結婚意向",
+  "marriageIntentionActive": "積極的",
+  "marriageIntentionYes": "興味あり",
+  "marriageIntentionSlow": "ゆっくり考えたい",
+  "marriageIntentionNotSure": "まだわからない",
+  "childrenPlan": "子どもの希望",
+  "childrenPlanWant": "欲しい",
+  "childrenPlanNo": "欲しくない",
+  "childrenPlanUndecided": "未定",
+  "childrenPlanDiscuss": "相談して決める",
+  "annualIncome": "年収",
+  "annualIncomeHint": "例：500万円",
+  "marriageTiming": "結婚希望時期",
+  "marriageTimingWithin6Months": "6ヶ月以内",
+  "marriageTimingWithin1Year": "1年以内",
+  "marriageTimingWithin2to3Years": "2〜3年以内",
+  "marriageTimingSlowly": "ゆっくり",
+  "marriageTimingUndecided": "未定",
+  "dateCostSharing": "デート費用",
+  "dateCostSharingManPays": "男性負担",
+  "dateCostSharingWomanPays": "女性負担",
+  "dateCostSharingDutch": "割り勘",
+  "dateCostSharingAlternate": "交互に負担",
+  "dateCostSharingDiscuss": "相談",
+  "importantValue": "重視する価値",
+  "importantValuePersonality": "性格",
+  "importantValueFinancial": "経済力",
+  "importantValueAppearance": "外見",
+  "importantValueFamily": "家庭環境",
+  "importantValueOccupationEducation": "職業・学歴",
+  "importantValueValues": "価値観",
+  "importantValueReligion": "宗教",
+  "houseworkSharing": "家事・育児分担",
+  "houseworkSharingEqual": "平等に分担",
+  "houseworkSharingFlexible": "柔軟に",
+  "houseworkSharingMostlyWoman": "主に女性",
+  "houseworkSharingMostlyMan": "主に男性",
+  "houseworkSharingDiscuss": "相談",
+  "charmPoint": "魅力ポイント",
+  "charmPointHint": "例：ユーモア、思いやり",
+  "idealPartner": "理想の相手",
+  "idealPartnerHint": "求める特徴を書いてください",
+  "holidayActivity": "休日の過ごし方",
+  "holidayActivityHint": "例：映画、登山、カフェ巡り",
+
+  "occupationOfficeWorker": "会社員",
+  "occupationPublicServant": "公務員",
+  "occupationSelfEmployed": "自営業",
+  "occupationProfessional": "専門職（医師・弁護士など）",
+  "occupationDeveloper": "開発者/IT",
+  "occupationEducation": "教育/講師",
+  "occupationService": "サービス業",
+  "occupationArtDesign": "芸術/デザイン",
+  "occupationStudent": "学生",
+  "occupationOther": "その他",
+
+  "educationHighSchoolGraduate": "高校卒業",
+  "educationJuniorCollegeGraduate": "短大卒業",
+  "educationUniversityGraduate": "大学卒業",
+  "educationMasters": "大学院修士",
+  "educationPhd": "大学院博士",
+  "educationOther": "その他",
+
+  "profilePhotos": "プロフィール写真",
+  "selectMainPhoto": "メイン写真を選択してください",
+  "selectFromGallery": "ギャラリーから選択",
+  "takePhoto": "カメラで撮影",
+  "selectMultiplePhotos": "複数選択",
+  "addPhoto": "写真追加",
+  "mainPhoto": "メイン",
+  "maxImagesSelectLimit": "最大{max}枚まで選択できます。",
+  "@maxImagesSelectLimit": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "maxImagesSelected": "最大{max}枚まで選択されました。",
+  "@maxImagesSelected": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSelectionFailed": "画像の選択に失敗しました: {error}",
+  "@imageSelectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "imageUploadCompleted": "画像をアップロードしました。",
+  "imagesUploadCompleted": "{count}枚の画像をアップロードしました。",
+  "@imagesUploadCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageUploadFailed": "アップロードに失敗しました: {error}",
+  "@imageUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePhotoGuidelines": "• 最小1枚、最大{max}枚まで登録できます\n• 複数枚登録する場合、メイン写真を選択してください\n• 画像は自動的にアップロードされます",
+  "@profilePhotoGuidelines": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

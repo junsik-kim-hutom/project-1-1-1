@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { createServer } from 'http';
 import { connectDatabase } from './config/database';
 import { initializeSocket } from './socket';
@@ -11,6 +12,7 @@ import locationRoutes from './modules/location/location.routes';
 import balanceGameRoutes from './modules/balance-game/balance-game.routes';
 import profileFieldRoutes from './modules/profile-field/profile-field.routes';
 import eqTestRoutes from './modules/eq-test/eq-test.routes';
+import chatRoutes from './modules/chat/chat.routes';
 
 // 국가별 환경 설정 자동 로드
 // .env.{DEPLOY_COUNTRY} 파일을 우선적으로 로드합니다.
@@ -25,6 +27,10 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// 정적 파일 제공 (업로드된 이미지)
+const uploadsPath = path.join(process.cwd(), process.env.LOCAL_UPLOAD_PATH || './uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 app.get('/', (req, res) => {
   res.json({
@@ -44,6 +50,7 @@ app.use('/api/location', locationRoutes);
 app.use('/api/balance-games', balanceGameRoutes);
 app.use('/api/profile-fields', profileFieldRoutes);
 app.use('/api/eq-test', eqTestRoutes);
+app.use('/api/chat', chatRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../data/models/eq_result_model.dart';
 
 class EQTestResultPage extends StatelessWidget {
@@ -14,7 +15,6 @@ class EQTestResultPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('EQ 테스트 결과'),
-        backgroundColor: Colors.purple,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -52,21 +52,21 @@ class EQTestResultPage extends StatelessWidget {
             _buildInsightSection(
               context,
               '매칭 팁',
-              Icons.favorite,
-              Colors.pink,
+              Icons.auto_awesome_rounded,
+              AppColors.secondary,
               result.getMatchingTips('ko'),
             ),
             const SizedBox(height: 32),
             // 완료 버튼
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
               child: const Text(
                 '확인',
                 style: TextStyle(fontSize: 18),
@@ -80,7 +80,7 @@ class EQTestResultPage extends StatelessWidget {
 
   Widget _buildPersonalityTypeCard(BuildContext context) {
     final typeEmojis = {
-      'empathetic': '💖',
+      'empathetic': '✨',
       'introspective': '🤔',
       'social': '🎉',
       'achiever': '🏆',
@@ -98,7 +98,7 @@ class EQTestResultPage extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
           gradient: LinearGradient(
-            colors: [Colors.purple[400]!, Colors.purple[600]!],
+            colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -158,7 +158,7 @@ class EQTestResultPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: Colors.purple[700],
+                    color: AppColors.primary,
                   ),
                 ),
                 Padding(
@@ -167,7 +167,7 @@ class EQTestResultPage extends StatelessWidget {
                     '/ 5',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.grey[600],
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ),
@@ -184,31 +184,31 @@ class EQTestResultPage extends StatelessWidget {
       {
         'label': '공감 능력',
         'score': result.empathyScore,
-        'color': Colors.pink,
-        'icon': Icons.favorite,
+        'color': AppColors.primary,
+        'icon': Icons.sentiment_satisfied_rounded,
       },
       {
         'label': '자기 인식',
         'score': result.selfAwarenessScore,
-        'color': Colors.blue,
+        'color': AppColors.accent,
         'icon': Icons.self_improvement,
       },
       {
         'label': '사회적 기술',
         'score': result.socialSkillsScore,
-        'color': Colors.green,
+        'color': AppColors.secondary,
         'icon': Icons.people,
       },
       {
         'label': '동기부여',
         'score': result.motivationScore,
-        'color': Colors.orange,
+        'color': AppColors.warning,
         'icon': Icons.emoji_events,
       },
       {
         'label': '감정 조절',
         'score': result.emotionRegulationScore,
-        'color': Colors.teal,
+        'color': AppColors.info,
         'icon': Icons.spa,
       },
     ];

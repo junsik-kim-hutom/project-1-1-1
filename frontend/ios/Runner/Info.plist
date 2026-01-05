@@ -56,5 +56,33 @@
 			</array>
 		</dict>
 	</array>
+
+	<!-- Location Permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>주변 매칭 상대를 찾기 위해 위치 정보가 필요합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>더 나은 매칭 경험을 위해 위치 정보가 필요합니다.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>백그라운드에서도 매칭 알림을 받기 위해 위치 정보가 필요합니다.</string>
+
+	<!-- Photo & Camera Permissions -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>프로필 사진을 등록하기 위해 사진 라이브러리 접근 권한이 필요합니다.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>사진을 저장하기 위해 사진 라이브러리 접근 권한이 필요합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>프로필 사진을 촬영하기 위해 카메라 권한이 필요합니다.</string>
+
+	<!-- Notification Permission -->
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>새로운 매칭과 메시지 알림을 받기 위해 알림 권한이 필요합니다.</string>
+
+	<!-- Background Modes -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+		<string>location</string>
+	</array>
 </dict>
 </plist>

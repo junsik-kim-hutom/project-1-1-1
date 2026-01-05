@@ -84,16 +84,24 @@ docker-compose logs -f backend
 
 ## 📚 문서
 
-- [프로젝트 상세 명세](./Project%20Overview.md) - 전체 기능 명세 및 아키텍처
-- [프로젝트 설정 가이드](./SETUP.md) - 개발 환경 설정 방법
+### 시작하기
+- **[빠른 시작 가이드](#-빠른-시작)** - Docker Compose로 즉시 실행
+- **[비용 최적화 가이드](./COST_OPTIMIZATION.md)** - 1인 개발자를 위한 무료/저비용 서비스 가이드 ⭐
+
+### 기술 문서
+- **[기술 명세서](./TECHNICAL_SPEC.md)** - 전체 기능 명세 및 아키텍처 상세
+- **[구현 현황](./IMPLEMENTATION_STATUS.md)** - 최신 구현 상태 및 진행 현황 📊
+- [데이터베이스 검토 보고서](./DATABASE_REVIEW.md) - 전문 모델러의 스키마 분석 및 개선 권장사항
+- [스키마 마이그레이션 가이드](./SCHEMA_MIGRATION_GUIDE.md) - v2.0 스키마 업그레이드 가이드
+- [알림 시스템 검토 보고서](./NOTIFICATION_SYSTEM_REVIEW.md) - 알림 및 읽음 확인 기능 전문 분석 🔔
+- [프론트엔드 v2.0 구현 완료](./FRONTEND_V2_IMPLEMENTATION.md) - Flutter 모델 클래스 구현 보고서 📱
+
+### 배포 및 운영
 - [배포 가이드](./DEPLOYMENT.md) - 국가별 배포 전략 및 환경 설정
 - [결제 전략](./PAYMENT_STRATEGY.md) - 국가별 결제 수단 및 우선순위
-- **[비용 최적화 가이드](./COST_OPTIMIZATION.md)** - 1인 개발자를 위한 무료/저비용 서비스 가이드 ⭐
-- **[데이터베이스 검토 보고서](./DATABASE_REVIEW.md)** - 전문 모델러의 스키마 분석 및 개선 권장사항
-- **[스키마 마이그레이션 가이드](./SCHEMA_MIGRATION_GUIDE.md)** - v2.0 스키마 업그레이드 가이드
-- **[알림 시스템 검토 보고서](./NOTIFICATION_SYSTEM_REVIEW.md)** - 알림 및 읽음 확인 기능 전문 분석 🔔
-- **[프론트엔드 v2.0 구현 완료](./FRONTEND_V2_IMPLEMENTATION.md)** - Flutter 모델 클래스 구현 보고서 📱
-- [Backend API 문서](./backend/README.md#api-문서)
+
+### API 문서
+- [Backend API 문서](./backend/README.md)
 - [Frontend 개발 가이드](./frontend/README.md)
 
 ## 🗄 데이터베이스

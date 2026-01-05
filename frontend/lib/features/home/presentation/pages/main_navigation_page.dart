@@ -80,7 +80,7 @@ class _ModernBottomNavBar extends StatelessWidget {
                 onTap: () => onItemSelected(0),
               ),
               _NavBarItem(
-                icon: Icons.favorite_rounded,
+                icon: Icons.explore_rounded,
                 label: l10n.matching,
                 isSelected: selectedIndex == 1,
                 onTap: () => onItemSelected(1),

@@ -7,13 +7,13 @@ enum NotificationType {
   // 매칭 관련 알림 (Matching) - 4개
   // ========================================
 
-  /// 누군가 내 프로필을 좋아요 했을 때
+  /// 누군가 내 프로필에 관심을 보냈을 때
   matchLike('MATCH_LIKE'),
 
-  /// 누군가 내 프로필을 슈퍼 좋아요 했을 때
+  /// 누군가 내 프로필에 부스트를 보냈을 때
   matchSuperLike('MATCH_SUPER_LIKE'),
 
-  /// 서로 좋아요를 눌러 매칭이 성사되었을 때
+  /// 서로 관심을 보내 매칭이 성사되었을 때
   matchMutual('MATCH_MUTUAL'),
 
   /// 누군가 내 프로필을 조회했을 때
@@ -122,11 +122,11 @@ enum NotificationType {
     switch (this) {
       // Matching
       case NotificationType.matchLike:
-        return '❤️';
+        return '✨';
       case NotificationType.matchSuperLike:
-        return '⭐';
+        return '⚡';
       case NotificationType.matchMutual:
-        return '💕';
+        return '🤝';
       case NotificationType.matchProfileView:
         return '👀';
 

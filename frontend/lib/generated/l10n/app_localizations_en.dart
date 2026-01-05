@@ -260,6 +260,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matchingTitle => 'Matching';
 
   @override
+  String get distance => 'Distance';
+
+  @override
   String get filters => 'Filters';
 
   @override
@@ -267,6 +270,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get age => 'Age';
+
+  @override
+  String get cm => 'cm';
+
+  @override
+  String get educationHighSchool => 'High School';
+
+  @override
+  String get educationCollege => 'College';
+
+  @override
+  String get educationGraduate => 'Graduate School';
+
+  @override
+  String get pass => 'Pass';
+
+  @override
+  String get interest => 'Interest';
+
+  @override
+  String get boost => 'Boost';
+
+  @override
+  String get swipeHint => 'Swipe to browse';
 
   @override
   String get apply => 'Apply';
@@ -281,13 +308,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAgain => 'View Again';
 
   @override
-  String get superLike => 'Super Like!';
+  String get superLike => 'Boost sent!';
 
   @override
-  String get likeSent => 'Like sent!';
+  String get likeSent => 'Interest sent';
 
   @override
-  String get nextMatch => 'Moving to next match';
+  String get nextMatch => 'Moved to next profile';
 
   @override
   String get user => 'User';
@@ -378,4 +405,383 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get version => 'Version';
+
+  @override
+  String get appSettings => 'App Settings';
+
+  @override
+  String get subscriptionAndPayment => 'Subscriptions & Payments';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get manageLocations => 'Manage Locations';
+
+  @override
+  String get languageSettings => 'Language Settings';
+
+  @override
+  String get themeSettings => 'Theme Settings';
+
+  @override
+  String get myPasses => 'My Passes';
+
+  @override
+  String get paymentHistory => 'Payment History';
+
+  @override
+  String get customerSupport => 'Customer Support';
+
+  @override
+  String get languageChanged => 'Language has been changed.';
+
+  @override
+  String get languageKorean => 'Korean';
+
+  @override
+  String get languageJapanese => 'Japanese';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get themeLight => 'Light Mode';
+
+  @override
+  String get themeDark => 'Dark Mode';
+
+  @override
+  String get themeSystem => 'Follow System';
+
+  @override
+  String get navigateToPrivacySettings => 'Go to privacy settings screen.';
+
+  @override
+  String get navigateToNotificationSettings =>
+      'Go to notification settings screen.';
+
+  @override
+  String get navigateToCustomerSupport => 'Go to customer support screen.';
+
+  @override
+  String get navigateToTermsOfService => 'Go to terms of service screen.';
+
+  @override
+  String get navigateToPrivacyPolicy => 'Go to privacy policy screen.';
+
+  @override
+  String get aboutDescription =>
+      'Location-based matchmaking service for marriage.';
+
+  @override
+  String get aboutLegal => '© 2025 Marriage Matching. All rights reserved.';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountConfirm =>
+      'Are you sure you want to delete your account?\n\nAll data will be deleted and cannot be recovered.';
+
+  @override
+  String get deleteAccountCompleted => 'Account deletion has been processed.';
+
+  @override
+  String get deleteAccountAction => 'Delete';
+
+  @override
+  String get logoutConfirm => 'Are you sure you want to log out?';
+
+  @override
+  String get profileNotFoundMessage => 'Please create your profile first.';
+
+  @override
+  String get failedToLoadProfile => 'Failed to load profile.';
+
+  @override
+  String get notEntered => 'Not provided';
+
+  @override
+  String get seeLess => 'Show less';
+
+  @override
+  String get loginRequired => 'Login is required.';
+
+  @override
+  String get pleaseSelect => 'Please select';
+
+  @override
+  String get pleaseSelectBirthDate => 'Please select your birth date.';
+
+  @override
+  String pleaseEnterField(String field) {
+    return 'Please enter $field.';
+  }
+
+  @override
+  String pleaseSelectField(String field) {
+    return 'Please select $field.';
+  }
+
+  @override
+  String get residence => 'Residence';
+
+  @override
+  String get residenceHint => 'e.g. Gangnam-gu, Seoul';
+
+  @override
+  String get bodyType => 'Body type';
+
+  @override
+  String get bodyTypeSlim => 'Slim';
+
+  @override
+  String get bodyTypeAverage => 'Average';
+
+  @override
+  String get bodyTypeGlamorous => 'Curvy';
+
+  @override
+  String get bodyTypeMuscular => 'Muscular';
+
+  @override
+  String get bodyTypeChubby => 'Chubby';
+
+  @override
+  String get marriageIntention => 'Marriage intention';
+
+  @override
+  String get marriageIntentionActive => 'Very interested';
+
+  @override
+  String get marriageIntentionYes => 'Interested';
+
+  @override
+  String get marriageIntentionSlow => 'Thinking slowly';
+
+  @override
+  String get marriageIntentionNotSure => 'Not sure yet';
+
+  @override
+  String get childrenPlan => 'Children plan';
+
+  @override
+  String get childrenPlanWant => 'Want';
+
+  @override
+  String get childrenPlanNo => 'Don\'t want';
+
+  @override
+  String get childrenPlanUndecided => 'Undecided';
+
+  @override
+  String get childrenPlanDiscuss => 'Decide after discussion';
+
+  @override
+  String get annualIncome => 'Annual income';
+
+  @override
+  String get annualIncomeHint => 'e.g. 50,000,000 KRW';
+
+  @override
+  String get marriageTiming => 'Preferred marriage timing';
+
+  @override
+  String get marriageTimingWithin6Months => 'Within 6 months';
+
+  @override
+  String get marriageTimingWithin1Year => 'Within 1 year';
+
+  @override
+  String get marriageTimingWithin2to3Years => 'Within 2–3 years';
+
+  @override
+  String get marriageTimingSlowly => 'Slowly';
+
+  @override
+  String get marriageTimingUndecided => 'Undecided';
+
+  @override
+  String get dateCostSharing => 'Date cost sharing';
+
+  @override
+  String get dateCostSharingManPays => 'Man pays';
+
+  @override
+  String get dateCostSharingWomanPays => 'Woman pays';
+
+  @override
+  String get dateCostSharingDutch => 'Split the bill';
+
+  @override
+  String get dateCostSharingAlternate => 'Take turns';
+
+  @override
+  String get dateCostSharingDiscuss => 'Discuss';
+
+  @override
+  String get importantValue => 'Most important value';
+
+  @override
+  String get importantValuePersonality => 'Personality';
+
+  @override
+  String get importantValueFinancial => 'Financial status';
+
+  @override
+  String get importantValueAppearance => 'Appearance';
+
+  @override
+  String get importantValueFamily => 'Family background';
+
+  @override
+  String get importantValueOccupationEducation => 'Occupation / education';
+
+  @override
+  String get importantValueValues => 'Values';
+
+  @override
+  String get importantValueReligion => 'Religion';
+
+  @override
+  String get houseworkSharing => 'Housework & childcare';
+
+  @override
+  String get houseworkSharingEqual => 'Share equally';
+
+  @override
+  String get houseworkSharingFlexible => 'Be flexible';
+
+  @override
+  String get houseworkSharingMostlyWoman => 'Mostly woman';
+
+  @override
+  String get houseworkSharingMostlyMan => 'Mostly man';
+
+  @override
+  String get houseworkSharingDiscuss => 'Discuss';
+
+  @override
+  String get charmPoint => 'Charm point';
+
+  @override
+  String get charmPointHint => 'e.g. Humor, consideration';
+
+  @override
+  String get idealPartner => 'Ideal partner';
+
+  @override
+  String get idealPartnerHint => 'Describe what you\'re looking for';
+
+  @override
+  String get holidayActivity => 'Holiday activity';
+
+  @override
+  String get holidayActivityHint => 'e.g. Movies, hiking, cafe tours';
+
+  @override
+  String get occupationOfficeWorker => 'Office worker';
+
+  @override
+  String get occupationPublicServant => 'Public servant';
+
+  @override
+  String get occupationSelfEmployed => 'Self-employed';
+
+  @override
+  String get occupationProfessional => 'Professional (doctor, lawyer, etc.)';
+
+  @override
+  String get occupationDeveloper => 'Developer / IT';
+
+  @override
+  String get occupationEducation => 'Education / instructor';
+
+  @override
+  String get occupationService => 'Service industry';
+
+  @override
+  String get occupationArtDesign => 'Art / design';
+
+  @override
+  String get occupationStudent => 'Student';
+
+  @override
+  String get occupationOther => 'Other';
+
+  @override
+  String get educationHighSchoolGraduate => 'High school graduate';
+
+  @override
+  String get educationJuniorCollegeGraduate => 'Junior college graduate';
+
+  @override
+  String get educationUniversityGraduate => 'University graduate';
+
+  @override
+  String get educationMasters => 'Master\'s degree';
+
+  @override
+  String get educationPhd => 'PhD';
+
+  @override
+  String get educationOther => 'Other';
+
+  @override
+  String get profilePhotos => 'Profile photos';
+
+  @override
+  String get selectMainPhoto => 'Please select a main photo';
+
+  @override
+  String get selectFromGallery => 'Choose from gallery';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get selectMultiplePhotos => 'Choose multiple photos';
+
+  @override
+  String get addPhoto => 'Add photo';
+
+  @override
+  String get mainPhoto => 'Main';
+
+  @override
+  String maxImagesSelectLimit(int max) {
+    return 'You can select up to $max images.';
+  }
+
+  @override
+  String maxImagesSelected(int max) {
+    return 'Selected up to $max images.';
+  }
+
+  @override
+  String imageSelectionFailed(String error) {
+    return 'Image selection failed: $error';
+  }
+
+  @override
+  String get imageUploadCompleted => 'Image uploaded.';
+
+  @override
+  String imagesUploadCompleted(int count) {
+    return '$count images uploaded.';
+  }
+
+  @override
+  String imageUploadFailed(String error) {
+    return 'Upload failed: $error';
+  }
+
+  @override
+  String profilePhotoGuidelines(int max) {
+    return '• Minimum 1, maximum $max images can be registered\n• If you add multiple, please select a main photo\n• Images are uploaded automatically';
+  }
 }

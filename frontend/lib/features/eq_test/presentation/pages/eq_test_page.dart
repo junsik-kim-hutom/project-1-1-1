@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../providers/eq_test_provider.dart';
 import 'eq_test_result_page.dart';
 
@@ -14,7 +15,7 @@ class EQTestPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('EQ 감성 지능 테스트'),
-        backgroundColor: Colors.purple,
+        backgroundColor: AppColors.primary,
       ),
       body: questionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -22,7 +23,7 @@ class EQTestPage extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
               Text('오류가 발생했습니다: $error'),
               const SizedBox(height: 16),
@@ -54,8 +55,9 @@ class EQTestPage extends ConsumerWidget {
               // 진행 상황 표시
               LinearProgressIndicator(
                 value: progress,
-                backgroundColor: Colors.grey[300],
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.purple),
+                backgroundColor: AppColors.border,
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -138,7 +140,7 @@ class EQTestPage extends ConsumerWidget {
                                     }
                                   : null,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.purple,
+                                backgroundColor: AppColors.primary,
                                 foregroundColor: Colors.white,
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),
@@ -174,11 +176,11 @@ class EQTestPage extends ConsumerWidget {
     };
 
     final categoryColors = {
-      'empathy': Colors.pink,
-      'self_awareness': Colors.blue,
-      'social_skills': Colors.green,
-      'motivation': Colors.orange,
-      'emotion_regulation': Colors.teal,
+      'empathy': AppColors.primary,
+      'self_awareness': AppColors.accent,
+      'social_skills': AppColors.secondary,
+      'motivation': AppColors.warning,
+      'emotion_regulation': AppColors.info,
     };
 
     return Center(
@@ -187,7 +189,7 @@ class EQTestPage extends ConsumerWidget {
           categoryLabels[category] ?? category,
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: categoryColors[category] ?? Colors.purple,
+        backgroundColor: categoryColors[category] ?? AppColors.primary,
       ),
     );
   }
@@ -222,10 +224,10 @@ class EQTestPage extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? Colors.purple.withValues(alpha: 0.1)
+                    ? AppColors.primary.withValues(alpha: 0.12)
                     : Colors.white,
                 border: Border.all(
-                  color: isSelected ? Colors.purple : Colors.grey[300]!,
+                  color: isSelected ? AppColors.primary : AppColors.border,
                   width: isSelected ? 2 : 1,
                 ),
                 borderRadius: BorderRadius.circular(12),
@@ -238,10 +240,12 @@ class EQTestPage extends ConsumerWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: isSelected ? Colors.purple : Colors.grey[400]!,
+                        color:
+                            isSelected ? AppColors.primary : AppColors.border,
                         width: 2,
                       ),
-                      color: isSelected ? Colors.purple : Colors.transparent,
+                      color:
+                          isSelected ? AppColors.primary : Colors.transparent,
                     ),
                     child: isSelected
                         ? const Icon(
@@ -259,7 +263,9 @@ class EQTestPage extends ConsumerWidget {
                         fontSize: 16,
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected ? Colors.purple : Colors.black87,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.textPrimary,
                       ),
                     ),
                   ),
@@ -284,7 +290,7 @@ class EQTestPage extends ConsumerWidget {
             const Icon(
               Icons.check_circle_outline,
               size: 80,
-              color: Colors.green,
+              color: AppColors.success,
             ),
             const SizedBox(height: 24),
             const Text(
@@ -328,7 +334,7 @@ class EQTestPage extends ConsumerWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 48,

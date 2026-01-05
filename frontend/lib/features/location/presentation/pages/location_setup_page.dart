@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import '../../providers/location_provider.dart';
 
 class LocationSetupPage extends ConsumerStatefulWidget {
   const LocationSetupPage({super.key});
@@ -11,6 +13,7 @@ class LocationSetupPage extends ConsumerStatefulWidget {
 
 class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
   Position? _currentPosition;
+  String? _currentAddress;
   bool _isLoading = false;
   int _selectedRadius = 10000; // 10km in meters
 
@@ -18,6 +21,11 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+    _loadMyAreas();
+  }
+
+  Future<void> _loadMyAreas() async {
+    await ref.read(locationProvider.notifier).loadMyAreas();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -43,6 +51,22 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
         desiredAccuracy: LocationAccuracy.high,
       );
 
+      // Get address from coordinates
+      try {
+        final placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          setState(() {
+            _currentAddress = '${place.locality}, ${place.administrativeArea}, ${place.country}';
+          });
+        }
+      } catch (e) {
+        debugPrint('Failed to get address: $e');
+      }
+
       setState(() {
         _currentPosition = position;
       });
@@ -59,7 +83,7 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
     }
   }
 
-  void _saveLocation() {
+  Future<void> _saveLocation() async {
     if (_currentPosition == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('먼저 위치를 확인해주세요')),
@@ -67,19 +91,47 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
       return;
     }
 
-    // TODO: Save location to API
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('위치가 저장되었습니다')),
-    );
+    final locationState = ref.read(locationProvider);
+    if (locationState.areas.length >= 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('최대 2개의 지역만 등록할 수 있습니다')),
+      );
+      return;
+    }
+
+    final success = await ref.read(locationProvider.notifier).createArea(
+          latitude: _currentPosition!.latitude,
+          longitude: _currentPosition!.longitude,
+          address: _currentAddress ?? '주소 정보 없음',
+          radius: _selectedRadius,
+          isPrimary: locationState.areas.isEmpty,
+        );
+
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('위치가 저장되었습니다')),
+      );
+      Navigator.of(context).pop();
+    } else if (mounted) {
+      final error = ref.read(locationProvider).error ?? 'Unknown error';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('오류: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final locationState = ref.watch(locationProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('위치 설정'),
       ),
-      body: _isLoading
+      body: _isLoading || locationState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
               padding: const EdgeInsets.all(16),
@@ -108,6 +160,15 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
                         ),
                         const SizedBox(height: 12),
                         if (_currentPosition != null) ...[
+                          if (_currentAddress != null) ...[
+                            Text(
+                              _currentAddress!,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
                           Text(
                             '위도: ${_currentPosition!.latitude.toStringAsFixed(6)}',
                             style: Theme.of(context).textTheme.bodyMedium,

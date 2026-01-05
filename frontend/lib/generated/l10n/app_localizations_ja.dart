@@ -9,7 +9,7 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => '結婚できるはず';
+  String get appTitle => 'TruePair(トゥルーペア)';
 
   @override
   String get appSubtitle => '特別な人との出会い、\n今始めましょう';
@@ -259,6 +259,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get matchingTitle => 'マッチング';
 
   @override
+  String get distance => '距離';
+
+  @override
   String get filters => 'フィルター';
 
   @override
@@ -266,6 +269,30 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get age => '年齢';
+
+  @override
+  String get cm => 'cm';
+
+  @override
+  String get educationHighSchool => '高校';
+
+  @override
+  String get educationCollege => '大学';
+
+  @override
+  String get educationGraduate => '大学院';
+
+  @override
+  String get pass => 'パス';
+
+  @override
+  String get interest => '関心';
+
+  @override
+  String get boost => 'ブースト';
+
+  @override
+  String get swipeHint => '左右にスワイプ';
 
   @override
   String get apply => '適用';
@@ -280,13 +307,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get viewAgain => 'もう一度見る';
 
   @override
-  String get superLike => 'スーパーいいね！';
+  String get superLike => 'ブーストを送りました！';
 
   @override
-  String get likeSent => 'いいねを送りました！';
+  String get likeSent => '関心を送りました';
 
   @override
-  String get nextMatch => '次のマッチングに進みます';
+  String get nextMatch => '次のプロフィールへ';
 
   @override
   String get user => 'ユーザー';
@@ -377,4 +404,381 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get version => 'バージョン';
+
+  @override
+  String get appSettings => 'アプリ設定';
+
+  @override
+  String get subscriptionAndPayment => 'サブスクリプションと決済';
+
+  @override
+  String get support => 'サポート';
+
+  @override
+  String get account => 'アカウント';
+
+  @override
+  String get manageLocations => '活動地域管理';
+
+  @override
+  String get languageSettings => '言語設定';
+
+  @override
+  String get themeSettings => 'テーマ設定';
+
+  @override
+  String get myPasses => '利用券';
+
+  @override
+  String get paymentHistory => '決済履歴';
+
+  @override
+  String get customerSupport => 'カスタマーサポート';
+
+  @override
+  String get languageChanged => '言語が変更されました。';
+
+  @override
+  String get languageKorean => '韓国語';
+
+  @override
+  String get languageJapanese => '日本語';
+
+  @override
+  String get languageEnglish => '英語';
+
+  @override
+  String get themeLight => 'ライトモード';
+
+  @override
+  String get themeDark => 'ダークモード';
+
+  @override
+  String get themeSystem => 'システム設定に従う';
+
+  @override
+  String get navigateToPrivacySettings => 'プライバシー設定画面に移動します。';
+
+  @override
+  String get navigateToNotificationSettings => '通知設定画面に移動します。';
+
+  @override
+  String get navigateToCustomerSupport => 'カスタマーサポート画面に移動します。';
+
+  @override
+  String get navigateToTermsOfService => '利用規約画面に移動します。';
+
+  @override
+  String get navigateToPrivacyPolicy => 'プライバシーポリシー画面に移動します。';
+
+  @override
+  String get aboutDescription => '位置情報を利用した結婚相手マッチングサービス。';
+
+  @override
+  String get aboutLegal => '© 2025 Marriage Matching. All rights reserved.';
+
+  @override
+  String get deleteAccount => 'アカウント削除';
+
+  @override
+  String get deleteAccountConfirm =>
+      'アカウントを削除してもよろしいですか？\n\n削除するとすべてのデータが消去され、復元できません。';
+
+  @override
+  String get deleteAccountCompleted => 'アカウント削除が完了しました。';
+
+  @override
+  String get deleteAccountAction => '削除';
+
+  @override
+  String get logoutConfirm => 'ログアウトしてもよろしいですか？';
+
+  @override
+  String get profileNotFoundMessage => 'まずプロフィールを作成してください。';
+
+  @override
+  String get failedToLoadProfile => 'プロフィールを読み込めませんでした。';
+
+  @override
+  String get notEntered => '未入力';
+
+  @override
+  String get seeLess => '折りたたむ';
+
+  @override
+  String get loginRequired => 'ログインが必要です。';
+
+  @override
+  String get pleaseSelect => '選択してください';
+
+  @override
+  String get pleaseSelectBirthDate => '生年月日を選択してください。';
+
+  @override
+  String pleaseEnterField(String field) {
+    return '$fieldを入力してください';
+  }
+
+  @override
+  String pleaseSelectField(String field) {
+    return '$fieldを選択してください';
+  }
+
+  @override
+  String get residence => '居住地';
+
+  @override
+  String get residenceHint => '例：東京都渋谷区';
+
+  @override
+  String get bodyType => '体型';
+
+  @override
+  String get bodyTypeSlim => 'スリム';
+
+  @override
+  String get bodyTypeAverage => '普通';
+
+  @override
+  String get bodyTypeGlamorous => 'グラマー';
+
+  @override
+  String get bodyTypeMuscular => '筋肉質';
+
+  @override
+  String get bodyTypeChubby => 'ぽっちゃり';
+
+  @override
+  String get marriageIntention => '結婚意向';
+
+  @override
+  String get marriageIntentionActive => '積極的';
+
+  @override
+  String get marriageIntentionYes => '興味あり';
+
+  @override
+  String get marriageIntentionSlow => 'ゆっくり考えたい';
+
+  @override
+  String get marriageIntentionNotSure => 'まだわからない';
+
+  @override
+  String get childrenPlan => '子どもの希望';
+
+  @override
+  String get childrenPlanWant => '欲しい';
+
+  @override
+  String get childrenPlanNo => '欲しくない';
+
+  @override
+  String get childrenPlanUndecided => '未定';
+
+  @override
+  String get childrenPlanDiscuss => '相談して決める';
+
+  @override
+  String get annualIncome => '年収';
+
+  @override
+  String get annualIncomeHint => '例：500万円';
+
+  @override
+  String get marriageTiming => '結婚希望時期';
+
+  @override
+  String get marriageTimingWithin6Months => '6ヶ月以内';
+
+  @override
+  String get marriageTimingWithin1Year => '1年以内';
+
+  @override
+  String get marriageTimingWithin2to3Years => '2〜3年以内';
+
+  @override
+  String get marriageTimingSlowly => 'ゆっくり';
+
+  @override
+  String get marriageTimingUndecided => '未定';
+
+  @override
+  String get dateCostSharing => 'デート費用';
+
+  @override
+  String get dateCostSharingManPays => '男性負担';
+
+  @override
+  String get dateCostSharingWomanPays => '女性負担';
+
+  @override
+  String get dateCostSharingDutch => '割り勘';
+
+  @override
+  String get dateCostSharingAlternate => '交互に負担';
+
+  @override
+  String get dateCostSharingDiscuss => '相談';
+
+  @override
+  String get importantValue => '重視する価値';
+
+  @override
+  String get importantValuePersonality => '性格';
+
+  @override
+  String get importantValueFinancial => '経済力';
+
+  @override
+  String get importantValueAppearance => '外見';
+
+  @override
+  String get importantValueFamily => '家庭環境';
+
+  @override
+  String get importantValueOccupationEducation => '職業・学歴';
+
+  @override
+  String get importantValueValues => '価値観';
+
+  @override
+  String get importantValueReligion => '宗教';
+
+  @override
+  String get houseworkSharing => '家事・育児分担';
+
+  @override
+  String get houseworkSharingEqual => '平等に分担';
+
+  @override
+  String get houseworkSharingFlexible => '柔軟に';
+
+  @override
+  String get houseworkSharingMostlyWoman => '主に女性';
+
+  @override
+  String get houseworkSharingMostlyMan => '主に男性';
+
+  @override
+  String get houseworkSharingDiscuss => '相談';
+
+  @override
+  String get charmPoint => '魅力ポイント';
+
+  @override
+  String get charmPointHint => '例：ユーモア、思いやり';
+
+  @override
+  String get idealPartner => '理想の相手';
+
+  @override
+  String get idealPartnerHint => '求める特徴を書いてください';
+
+  @override
+  String get holidayActivity => '休日の過ごし方';
+
+  @override
+  String get holidayActivityHint => '例：映画、登山、カフェ巡り';
+
+  @override
+  String get occupationOfficeWorker => '会社員';
+
+  @override
+  String get occupationPublicServant => '公務員';
+
+  @override
+  String get occupationSelfEmployed => '自営業';
+
+  @override
+  String get occupationProfessional => '専門職（医師・弁護士など）';
+
+  @override
+  String get occupationDeveloper => '開発者/IT';
+
+  @override
+  String get occupationEducation => '教育/講師';
+
+  @override
+  String get occupationService => 'サービス業';
+
+  @override
+  String get occupationArtDesign => '芸術/デザイン';
+
+  @override
+  String get occupationStudent => '学生';
+
+  @override
+  String get occupationOther => 'その他';
+
+  @override
+  String get educationHighSchoolGraduate => '高校卒業';
+
+  @override
+  String get educationJuniorCollegeGraduate => '短大卒業';
+
+  @override
+  String get educationUniversityGraduate => '大学卒業';
+
+  @override
+  String get educationMasters => '大学院修士';
+
+  @override
+  String get educationPhd => '大学院博士';
+
+  @override
+  String get educationOther => 'その他';
+
+  @override
+  String get profilePhotos => 'プロフィール写真';
+
+  @override
+  String get selectMainPhoto => 'メイン写真を選択してください';
+
+  @override
+  String get selectFromGallery => 'ギャラリーから選択';
+
+  @override
+  String get takePhoto => 'カメラで撮影';
+
+  @override
+  String get selectMultiplePhotos => '複数選択';
+
+  @override
+  String get addPhoto => '写真追加';
+
+  @override
+  String get mainPhoto => 'メイン';
+
+  @override
+  String maxImagesSelectLimit(int max) {
+    return '最大$max枚まで選択できます。';
+  }
+
+  @override
+  String maxImagesSelected(int max) {
+    return '最大$max枚まで選択されました。';
+  }
+
+  @override
+  String imageSelectionFailed(String error) {
+    return '画像の選択に失敗しました: $error';
+  }
+
+  @override
+  String get imageUploadCompleted => '画像をアップロードしました。';
+
+  @override
+  String imagesUploadCompleted(int count) {
+    return '$count枚の画像をアップロードしました。';
+  }
+
+  @override
+  String imageUploadFailed(String error) {
+    return 'アップロードに失敗しました: $error';
+  }
+
+  @override
+  String profilePhotoGuidelines(int max) {
+    return '• 最小1枚、最大$max枚まで登録できます\n• 複数枚登録する場合、メイン写真を選択してください\n• 画像は自動的にアップロードされます';
+  }
 }

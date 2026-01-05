@@ -29,7 +29,7 @@ class GradientButton extends StatelessWidget {
 
     return Container(
       width: width ?? double.infinity,
-      height: height ?? 56,
+      height: height ?? 50,
       decoration: BoxDecoration(
         gradient: isEnabled
             ? (gradient ?? AppColors.primaryGradient)

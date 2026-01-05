@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -30,11 +31,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Welcome Section
-                _buildWelcomeSection(),
-
-                const SizedBox(height: AppTheme.spacingLarge),
-
                 // Quick Actions
                 _buildQuickActions(),
 
@@ -82,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Icon(
-                Icons.favorite,
+                Icons.auto_awesome_rounded,
                 color: AppColors.white,
                 size: 24,
               ),
@@ -110,54 +106,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _buildWelcomeSection() {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFF0F5), Color(0xFFFCE4EC)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-        border:
-            Border.all(color: AppColors.primaryLight.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.hello,
-                      style: AppTextStyles.titleMedium.copyWith(
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.todayMessage,
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildQuickActions() {
     final l10n = AppLocalizations.of(context)!;
 
@@ -169,11 +117,10 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: _QuickActionCard(
               icon: Icons.search_rounded,
               label: l10n.findMatching,
-              gradient: const LinearGradient(
-                colors: [Color(0xFFE91E63), Color(0xFFF06292)],
-              ),
+              accentColor: AppColors.primary,
               onTap: () {
-                // TODO: Navigate to matching
+                // Navigate to matching tab (index 1)
+                DefaultTabController.of(context).animateTo(1);
               },
             ),
           ),
@@ -182,11 +129,11 @@ class _HomePageState extends ConsumerState<HomePage> {
             child: _QuickActionCard(
               icon: Icons.psychology_rounded,
               label: l10n.eqTest,
-              gradient: const LinearGradient(
-                colors: [Color(0xFF9C27B0), Color(0xFFBA68C8)],
-              ),
+              accentColor: AppColors.secondary,
               onTap: () {
-                // TODO: Navigate to EQ test
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('EQ 테스트 화면은 준비 중입니다')),
+                );
               },
             ),
           ),
@@ -224,10 +171,10 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               const SizedBox(width: 12),
               _StatCard(
-                icon: Icons.favorite_rounded,
+                icon: Icons.thumb_up_alt_rounded,
                 label: l10n.likesReceived,
                 value: '8',
-                color: AppColors.error,
+                color: AppColors.primary,
               ),
               const SizedBox(width: 12),
               _StatCard(
@@ -262,7 +209,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
               TextButton(
                 onPressed: () {
-                  // TODO: Navigate to all matches
+                  // Navigate to matching tab
+                  DefaultTabController.of(context).animateTo(1);
                 },
                 child: Text(l10n.seeMore),
               ),
@@ -344,7 +292,9 @@ class _HomePageState extends ConsumerState<HomePage> {
             text: l10n.startTest,
             icon: Icons.arrow_forward_rounded,
             onPressed: () {
-              // TODO: Navigate to EQ test
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('EQ 테스트 화면은 준비 중입니다')),
+              );
             },
           ),
         ],
@@ -356,13 +306,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Gradient gradient;
+  final Color accentColor;
   final VoidCallback onTap;
 
   const _QuickActionCard({
     required this.icon,
     required this.label,
-    required this.gradient,
+    required this.accentColor,
     required this.onTap,
   });
 
@@ -371,32 +321,47 @@ class _QuickActionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: gradient,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: gradient.colors.first.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+              color: AppColors.shadowLight,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           children: [
-            Icon(
-              icon,
-              color: AppColors.white,
-              size: 40,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: AppTextStyles.labelLarge.copyWith(
-                color: AppColors.white,
-                fontWeight: FontWeight.w600,
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: accentColor.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
               ),
+              child: Icon(
+                icon,
+                color: accentColor,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: AppTextStyles.titleSmall.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.arrow_forward_rounded,
+              color: AppColors.textSecondary,
+              size: 18,
             ),
           ],
         ),
@@ -548,7 +513,7 @@ class _MatchCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Icons.favorite,
+                        Icons.auto_awesome_rounded,
                         size: 12,
                         color: AppColors.white,
                       ),

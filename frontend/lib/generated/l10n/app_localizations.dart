@@ -592,6 +592,12 @@ abstract class AppLocalizations {
   /// **'Matching'**
   String get matchingTitle;
 
+  /// No description provided for @distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distance;
+
   /// No description provided for @filters.
   ///
   /// In en, this message translates to:
@@ -609,6 +615,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Age'**
   String get age;
+
+  /// No description provided for @cm.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get cm;
+
+  /// No description provided for @educationHighSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'High School'**
+  String get educationHighSchool;
+
+  /// No description provided for @educationCollege.
+  ///
+  /// In en, this message translates to:
+  /// **'College'**
+  String get educationCollege;
+
+  /// No description provided for @educationGraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'Graduate School'**
+  String get educationGraduate;
+
+  /// No description provided for @pass.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass'**
+  String get pass;
+
+  /// No description provided for @interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest'**
+  String get interest;
+
+  /// No description provided for @boost.
+  ///
+  /// In en, this message translates to:
+  /// **'Boost'**
+  String get boost;
+
+  /// No description provided for @swipeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe to browse'**
+  String get swipeHint;
 
   /// No description provided for @apply.
   ///
@@ -637,19 +691,19 @@ abstract class AppLocalizations {
   /// No description provided for @superLike.
   ///
   /// In en, this message translates to:
-  /// **'Super Like!'**
+  /// **'Boost sent!'**
   String get superLike;
 
   /// No description provided for @likeSent.
   ///
   /// In en, this message translates to:
-  /// **'Like sent!'**
+  /// **'Interest sent'**
   String get likeSent;
 
   /// No description provided for @nextMatch.
   ///
   /// In en, this message translates to:
-  /// **'Moving to next match'**
+  /// **'Moved to next profile'**
   String get nextMatch;
 
   /// No description provided for @user.
@@ -819,6 +873,726 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version'**
   String get version;
+
+  /// No description provided for @appSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'App Settings'**
+  String get appSettings;
+
+  /// No description provided for @subscriptionAndPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions & Payments'**
+  String get subscriptionAndPayment;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @manageLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Locations'**
+  String get manageLocations;
+
+  /// No description provided for @languageSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Language Settings'**
+  String get languageSettings;
+
+  /// No description provided for @themeSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme Settings'**
+  String get themeSettings;
+
+  /// No description provided for @myPasses.
+  ///
+  /// In en, this message translates to:
+  /// **'My Passes'**
+  String get myPasses;
+
+  /// No description provided for @paymentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment History'**
+  String get paymentHistory;
+
+  /// No description provided for @customerSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Support'**
+  String get customerSupport;
+
+  /// No description provided for @languageChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Language has been changed.'**
+  String get languageChanged;
+
+  /// No description provided for @languageKorean.
+  ///
+  /// In en, this message translates to:
+  /// **'Korean'**
+  String get languageKorean;
+
+  /// No description provided for @languageJapanese.
+  ///
+  /// In en, this message translates to:
+  /// **'Japanese'**
+  String get languageJapanese;
+
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Mode'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow System'**
+  String get themeSystem;
+
+  /// No description provided for @navigateToPrivacySettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to privacy settings screen.'**
+  String get navigateToPrivacySettings;
+
+  /// No description provided for @navigateToNotificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to notification settings screen.'**
+  String get navigateToNotificationSettings;
+
+  /// No description provided for @navigateToCustomerSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to customer support screen.'**
+  String get navigateToCustomerSupport;
+
+  /// No description provided for @navigateToTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to terms of service screen.'**
+  String get navigateToTermsOfService;
+
+  /// No description provided for @navigateToPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to privacy policy screen.'**
+  String get navigateToPrivacyPolicy;
+
+  /// No description provided for @aboutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Location-based matchmaking service for marriage.'**
+  String get aboutDescription;
+
+  /// No description provided for @aboutLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2025 Marriage Matching. All rights reserved.'**
+  String get aboutLegal;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account?\n\nAll data will be deleted and cannot be recovered.'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion has been processed.'**
+  String get deleteAccountCompleted;
+
+  /// No description provided for @deleteAccountAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAccountAction;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get logoutConfirm;
+
+  /// No description provided for @profileNotFoundMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Please create your profile first.'**
+  String get profileNotFoundMessage;
+
+  /// No description provided for @failedToLoadProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load profile.'**
+  String get failedToLoadProfile;
+
+  /// No description provided for @notEntered.
+  ///
+  /// In en, this message translates to:
+  /// **'Not provided'**
+  String get notEntered;
+
+  /// No description provided for @seeLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get seeLess;
+
+  /// No description provided for @loginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Login is required.'**
+  String get loginRequired;
+
+  /// No description provided for @pleaseSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select'**
+  String get pleaseSelect;
+
+  /// No description provided for @pleaseSelectBirthDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select your birth date.'**
+  String get pleaseSelectBirthDate;
+
+  /// No description provided for @pleaseEnterField.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter {field}.'**
+  String pleaseEnterField(String field);
+
+  /// No description provided for @pleaseSelectField.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select {field}.'**
+  String pleaseSelectField(String field);
+
+  /// No description provided for @residence.
+  ///
+  /// In en, this message translates to:
+  /// **'Residence'**
+  String get residence;
+
+  /// No description provided for @residenceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Gangnam-gu, Seoul'**
+  String get residenceHint;
+
+  /// No description provided for @bodyType.
+  ///
+  /// In en, this message translates to:
+  /// **'Body type'**
+  String get bodyType;
+
+  /// No description provided for @bodyTypeSlim.
+  ///
+  /// In en, this message translates to:
+  /// **'Slim'**
+  String get bodyTypeSlim;
+
+  /// No description provided for @bodyTypeAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Average'**
+  String get bodyTypeAverage;
+
+  /// No description provided for @bodyTypeGlamorous.
+  ///
+  /// In en, this message translates to:
+  /// **'Curvy'**
+  String get bodyTypeGlamorous;
+
+  /// No description provided for @bodyTypeMuscular.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscular'**
+  String get bodyTypeMuscular;
+
+  /// No description provided for @bodyTypeChubby.
+  ///
+  /// In en, this message translates to:
+  /// **'Chubby'**
+  String get bodyTypeChubby;
+
+  /// No description provided for @marriageIntention.
+  ///
+  /// In en, this message translates to:
+  /// **'Marriage intention'**
+  String get marriageIntention;
+
+  /// No description provided for @marriageIntentionActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Very interested'**
+  String get marriageIntentionActive;
+
+  /// No description provided for @marriageIntentionYes.
+  ///
+  /// In en, this message translates to:
+  /// **'Interested'**
+  String get marriageIntentionYes;
+
+  /// No description provided for @marriageIntentionSlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking slowly'**
+  String get marriageIntentionSlow;
+
+  /// No description provided for @marriageIntentionNotSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure yet'**
+  String get marriageIntentionNotSure;
+
+  /// No description provided for @childrenPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Children plan'**
+  String get childrenPlan;
+
+  /// No description provided for @childrenPlanWant.
+  ///
+  /// In en, this message translates to:
+  /// **'Want'**
+  String get childrenPlanWant;
+
+  /// No description provided for @childrenPlanNo.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t want'**
+  String get childrenPlanNo;
+
+  /// No description provided for @childrenPlanUndecided.
+  ///
+  /// In en, this message translates to:
+  /// **'Undecided'**
+  String get childrenPlanUndecided;
+
+  /// No description provided for @childrenPlanDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Decide after discussion'**
+  String get childrenPlanDiscuss;
+
+  /// No description provided for @annualIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual income'**
+  String get annualIncome;
+
+  /// No description provided for @annualIncomeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 50,000,000 KRW'**
+  String get annualIncomeHint;
+
+  /// No description provided for @marriageTiming.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred marriage timing'**
+  String get marriageTiming;
+
+  /// No description provided for @marriageTimingWithin6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 6 months'**
+  String get marriageTimingWithin6Months;
+
+  /// No description provided for @marriageTimingWithin1Year.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 1 year'**
+  String get marriageTimingWithin1Year;
+
+  /// No description provided for @marriageTimingWithin2to3Years.
+  ///
+  /// In en, this message translates to:
+  /// **'Within 2–3 years'**
+  String get marriageTimingWithin2to3Years;
+
+  /// No description provided for @marriageTimingSlowly.
+  ///
+  /// In en, this message translates to:
+  /// **'Slowly'**
+  String get marriageTimingSlowly;
+
+  /// No description provided for @marriageTimingUndecided.
+  ///
+  /// In en, this message translates to:
+  /// **'Undecided'**
+  String get marriageTimingUndecided;
+
+  /// No description provided for @dateCostSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Date cost sharing'**
+  String get dateCostSharing;
+
+  /// No description provided for @dateCostSharingManPays.
+  ///
+  /// In en, this message translates to:
+  /// **'Man pays'**
+  String get dateCostSharingManPays;
+
+  /// No description provided for @dateCostSharingWomanPays.
+  ///
+  /// In en, this message translates to:
+  /// **'Woman pays'**
+  String get dateCostSharingWomanPays;
+
+  /// No description provided for @dateCostSharingDutch.
+  ///
+  /// In en, this message translates to:
+  /// **'Split the bill'**
+  String get dateCostSharingDutch;
+
+  /// No description provided for @dateCostSharingAlternate.
+  ///
+  /// In en, this message translates to:
+  /// **'Take turns'**
+  String get dateCostSharingAlternate;
+
+  /// No description provided for @dateCostSharingDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Discuss'**
+  String get dateCostSharingDiscuss;
+
+  /// No description provided for @importantValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Most important value'**
+  String get importantValue;
+
+  /// No description provided for @importantValuePersonality.
+  ///
+  /// In en, this message translates to:
+  /// **'Personality'**
+  String get importantValuePersonality;
+
+  /// No description provided for @importantValueFinancial.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial status'**
+  String get importantValueFinancial;
+
+  /// No description provided for @importantValueAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get importantValueAppearance;
+
+  /// No description provided for @importantValueFamily.
+  ///
+  /// In en, this message translates to:
+  /// **'Family background'**
+  String get importantValueFamily;
+
+  /// No description provided for @importantValueOccupationEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupation / education'**
+  String get importantValueOccupationEducation;
+
+  /// No description provided for @importantValueValues.
+  ///
+  /// In en, this message translates to:
+  /// **'Values'**
+  String get importantValueValues;
+
+  /// No description provided for @importantValueReligion.
+  ///
+  /// In en, this message translates to:
+  /// **'Religion'**
+  String get importantValueReligion;
+
+  /// No description provided for @houseworkSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Housework & childcare'**
+  String get houseworkSharing;
+
+  /// No description provided for @houseworkSharingEqual.
+  ///
+  /// In en, this message translates to:
+  /// **'Share equally'**
+  String get houseworkSharingEqual;
+
+  /// No description provided for @houseworkSharingFlexible.
+  ///
+  /// In en, this message translates to:
+  /// **'Be flexible'**
+  String get houseworkSharingFlexible;
+
+  /// No description provided for @houseworkSharingMostlyWoman.
+  ///
+  /// In en, this message translates to:
+  /// **'Mostly woman'**
+  String get houseworkSharingMostlyWoman;
+
+  /// No description provided for @houseworkSharingMostlyMan.
+  ///
+  /// In en, this message translates to:
+  /// **'Mostly man'**
+  String get houseworkSharingMostlyMan;
+
+  /// No description provided for @houseworkSharingDiscuss.
+  ///
+  /// In en, this message translates to:
+  /// **'Discuss'**
+  String get houseworkSharingDiscuss;
+
+  /// No description provided for @charmPoint.
+  ///
+  /// In en, this message translates to:
+  /// **'Charm point'**
+  String get charmPoint;
+
+  /// No description provided for @charmPointHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Humor, consideration'**
+  String get charmPointHint;
+
+  /// No description provided for @idealPartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Ideal partner'**
+  String get idealPartner;
+
+  /// No description provided for @idealPartnerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Describe what you\'re looking for'**
+  String get idealPartnerHint;
+
+  /// No description provided for @holidayActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Holiday activity'**
+  String get holidayActivity;
+
+  /// No description provided for @holidayActivityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Movies, hiking, cafe tours'**
+  String get holidayActivityHint;
+
+  /// No description provided for @occupationOfficeWorker.
+  ///
+  /// In en, this message translates to:
+  /// **'Office worker'**
+  String get occupationOfficeWorker;
+
+  /// No description provided for @occupationPublicServant.
+  ///
+  /// In en, this message translates to:
+  /// **'Public servant'**
+  String get occupationPublicServant;
+
+  /// No description provided for @occupationSelfEmployed.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-employed'**
+  String get occupationSelfEmployed;
+
+  /// No description provided for @occupationProfessional.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional (doctor, lawyer, etc.)'**
+  String get occupationProfessional;
+
+  /// No description provided for @occupationDeveloper.
+  ///
+  /// In en, this message translates to:
+  /// **'Developer / IT'**
+  String get occupationDeveloper;
+
+  /// No description provided for @occupationEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education / instructor'**
+  String get occupationEducation;
+
+  /// No description provided for @occupationService.
+  ///
+  /// In en, this message translates to:
+  /// **'Service industry'**
+  String get occupationService;
+
+  /// No description provided for @occupationArtDesign.
+  ///
+  /// In en, this message translates to:
+  /// **'Art / design'**
+  String get occupationArtDesign;
+
+  /// No description provided for @occupationStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Student'**
+  String get occupationStudent;
+
+  /// No description provided for @occupationOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get occupationOther;
+
+  /// No description provided for @educationHighSchoolGraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'High school graduate'**
+  String get educationHighSchoolGraduate;
+
+  /// No description provided for @educationJuniorCollegeGraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'Junior college graduate'**
+  String get educationJuniorCollegeGraduate;
+
+  /// No description provided for @educationUniversityGraduate.
+  ///
+  /// In en, this message translates to:
+  /// **'University graduate'**
+  String get educationUniversityGraduate;
+
+  /// No description provided for @educationMasters.
+  ///
+  /// In en, this message translates to:
+  /// **'Master\'s degree'**
+  String get educationMasters;
+
+  /// No description provided for @educationPhd.
+  ///
+  /// In en, this message translates to:
+  /// **'PhD'**
+  String get educationPhd;
+
+  /// No description provided for @educationOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get educationOther;
+
+  /// No description provided for @profilePhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile photos'**
+  String get profilePhotos;
+
+  /// No description provided for @selectMainPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a main photo'**
+  String get selectMainPhoto;
+
+  /// No description provided for @selectFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get selectFromGallery;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @selectMultiplePhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose multiple photos'**
+  String get selectMultiplePhotos;
+
+  /// No description provided for @addPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photo'**
+  String get addPhoto;
+
+  /// No description provided for @mainPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Main'**
+  String get mainPhoto;
+
+  /// No description provided for @maxImagesSelectLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select up to {max} images.'**
+  String maxImagesSelectLimit(int max);
+
+  /// No description provided for @maxImagesSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected up to {max} images.'**
+  String maxImagesSelected(int max);
+
+  /// No description provided for @imageSelectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Image selection failed: {error}'**
+  String imageSelectionFailed(String error);
+
+  /// No description provided for @imageUploadCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Image uploaded.'**
+  String get imageUploadCompleted;
+
+  /// No description provided for @imagesUploadCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} images uploaded.'**
+  String imagesUploadCompleted(int count);
+
+  /// No description provided for @imageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload failed: {error}'**
+  String imageUploadFailed(String error);
+
+  /// No description provided for @profilePhotoGuidelines.
+  ///
+  /// In en, this message translates to:
+  /// **'• Minimum 1, maximum {max} images can be registered\n• If you add multiple, please select a main photo\n• Images are uploaded automatically'**
+  String profilePhotoGuidelines(int max);
 }
 
 class _AppLocalizationsDelegate

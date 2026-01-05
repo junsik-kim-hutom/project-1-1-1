@@ -260,6 +260,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get matchingTitle => '매칭';
 
   @override
+  String get distance => '거리';
+
+  @override
   String get filters => '필터';
 
   @override
@@ -267,6 +270,30 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get age => '나이';
+
+  @override
+  String get cm => 'cm';
+
+  @override
+  String get educationHighSchool => '고등학교';
+
+  @override
+  String get educationCollege => '대학교';
+
+  @override
+  String get educationGraduate => '대학원';
+
+  @override
+  String get pass => '패스';
+
+  @override
+  String get interest => '관심';
+
+  @override
+  String get boost => '부스트';
+
+  @override
+  String get swipeHint => '좌우로 스와이프';
 
   @override
   String get apply => '적용';
@@ -281,13 +308,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get viewAgain => '다시 보기';
 
   @override
-  String get superLike => '슈퍼 좋아요!';
+  String get superLike => '부스트를 보냈어요!';
 
   @override
-  String get likeSent => '좋아요를 보냈습니다!';
+  String get likeSent => '관심을 보냈어요';
 
   @override
-  String get nextMatch => '다음 매칭으로 넘어갑니다';
+  String get nextMatch => '다음 프로필로 넘겼어요';
 
   @override
   String get user => '사용자';
@@ -378,4 +405,381 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get version => '버전';
+
+  @override
+  String get appSettings => '앱 설정';
+
+  @override
+  String get subscriptionAndPayment => '구독 및 결제';
+
+  @override
+  String get support => '지원';
+
+  @override
+  String get account => '계정';
+
+  @override
+  String get manageLocations => '활동 지역 관리';
+
+  @override
+  String get languageSettings => '언어 설정';
+
+  @override
+  String get themeSettings => '테마 설정';
+
+  @override
+  String get myPasses => '나의 이용권';
+
+  @override
+  String get paymentHistory => '결제 내역';
+
+  @override
+  String get customerSupport => '고객 지원';
+
+  @override
+  String get languageChanged => '언어가 변경되었습니다';
+
+  @override
+  String get languageKorean => '한국어';
+
+  @override
+  String get languageJapanese => '일본어';
+
+  @override
+  String get languageEnglish => '영어';
+
+  @override
+  String get themeLight => '라이트 모드';
+
+  @override
+  String get themeDark => '다크 모드';
+
+  @override
+  String get themeSystem => '시스템 설정 따르기';
+
+  @override
+  String get navigateToPrivacySettings => '개인정보 설정 화면으로 이동';
+
+  @override
+  String get navigateToNotificationSettings => '알림 설정 화면으로 이동';
+
+  @override
+  String get navigateToCustomerSupport => '고객 지원 화면으로 이동';
+
+  @override
+  String get navigateToTermsOfService => '이용 약관 화면으로 이동';
+
+  @override
+  String get navigateToPrivacyPolicy => '개인정보 처리방침 화면으로 이동';
+
+  @override
+  String get aboutDescription => '위치 기반 결혼 상대 매칭 서비스';
+
+  @override
+  String get aboutLegal => '© 2025 Marriage Matching. All rights reserved.';
+
+  @override
+  String get deleteAccount => '회원 탈퇴';
+
+  @override
+  String get deleteAccountConfirm =>
+      '정말로 회원 탈퇴를 하시겠습니까?\n\n탈퇴 시 모든 데이터가 삭제되며, 복구할 수 없습니다.';
+
+  @override
+  String get deleteAccountCompleted => '회원 탈퇴가 처리되었습니다';
+
+  @override
+  String get deleteAccountAction => '탈퇴';
+
+  @override
+  String get logoutConfirm => '정말 로그아웃 하시겠습니까?';
+
+  @override
+  String get profileNotFoundMessage => '프로필을 먼저 등록해 주세요.';
+
+  @override
+  String get failedToLoadProfile => '프로필을 불러오지 못했습니다.';
+
+  @override
+  String get notEntered => '미입력';
+
+  @override
+  String get seeLess => '접기';
+
+  @override
+  String get loginRequired => '로그인이 필요합니다.';
+
+  @override
+  String get pleaseSelect => '선택해주세요';
+
+  @override
+  String get pleaseSelectBirthDate => '생년월일을 선택해주세요.';
+
+  @override
+  String pleaseEnterField(String field) {
+    return '$field 입력해주세요';
+  }
+
+  @override
+  String pleaseSelectField(String field) {
+    return '$field 선택해주세요';
+  }
+
+  @override
+  String get residence => '거주지';
+
+  @override
+  String get residenceHint => '예: 서울 강남구';
+
+  @override
+  String get bodyType => '몸매';
+
+  @override
+  String get bodyTypeSlim => '슬림';
+
+  @override
+  String get bodyTypeAverage => '보통';
+
+  @override
+  String get bodyTypeGlamorous => '글래머러스';
+
+  @override
+  String get bodyTypeMuscular => '근육질';
+
+  @override
+  String get bodyTypeChubby => '통통';
+
+  @override
+  String get marriageIntention => '결혼 의향';
+
+  @override
+  String get marriageIntentionActive => '적극적';
+
+  @override
+  String get marriageIntentionYes => '있음';
+
+  @override
+  String get marriageIntentionSlow => '천천히 생각 중';
+
+  @override
+  String get marriageIntentionNotSure => '아직 모름';
+
+  @override
+  String get childrenPlan => '자녀 계획';
+
+  @override
+  String get childrenPlanWant => '원함';
+
+  @override
+  String get childrenPlanNo => '원하지 않음';
+
+  @override
+  String get childrenPlanUndecided => '미정';
+
+  @override
+  String get childrenPlanDiscuss => '상의 후 결정';
+
+  @override
+  String get annualIncome => '연 수입';
+
+  @override
+  String get annualIncomeHint => '예: 5000만원';
+
+  @override
+  String get marriageTiming => '결혼 시기 희망';
+
+  @override
+  String get marriageTimingWithin6Months => '6개월 이내';
+
+  @override
+  String get marriageTimingWithin1Year => '1년 이내';
+
+  @override
+  String get marriageTimingWithin2to3Years => '2-3년 이내';
+
+  @override
+  String get marriageTimingSlowly => '천천히';
+
+  @override
+  String get marriageTimingUndecided => '미정';
+
+  @override
+  String get dateCostSharing => '데이트 비용 부담';
+
+  @override
+  String get dateCostSharingManPays => '남성 부담';
+
+  @override
+  String get dateCostSharingWomanPays => '여성 부담';
+
+  @override
+  String get dateCostSharingDutch => '더치페이';
+
+  @override
+  String get dateCostSharingAlternate => '번갈아 부담';
+
+  @override
+  String get dateCostSharingDiscuss => '협의';
+
+  @override
+  String get importantValue => '배우자 선택 시 중시하는 가치';
+
+  @override
+  String get importantValuePersonality => '성격/인성';
+
+  @override
+  String get importantValueFinancial => '경제력';
+
+  @override
+  String get importantValueAppearance => '외모';
+
+  @override
+  String get importantValueFamily => '가정환경';
+
+  @override
+  String get importantValueOccupationEducation => '직업/학벌';
+
+  @override
+  String get importantValueValues => '가치관';
+
+  @override
+  String get importantValueReligion => '종교';
+
+  @override
+  String get houseworkSharing => '가사·육아 분담';
+
+  @override
+  String get houseworkSharingEqual => '평등 분담';
+
+  @override
+  String get houseworkSharingFlexible => '유연하게';
+
+  @override
+  String get houseworkSharingMostlyWoman => '주로 여성';
+
+  @override
+  String get houseworkSharingMostlyMan => '주로 남성';
+
+  @override
+  String get houseworkSharingDiscuss => '협의';
+
+  @override
+  String get charmPoint => '매력 포인트';
+
+  @override
+  String get charmPointHint => '예: 유머 감각, 배려심 등';
+
+  @override
+  String get idealPartner => '이상적인 상대';
+
+  @override
+  String get idealPartnerHint => '원하는 상대의 특징을 적어주세요';
+
+  @override
+  String get holidayActivity => '휴일 활동';
+
+  @override
+  String get holidayActivityHint => '예: 영화 감상, 등산, 카페 투어 등';
+
+  @override
+  String get occupationOfficeWorker => '회사원';
+
+  @override
+  String get occupationPublicServant => '공무원';
+
+  @override
+  String get occupationSelfEmployed => '자영업';
+
+  @override
+  String get occupationProfessional => '전문직 (의사, 변호사 등)';
+
+  @override
+  String get occupationDeveloper => '개발자/IT';
+
+  @override
+  String get occupationEducation => '교육/강사';
+
+  @override
+  String get occupationService => '서비스업';
+
+  @override
+  String get occupationArtDesign => '예술/디자인';
+
+  @override
+  String get occupationStudent => '학생';
+
+  @override
+  String get occupationOther => '기타';
+
+  @override
+  String get educationHighSchoolGraduate => '고등학교 졸업';
+
+  @override
+  String get educationJuniorCollegeGraduate => '전문대 졸업';
+
+  @override
+  String get educationUniversityGraduate => '대학교 졸업';
+
+  @override
+  String get educationMasters => '대학원 석사';
+
+  @override
+  String get educationPhd => '대학원 박사';
+
+  @override
+  String get educationOther => '기타';
+
+  @override
+  String get profilePhotos => '프로필 사진';
+
+  @override
+  String get selectMainPhoto => '대표 사진을 선택해주세요';
+
+  @override
+  String get selectFromGallery => '갤러리에서 선택';
+
+  @override
+  String get takePhoto => '카메라로 촬영';
+
+  @override
+  String get selectMultiplePhotos => '여러 장 선택';
+
+  @override
+  String get addPhoto => '사진 추가';
+
+  @override
+  String get mainPhoto => '대표';
+
+  @override
+  String maxImagesSelectLimit(int max) {
+    return '최대 $max장까지만 선택할 수 있습니다';
+  }
+
+  @override
+  String maxImagesSelected(int max) {
+    return '최대 $max장까지만 선택되었습니다';
+  }
+
+  @override
+  String imageSelectionFailed(String error) {
+    return '이미지 선택 실패: $error';
+  }
+
+  @override
+  String get imageUploadCompleted => '이미지 업로드 완료';
+
+  @override
+  String imagesUploadCompleted(int count) {
+    return '$count개 이미지 업로드 완료';
+  }
+
+  @override
+  String imageUploadFailed(String error) {
+    return '업로드 실패: $error';
+  }
+
+  @override
+  String profilePhotoGuidelines(int max) {
+    return '• 최소 1장, 최대 $max장까지 등록 가능합니다\n• 여러 장 등록 시 대표 사진을 선택해주세요\n• 이미지는 자동으로 서버에 업로드됩니다';
+  }
 }

@@ -27,6 +27,7 @@ export interface LoginResponseDto {
   accessToken: string;
   refreshToken: string;
   isNewUser: boolean;
+  hasProfile: boolean;
 }
 
 /**

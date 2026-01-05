@@ -98,17 +98,26 @@
   },
 
   "matchingTitle": "Matching",
+  "distance": "Distance",
   "filters": "Filters",
   "settings": "Settings",
   "filterSettings": "Filter Settings",
   "age": "Age",
+  "cm": "cm",
+  "educationHighSchool": "High School",
+  "educationCollege": "College",
+  "educationGraduate": "Graduate School",
+  "pass": "Pass",
+  "interest": "Interest",
+  "boost": "Boost",
+  "swipeHint": "Swipe to browse",
   "apply": "Apply",
   "allMatchesViewed": "You've viewed all matches",
   "findingNewMatches": "Finding new matches",
   "viewAgain": "View Again",
-  "superLike": "Super Like!",
-  "likeSent": "Like sent!",
-  "nextMatch": "Moving to next match",
+  "superLike": "Boost sent!",
+  "likeSent": "Interest sent",
+  "nextMatch": "Moved to next profile",
   "user": "User",
   "developer": "Developer",
   "designer": "Designer",
@@ -160,5 +169,186 @@
   "notificationSettings": "Notification Settings",
   "help": "Help",
   "aboutApp": "About App",
-  "version": "Version"
+  "version": "Version",
+  "appSettings": "App Settings",
+  "subscriptionAndPayment": "Subscriptions & Payments",
+  "support": "Support",
+  "account": "Account",
+  "manageLocations": "Manage Locations",
+  "languageSettings": "Language Settings",
+  "themeSettings": "Theme Settings",
+  "myPasses": "My Passes",
+  "paymentHistory": "Payment History",
+  "customerSupport": "Customer Support",
+  "languageChanged": "Language has been changed.",
+  "languageKorean": "Korean",
+  "languageJapanese": "Japanese",
+  "languageEnglish": "English",
+  "themeLight": "Light Mode",
+  "themeDark": "Dark Mode",
+  "themeSystem": "Follow System",
+  "navigateToPrivacySettings": "Go to privacy settings screen.",
+  "navigateToNotificationSettings": "Go to notification settings screen.",
+  "navigateToCustomerSupport": "Go to customer support screen.",
+  "navigateToTermsOfService": "Go to terms of service screen.",
+  "navigateToPrivacyPolicy": "Go to privacy policy screen.",
+  "aboutDescription": "Location-based matchmaking service for marriage.",
+  "aboutLegal": "© 2025 Marriage Matching. All rights reserved.",
+  "deleteAccount": "Delete Account",
+  "deleteAccountConfirm": "Are you sure you want to delete your account?\n\nAll data will be deleted and cannot be recovered.",
+  "deleteAccountCompleted": "Account deletion has been processed.",
+  "deleteAccountAction": "Delete",
+  "logoutConfirm": "Are you sure you want to log out?",
+
+  "profileNotFoundMessage": "Please create your profile first.",
+  "failedToLoadProfile": "Failed to load profile.",
+  "notEntered": "Not provided",
+  "seeLess": "Show less",
+  "loginRequired": "Login is required.",
+  "pleaseSelect": "Please select",
+  "pleaseSelectBirthDate": "Please select your birth date.",
+  "pleaseEnterField": "Please enter {field}.",
+  "@pleaseEnterField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectField": "Please select {field}.",
+  "@pleaseSelectField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+
+  "residence": "Residence",
+  "residenceHint": "e.g. Gangnam-gu, Seoul",
+  "bodyType": "Body type",
+  "bodyTypeSlim": "Slim",
+  "bodyTypeAverage": "Average",
+  "bodyTypeGlamorous": "Curvy",
+  "bodyTypeMuscular": "Muscular",
+  "bodyTypeChubby": "Chubby",
+  "marriageIntention": "Marriage intention",
+  "marriageIntentionActive": "Very interested",
+  "marriageIntentionYes": "Interested",
+  "marriageIntentionSlow": "Thinking slowly",
+  "marriageIntentionNotSure": "Not sure yet",
+  "childrenPlan": "Children plan",
+  "childrenPlanWant": "Want",
+  "childrenPlanNo": "Don't want",
+  "childrenPlanUndecided": "Undecided",
+  "childrenPlanDiscuss": "Decide after discussion",
+  "annualIncome": "Annual income",
+  "annualIncomeHint": "e.g. 50,000,000 KRW",
+  "marriageTiming": "Preferred marriage timing",
+  "marriageTimingWithin6Months": "Within 6 months",
+  "marriageTimingWithin1Year": "Within 1 year",
+  "marriageTimingWithin2to3Years": "Within 2–3 years",
+  "marriageTimingSlowly": "Slowly",
+  "marriageTimingUndecided": "Undecided",
+  "dateCostSharing": "Date cost sharing",
+  "dateCostSharingManPays": "Man pays",
+  "dateCostSharingWomanPays": "Woman pays",
+  "dateCostSharingDutch": "Split the bill",
+  "dateCostSharingAlternate": "Take turns",
+  "dateCostSharingDiscuss": "Discuss",
+  "importantValue": "Most important value",
+  "importantValuePersonality": "Personality",
+  "importantValueFinancial": "Financial status",
+  "importantValueAppearance": "Appearance",
+  "importantValueFamily": "Family background",
+  "importantValueOccupationEducation": "Occupation / education",
+  "importantValueValues": "Values",
+  "importantValueReligion": "Religion",
+  "houseworkSharing": "Housework & childcare",
+  "houseworkSharingEqual": "Share equally",
+  "houseworkSharingFlexible": "Be flexible",
+  "houseworkSharingMostlyWoman": "Mostly woman",
+  "houseworkSharingMostlyMan": "Mostly man",
+  "houseworkSharingDiscuss": "Discuss",
+  "charmPoint": "Charm point",
+  "charmPointHint": "e.g. Humor, consideration",
+  "idealPartner": "Ideal partner",
+  "idealPartnerHint": "Describe what you're looking for",
+  "holidayActivity": "Holiday activity",
+  "holidayActivityHint": "e.g. Movies, hiking, cafe tours",
+
+  "occupationOfficeWorker": "Office worker",
+  "occupationPublicServant": "Public servant",
+  "occupationSelfEmployed": "Self-employed",
+  "occupationProfessional": "Professional (doctor, lawyer, etc.)",
+  "occupationDeveloper": "Developer / IT",
+  "occupationEducation": "Education / instructor",
+  "occupationService": "Service industry",
+  "occupationArtDesign": "Art / design",
+  "occupationStudent": "Student",
+  "occupationOther": "Other",
+
+  "educationHighSchoolGraduate": "High school graduate",
+  "educationJuniorCollegeGraduate": "Junior college graduate",
+  "educationUniversityGraduate": "University graduate",
+  "educationMasters": "Master's degree",
+  "educationPhd": "PhD",
+  "educationOther": "Other",
+
+  "profilePhotos": "Profile photos",
+  "selectMainPhoto": "Please select a main photo",
+  "selectFromGallery": "Choose from gallery",
+  "takePhoto": "Take a photo",
+  "selectMultiplePhotos": "Choose multiple photos",
+  "addPhoto": "Add photo",
+  "mainPhoto": "Main",
+  "maxImagesSelectLimit": "You can select up to {max} images.",
+  "@maxImagesSelectLimit": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "maxImagesSelected": "Selected up to {max} images.",
+  "@maxImagesSelected": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "imageSelectionFailed": "Image selection failed: {error}",
+  "@imageSelectionFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "imageUploadCompleted": "Image uploaded.",
+  "imagesUploadCompleted": "{count} images uploaded.",
+  "@imagesUploadCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "imageUploadFailed": "Upload failed: {error}",
+  "@imageUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profilePhotoGuidelines": "• Minimum 1, maximum {max} images can be registered\n• If you add multiple, please select a main photo\n• Images are uploaded automatically",
+  "@profilePhotoGuidelines": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  }
 }

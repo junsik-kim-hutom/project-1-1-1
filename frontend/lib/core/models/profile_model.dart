@@ -11,6 +11,9 @@ class ProfileModel {
   /// 사용자 ID
   final String userId;
 
+  /// 표시 이름
+  final String displayName;
+
   /// 성별 (MALE, FEMALE, OTHER)
   final String gender;
 
@@ -65,6 +68,7 @@ class ProfileModel {
   ProfileModel({
     required this.id,
     required this.userId,
+    required this.displayName,
     required this.gender,
     required this.birthDate,
     this.age,
@@ -86,9 +90,15 @@ class ProfileModel {
 
   /// JSON → Model
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    final interestsData = json['interests'];
+    final interests = interestsData is List
+        ? interestsData.map((e) => e.toString()).toList()
+        : <String>[];
+
     return ProfileModel(
       id: json['id'] as String,
       userId: json['userId'] as String,
+      displayName: json['displayName'] as String? ?? '',
       gender: json['gender'] as String,
       birthDate: DateTime.parse(json['birthDate'] as String),
       age: json['age'] as int?,
@@ -98,8 +108,8 @@ class ProfileModel {
       income: json['income'] as String?,
       smoking: json['smoking'] as String?,
       drinking: json['drinking'] as String?,
-      bio: json['bio'] as String,
-      interests: (json['interests'] as List).map((e) => e as String).toList(),
+      bio: json['bio'] as String? ?? '',
+      interests: interests,
       images: json['images'] != null
           ? (json['images'] as List)
               .map((e) => ProfileImageModel.fromJson(e as Map<String, dynamic>))
@@ -119,6 +129,7 @@ class ProfileModel {
   Map<String, dynamic> toJson() => {
         'id': id,
         'userId': userId,
+        'displayName': displayName,
         'gender': gender,
         'birthDate': birthDate.toIso8601String(),
         'age': age,
@@ -236,6 +247,7 @@ class ProfileModel {
   ProfileModel copyWith({
     String? id,
     String? userId,
+    String? displayName,
     String? gender,
     DateTime? birthDate,
     int? age,
@@ -257,6 +269,7 @@ class ProfileModel {
     return ProfileModel(
       id: id ?? this.id,
       userId: userId ?? this.userId,
+      displayName: displayName ?? this.displayName,
       gender: gender ?? this.gender,
       birthDate: birthDate ?? this.birthDate,
       age: age ?? this.age,
