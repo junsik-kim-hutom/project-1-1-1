@@ -114,7 +114,7 @@ class _ActionButton extends StatelessWidget {
           boxShadow: hasShadow
               ? [
                   BoxShadow(
-                    color: color.withOpacity(0.3),
+                    color: color.withValues(alpha: 0.3),
                     blurRadius: 15,
                     offset: const Offset(0, 5),
                   )
@@ -127,7 +127,7 @@ class _ActionButton extends StatelessWidget {
                   )
                 ],
           border: Border.all(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             width: 1,
           ),
         ),

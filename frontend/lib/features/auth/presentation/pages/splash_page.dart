@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/logger.dart';
 import '../../providers/auth_provider.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -39,34 +40,37 @@ class _SplashPageState extends ConsumerState<SplashPage>
   }
 
   Future<void> _checkAuthStatus() async {
-    print('[SPLASH] Starting auth check');
+    logger.i('[SPLASH] Starting auth check');
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
-      print('[SPLASH] Calling checkAuthStatus');
+      logger.d('[SPLASH] Calling checkAuthStatus');
       await ref.read(authProvider.notifier).checkAuthStatus();
       final authState = ref.read(authProvider);
 
-      print('[SPLASH] Auth state - isAuthenticated: ${authState.isAuthenticated}, hasProfile: ${authState.hasProfile}');
+      logger.d(
+          '[SPLASH] Auth state - isAuthenticated: ${authState.isAuthenticated}, hasProfile: ${authState.hasProfile}');
 
       if (mounted) {
         if (authState.isAuthenticated) {
           // Check if user has profile
           if (authState.hasProfile == null) {
             // Profile status unknown - need to check from backend
-            print('[SPLASH] hasProfile is null, redirecting to profile/create to be safe');
+            logger.i(
+                '[SPLASH] hasProfile is null, redirecting to profile/create to be safe');
             context.go('/profile/create');
           } else if (authState.hasProfile == false) {
             // No profile - redirect to profile creation
-            print('[SPLASH] Navigating to /profile/create (hasProfile: false)');
+            logger.i(
+                '[SPLASH] Navigating to /profile/create (hasProfile: false)');
             context.go('/profile/create');
           } else {
             // Has profile - go to main
-            print('[SPLASH] Navigating to /main (hasProfile: true)');
+            logger.i('[SPLASH] Navigating to /main (hasProfile: true)');
             context.go('/main');
           }
         } else {
-          print('[SPLASH] Navigating to /login (not authenticated)');
+          logger.i('[SPLASH] Navigating to /login (not authenticated)');
           context.go('/login');
         }
       }

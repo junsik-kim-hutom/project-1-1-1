@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/foundation.dart';
 import '../constants/api_constants.dart';
 import 'dart:async';
 
@@ -25,27 +26,27 @@ class ApiClient {
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           final token = await _storage.read(key: 'access_token');
-          print('[API_CLIENT] Request to: ${options.path}');
+          _log('Request to: ${options.path}');
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
-            print('[API_CLIENT] Added Authorization header');
+            _log('Added Authorization header');
           } else {
-            print('[API_CLIENT] No access token found');
+            _log('No access token found');
           }
           return handler.next(options);
         },
         onError: (error, handler) async {
-          print('[API_CLIENT] Error occurred: ${error.response?.statusCode}');
-          print('[API_CLIENT] Error path: ${error.requestOptions.path}');
-          print('[API_CLIENT] Error response: ${error.response?.data}');
+          _log('Error occurred: ${error.response?.statusCode}');
+          _log('Error path: ${error.requestOptions.path}');
+          _log('Error response: ${error.response?.data}');
 
           if (error.response?.statusCode == 401) {
             final shouldSkipRefresh =
                 error.requestOptions.path == ApiConstants.authRefresh ||
                     error.requestOptions.extra['skipAuthRefresh'] == true;
 
-            print('[API_CLIENT] Should skip refresh: $shouldSkipRefresh');
-            print('[API_CLIENT] Is refreshing: ${_refreshCompleter != null}');
+            _log('Should skip refresh: $shouldSkipRefresh');
+            _log('Is refreshing: ${_refreshCompleter != null}');
 
             if (!shouldSkipRefresh) {
               final alreadyRetried =
@@ -55,16 +56,16 @@ class ApiClient {
               }
 
               final refreshed = await _refreshOrWait();
-              print('[API_CLIENT] Token refresh result: $refreshed');
+              _log('Token refresh result: $refreshed');
 
               if (refreshed) {
-                print('[API_CLIENT] Retrying original request after refresh...');
+                _log('Retrying original request after refresh...');
                 final retryOptions = error.requestOptions;
                 retryOptions.extra['retriedAfterRefresh'] = true;
                 return handler.resolve(await _retry(retryOptions));
               }
 
-              print('[API_CLIENT] Token refresh failed, clearing tokens');
+              _log('Token refresh failed, clearing tokens');
               await _storage.deleteAll();
             }
           }
@@ -76,15 +77,16 @@ class ApiClient {
 
   Future<bool> _refreshToken() async {
     try {
-      print('[API_CLIENT] _refreshToken: Reading refresh token from storage');
+      _log('_refreshToken: Reading refresh token from storage');
       final refreshToken = await _storage.read(key: 'refresh_token');
 
       if (refreshToken == null) {
-        print('[API_CLIENT] _refreshToken: No refresh token found');
+        _log('_refreshToken: No refresh token found');
         return false;
       }
 
-      print('[API_CLIENT] _refreshToken: Sending refresh request to ${ApiConstants.authRefresh}');
+      _log(
+          '_refreshToken: Sending refresh request to ${ApiConstants.authRefresh}');
       final response = await _dio.post(
         ApiConstants.authRefresh,
         data: {'refreshToken': refreshToken},
@@ -93,20 +95,20 @@ class ApiClient {
         ),
       );
 
-      print('[API_CLIENT] _refreshToken: Response status: ${response.statusCode}');
-      print('[API_CLIENT] _refreshToken: Response data: ${response.data}');
+      _log('_refreshToken: Response status: ${response.statusCode}');
+      _log('_refreshToken: Response data: ${response.data}');
 
       if (response.statusCode == 200) {
         final newAccessToken = response.data['data']['accessToken'];
-        print('[API_CLIENT] _refreshToken: Got new access token');
+        _log('_refreshToken: Got new access token');
         await _storage.write(key: 'access_token', value: newAccessToken);
-        print('[API_CLIENT] _refreshToken: Saved new access token');
+        _log('_refreshToken: Saved new access token');
         return true;
       }
-      print('[API_CLIENT] _refreshToken: Unexpected status code: ${response.statusCode}');
+      _log('_refreshToken: Unexpected status code: ${response.statusCode}');
       return false;
     } catch (e) {
-      print('[API_CLIENT] _refreshToken: Exception occurred: $e');
+      _log('_refreshToken: Exception occurred: $e');
       return false;
     }
   }
@@ -120,7 +122,7 @@ class ApiClient {
     final completer = Completer<bool>();
     _refreshCompleter = completer;
     try {
-      print('[API_CLIENT] Attempting to refresh token...');
+      _log('Attempting to refresh token...');
       final refreshed = await _refreshToken();
       completer.complete(refreshed);
       return refreshed;
@@ -143,6 +145,12 @@ class ApiClient {
       queryParameters: requestOptions.queryParameters,
       options: options,
     );
+  }
+
+  void _log(String message) {
+    if (kDebugMode) {
+      debugPrint('[API_CLIENT] $message');
+    }
   }
 
   Dio get dio => _dio;

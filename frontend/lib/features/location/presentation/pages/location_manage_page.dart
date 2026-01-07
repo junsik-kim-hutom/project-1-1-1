@@ -23,7 +23,8 @@ class LocationManagePage extends ConsumerStatefulWidget {
 }
 
 class _LocationManagePageState extends ConsumerState<LocationManagePage> {
-  static const _defaultCamera = CameraPosition(target: LatLng(37.5665, 126.9780), zoom: 12);
+  static const _defaultCamera =
+      CameraPosition(target: LatLng(37.5665, 126.9780), zoom: 12);
   static const _nativeConfigChannel = MethodChannel('app/native_config');
 
   GoogleMapController? _mapController;
@@ -41,7 +42,8 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
   void initState() {
     super.initState();
     if (kDebugMode) debugPrint('[LocationManage] initState');
-    _locationSubscription = ref.listenManual<LocationState>(locationProvider, (previous, next) {
+    _locationSubscription =
+        ref.listenManual<LocationState>(locationProvider, (previous, next) {
       if (!mounted) return;
       if (previous?.areas == next.areas) return;
       _refreshAreaLabels(next.areas);
@@ -100,23 +102,31 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
 
   Future<void> _checkMapsConfigured() async {
     try {
-      final configured = await _nativeConfigChannel.invokeMethod<bool>('isGoogleMapsConfigured');
+      final configured = await _nativeConfigChannel
+          .invokeMethod<bool>('isGoogleMapsConfigured');
       if (!mounted) return;
       setState(() => _mapsConfigured = configured ?? false);
-      if (kDebugMode) debugPrint('[LocationManage] isGoogleMapsConfigured=$configured');
+      if (kDebugMode) {
+        debugPrint('[LocationManage] isGoogleMapsConfigured=$configured');
+      }
     } catch (e) {
       if (!mounted) return;
-      setState(() => _mapsConfigured = true); // platforms without native channel
-      if (kDebugMode) debugPrint('[LocationManage] isGoogleMapsConfigured check failed: $e');
+      setState(
+          () => _mapsConfigured = true); // platforms without native channel
+      if (kDebugMode) {
+        debugPrint('[LocationManage] isGoogleMapsConfigured check failed: $e');
+      }
     }
   }
 
   Future<void> _loadGoogleMapsKey() async {
     try {
-      final key = await _nativeConfigChannel.invokeMethod<String>('getGoogleMapsApiKey');
+      final key = await _nativeConfigChannel
+          .invokeMethod<String>('getGoogleMapsApiKey');
       final trimmed = key?.trim();
       if (!mounted) return;
-      setState(() => _googleMapsApiKey = (trimmed == null || trimmed.isEmpty) ? null : trimmed);
+      setState(() => _googleMapsApiKey =
+          (trimmed == null || trimmed.isEmpty) ? null : trimmed);
     } catch (_) {
       // ignore: optional enhancement
     }
@@ -143,7 +153,10 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
         );
         if (results.isNotEmpty) {
           final r = results.first;
-          final label = (formatNeighborhoodLabelFromGoogleComponents(r.components) ?? r.formattedAddress).trim();
+          final label =
+              (formatNeighborhoodLabelFromGoogleComponents(r.components) ??
+                      r.formattedAddress)
+                  .trim();
           if (label.isNotEmpty) return label;
         }
       } catch (_) {
@@ -172,7 +185,9 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     }
 
     final currentIds = areas.map((a) => a.id).whereType<int>().toSet();
-    final staleKeys = _localizedAreaLabels.keys.where((k) => !currentIds.contains(k)).toList();
+    final staleKeys = _localizedAreaLabels.keys
+        .where((k) => !currentIds.contains(k))
+        .toList();
     if (staleKeys.isNotEmpty) {
       setState(() {
         for (final k in staleKeys) {
@@ -194,7 +209,9 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     for (final entry in pending.entries) {
       final label = await entry.value;
       if (!mounted) return;
-      if (label != null && label.trim().isNotEmpty) resolved[entry.key] = label.trim();
+      if (label != null && label.trim().isNotEmpty) {
+        resolved[entry.key] = label.trim();
+      }
     }
     if (!mounted) return;
     if (resolved.isEmpty) return;
@@ -214,31 +231,43 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       if (!mounted) return;
       setState(() => _currentPosition = position);
       if (kDebugMode) {
-        debugPrint('[LocationManage] currentPosition=(${position.latitude}, ${position.longitude})');
+        debugPrint(
+            '[LocationManage] currentPosition=(${position.latitude}, ${position.longitude})');
       }
     } catch (_) {
       // ignore: keep fallback camera
-      if (kDebugMode) debugPrint('[LocationManage] currentPosition load failed');
+      if (kDebugMode) {
+        debugPrint('[LocationManage] currentPosition load failed');
+      }
     } finally {
       if (!mounted) return;
       setState(() => _loadingPosition = false);
     }
   }
 
-  Future<Position> _requestCurrentPosition({required bool allowLastKnown}) async {
+  Future<Position> _requestCurrentPosition(
+      {required bool allowLastKnown}) async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      if (kDebugMode) debugPrint('[LocationManage] Location services are disabled');
+      if (kDebugMode) {
+        debugPrint('[LocationManage] Location services are disabled');
+      }
       throw Exception('Location services are disabled');
     }
 
     var permission = await Geolocator.checkPermission();
-    if (kDebugMode) debugPrint('[LocationManage] Permission status: $permission');
+    if (kDebugMode) {
+      debugPrint('[LocationManage] Permission status: $permission');
+    }
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (kDebugMode) debugPrint('[LocationManage] Permission after request: $permission');
+      if (kDebugMode) {
+        debugPrint('[LocationManage] Permission after request: $permission');
+      }
     }
-    if (permission == LocationPermission.denied) throw Exception('Location permission denied');
+    if (permission == LocationPermission.denied) {
+      throw Exception('Location permission denied');
+    }
     if (permission == LocationPermission.deniedForever) {
       throw Exception('Location permission permanently denied');
     }
@@ -247,31 +276,41 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       final lastKnown = await Geolocator.getLastKnownPosition();
       if (lastKnown != null) {
         if (kDebugMode) {
-          debugPrint('[LocationManage] Using lastKnownPosition: (${lastKnown.latitude}, ${lastKnown.longitude})');
-          debugPrint('[LocationManage] Position accuracy: ${lastKnown.accuracy}m, age: ${DateTime.now().difference(lastKnown.timestamp)}');
+          debugPrint(
+              '[LocationManage] Using lastKnownPosition: (${lastKnown.latitude}, ${lastKnown.longitude})');
+          debugPrint(
+              '[LocationManage] Position accuracy: ${lastKnown.accuracy}m, age: ${DateTime.now().difference(lastKnown.timestamp)}');
         }
         return lastKnown;
       }
-      if (kDebugMode) debugPrint('[LocationManage] No lastKnownPosition available');
+      if (kDebugMode) {
+        debugPrint('[LocationManage] No lastKnownPosition available');
+      }
     }
 
-    if (kDebugMode) debugPrint('[LocationManage] Requesting current position...');
+    if (kDebugMode) {
+      debugPrint('[LocationManage] Requesting current position...');
+    }
     final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.medium,
       timeLimit: const Duration(seconds: 10),
     );
     if (kDebugMode) {
-      debugPrint('[LocationManage] Got current position: (${position.latitude}, ${position.longitude})');
-      debugPrint('[LocationManage] Position accuracy: ${position.accuracy}m, timestamp: ${position.timestamp}');
+      debugPrint(
+          '[LocationManage] Got current position: (${position.latitude}, ${position.longitude})');
+      debugPrint(
+          '[LocationManage] Position accuracy: ${position.accuracy}m, timestamp: ${position.timestamp}');
 
       // Check if position is within South Korea bounds (approximately)
       final isInKorea = position.latitude >= 33.0 &&
-                        position.latitude <= 43.0 &&
-                        position.longitude >= 124.0 &&
-                        position.longitude <= 132.0;
+          position.latitude <= 43.0 &&
+          position.longitude >= 124.0 &&
+          position.longitude <= 132.0;
       if (!isInKorea) {
-        debugPrint('[LocationManage] ⚠️ WARNING: Position is outside South Korea bounds!');
-        debugPrint('[LocationManage] This might be emulator default location or incorrect GPS data');
+        debugPrint(
+            '[LocationManage] ⚠️ WARNING: Position is outside South Korea bounds!');
+        debugPrint(
+            '[LocationManage] This might be emulator default location or incorrect GPS data');
       }
     }
     return position;
@@ -286,7 +325,8 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     final areas = state.areas;
     final l10n = AppLocalizations.of(context)!;
     if (kDebugMode) {
-      debugPrint('[LocationManage] build areas=${areas.length} loading=${state.isLoading} mapsConfigured=$_mapsConfigured');
+      debugPrint(
+          '[LocationManage] build areas=${areas.length} loading=${state.isLoading} mapsConfigured=$_mapsConfigured');
     }
 
     if (_selectedAreaId == null) {
@@ -307,8 +347,10 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
           circleId: CircleId(a.id!.toString()),
           center: LatLng(a.latitude, a.longitude),
           radius: a.radius.toDouble(),
-          fillColor: (isSelected ? accent : colorScheme.onSurface).withValues(alpha: isSelected ? 0.14 : 0.10),
-          strokeColor: (isSelected ? accent : colorScheme.onSurface).withValues(alpha: isSelected ? 0.85 : 0.35),
+          fillColor: (isSelected ? accent : colorScheme.onSurface)
+              .withValues(alpha: isSelected ? 0.14 : 0.10),
+          strokeColor: (isSelected ? accent : colorScheme.onSurface)
+              .withValues(alpha: isSelected ? 0.85 : 0.35),
           strokeWidth: isSelected ? 3 : 2,
         ),
       );
@@ -340,6 +382,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
           if (canShowMap)
             GoogleMap(
               initialCameraPosition: initialCamera,
+              style: isDark ? _darkMapStyle : null,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
@@ -349,7 +392,6 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
               onMapCreated: (controller) async {
                 if (kDebugMode) debugPrint('[LocationManage] map created');
                 _mapController = controller;
-                await _applyMapStyle(controller, isDark: isDark);
                 _maybeMoveToSelected(areas);
               },
             )
@@ -420,7 +462,8 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
 
   CameraPosition _initialCamera(List<LocationArea> areas) {
     if (areas.isNotEmpty) {
-      final primary = areas.firstWhere((a) => a.isPrimary, orElse: () => areas.first);
+      final primary =
+          areas.firstWhere((a) => a.isPrimary, orElse: () => areas.first);
       return CameraPosition(
         target: LatLng(primary.latitude, primary.longitude),
         zoom: 12.8,
@@ -433,12 +476,6 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       );
     }
     return _defaultCamera;
-  }
-
-  Future<void> _applyMapStyle(GoogleMapController controller, {required bool isDark}) async {
-    try {
-      await controller.setMapStyle(isDark ? _darkMapStyle : null);
-    } catch (_) {}
   }
 
   void _maybeMoveToSelected(List<LocationArea> areas) {
@@ -486,10 +523,12 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
 
   void _selectArea(int id, double lat, double lng) {
     setState(() => _selectedAreaId = id);
-    _mapController?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), 12.8));
+    _mapController
+        ?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), 12.8));
   }
 
-  Future<void> _addArea(BuildContext context, List<LocationArea> existing) async {
+  Future<void> _addArea(
+      BuildContext context, List<LocationArea> existing) async {
     final result = await Navigator.of(context).push<LocationSearchResult>(
       MaterialPageRoute(builder: (_) => const LocationSearchPage()),
     );
@@ -519,7 +558,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     // 에러가 있으면 표시
     final state = ref.read(locationProvider);
     if (state.error != null) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       final l10n = AppLocalizations.of(context)!;
       String errorMessage = state.error!;
 
@@ -545,7 +584,8 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     await ref.read(locationProvider.notifier).loadMyAreas();
     final updated = ref.read(locationProvider).areas;
     if (updated.isNotEmpty) {
-      final primary = updated.firstWhere((a) => a.isPrimary, orElse: () => updated.first);
+      final primary =
+          updated.firstWhere((a) => a.isPrimary, orElse: () => updated.first);
       if (primary.id != null) {
         _selectArea(primary.id!, primary.latitude, primary.longitude);
       }
@@ -677,7 +717,8 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     final selectedId = selected.id!;
     final toUpdate = <LocationArea>[
       for (final a in current)
-        if (a.id != null && (a.id == selectedId ? !a.isPrimary : a.isPrimary)) a,
+        if (a.id != null && (a.id == selectedId ? !a.isPrimary : a.isPrimary))
+          a,
     ];
     if (toUpdate.isEmpty) return;
 
@@ -757,7 +798,9 @@ class _BottomSheet extends StatelessWidget {
           decoration: BoxDecoration(
             color: colorScheme.surface.withValues(alpha: isDark ? 0.92 : 0.96),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: colorScheme.outline.withValues(alpha: isDark ? 0.65 : 0.35)),
+            border: Border.all(
+                color: colorScheme.outline
+                    .withValues(alpha: isDark ? 0.65 : 0.35)),
             boxShadow: [
               BoxShadow(
                 color: (isDark ? Colors.black54 : Colors.black12),
@@ -795,7 +838,8 @@ class _BottomSheet extends StatelessWidget {
                       onLongPress: () => onEdit(areas[i]),
                       onRemove: () => onRemove(areas[i]),
                     ),
-                    if (i != areas.length - 1 || onAdd != null) const SizedBox(width: 10),
+                    if (i != areas.length - 1 || onAdd != null)
+                      const SizedBox(width: 10),
                   ],
                   if (onAdd != null)
                     Expanded(
@@ -849,7 +893,9 @@ class _AreaChip extends StatelessWidget {
             color: selected ? accent : colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: selected ? accent : colorScheme.outline.withValues(alpha: 0.7),
+              color: selected
+                  ? accent
+                  : colorScheme.outline.withValues(alpha: 0.7),
               width: 1,
             ),
           ),
@@ -860,7 +906,9 @@ class _AreaChip extends StatelessWidget {
                   label,
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
+                    color: selected
+                        ? colorScheme.onPrimary
+                        : colorScheme.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -872,7 +920,9 @@ class _AreaChip extends StatelessWidget {
                 child: Icon(
                   Icons.close_rounded,
                   size: 18,
-                  color: selected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
+                  color: selected
+                      ? colorScheme.onPrimary
+                      : colorScheme.onSurfaceVariant,
                 ),
               ),
             ],
@@ -908,7 +958,8 @@ class _AddChip extends StatelessWidget {
         child: Center(
           child: Icon(
             Icons.add_rounded,
-            color: enabled ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+            color:
+                enabled ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
           ),
         ),
       ),
@@ -935,7 +986,9 @@ class _TopIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.surface.withValues(alpha: isDark ? 0.72 : 0.92),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colorScheme.outline.withValues(alpha: isDark ? 0.65 : 0.35)),
+          border: Border.all(
+              color:
+                  colorScheme.outline.withValues(alpha: isDark ? 0.65 : 0.35)),
         ),
         child: Icon(icon, color: colorScheme.onSurface),
       ),
@@ -962,7 +1015,9 @@ class _FabButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.surface.withValues(alpha: isDark ? 0.8 : 0.95),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: colorScheme.outline.withValues(alpha: isDark ? 0.7 : 0.35)),
+          border: Border.all(
+              color:
+                  colorScheme.outline.withValues(alpha: isDark ? 0.7 : 0.35)),
           boxShadow: [
             BoxShadow(
               color: (isDark ? Colors.black54 : Colors.black12),
@@ -1016,7 +1071,8 @@ class _MapsNotConfiguredPlaceholder extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.map_outlined, color: colorScheme.onSurfaceVariant, size: 52),
+              Icon(Icons.map_outlined,
+                  color: colorScheme.onSurfaceVariant, size: 52),
               const SizedBox(height: 14),
               Text(
                 l10n.locationMapCannotShowTitle,

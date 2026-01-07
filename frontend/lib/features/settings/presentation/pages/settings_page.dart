@@ -71,7 +71,8 @@ class SettingsPage extends ConsumerWidget {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.navigateToNotificationSettings)),
+                      SnackBar(
+                          content: Text(l10n.navigateToNotificationSettings)),
                     );
                   },
                 ),
@@ -79,7 +80,8 @@ class SettingsPage extends ConsumerWidget {
                 ListTile(
                   leading: const Icon(Icons.language_outlined),
                   title: Text(l10n.languageSettings),
-                  subtitle: Text(_languageLabel(l10n, settings.locale.languageCode)),
+                  subtitle:
+                      Text(_languageLabel(l10n, settings.locale.languageCode)),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     _showLanguageDialog(
@@ -189,7 +191,8 @@ class SettingsPage extends ConsumerWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.logout, color: AppColors.error),
-                  title: Text(l10n.logout, style: const TextStyle(color: AppColors.error)),
+                  title: Text(l10n.logout,
+                      style: const TextStyle(color: AppColors.error)),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -199,8 +202,10 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: const Icon(Icons.delete_outline, color: AppColors.error),
-                  title: Text(l10n.deleteAccount, style: const TextStyle(color: AppColors.error)),
+                  leading:
+                      const Icon(Icons.delete_outline, color: AppColors.error),
+                  title: Text(l10n.deleteAccount,
+                      style: const TextStyle(color: AppColors.error)),
                   onTap: () {
                     _showDeleteAccountDialog(context);
                   },
@@ -265,41 +270,36 @@ class SettingsPage extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RadioListTile<String>(
-                title: Text(l10n.languageKorean),
-                value: 'ko',
+              RadioGroup<String>(
                 groupValue: currentLanguageCode,
                 onChanged: (value) {
                   Navigator.pop(context);
                   if (value != null) {
                     ref.read(settingsProvider.notifier).updateLocale(value);
-                  }
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.languageChanged)),
-                  );
-                },
-              ),
-              RadioListTile<String>(
-                title: Text(l10n.languageJapanese),
-                value: 'ja',
-                groupValue: currentLanguageCode,
-                onChanged: (value) {
-                  Navigator.pop(context);
-                  if (value != null) {
-                    ref.read(settingsProvider.notifier).updateLocale(value);
+                    if (value == 'ko') {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.languageChanged)),
+                      );
+                    }
                   }
                 },
-              ),
-              RadioListTile<String>(
-                title: Text(l10n.languageEnglish),
-                value: 'en',
-                groupValue: currentLanguageCode,
-                onChanged: (value) {
-                  Navigator.pop(context);
-                  if (value != null) {
-                    ref.read(settingsProvider.notifier).updateLocale(value);
-                  }
-                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RadioListTile<String>(
+                      title: Text(l10n.languageKorean),
+                      value: 'ko',
+                    ),
+                    RadioListTile<String>(
+                      title: Text(l10n.languageJapanese),
+                      value: 'ja',
+                    ),
+                    RadioListTile<String>(
+                      title: Text(l10n.languageEnglish),
+                      value: 'en',
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -322,32 +322,29 @@ class SettingsPage extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              RadioListTile<String>(
-                title: Text(l10n.themeLight),
-                value: 'light',
+              RadioGroup<String>(
                 groupValue: _themeModeToValue(currentThemeMode),
                 onChanged: (value) {
                   Navigator.pop(context);
                   _updateThemeMode(ref, value);
                 },
-              ),
-              RadioListTile<String>(
-                title: Text(l10n.themeDark),
-                value: 'dark',
-                groupValue: _themeModeToValue(currentThemeMode),
-                onChanged: (value) {
-                  Navigator.pop(context);
-                  _updateThemeMode(ref, value);
-                },
-              ),
-              RadioListTile<String>(
-                title: Text(l10n.themeSystem),
-                value: 'system',
-                groupValue: _themeModeToValue(currentThemeMode),
-                onChanged: (value) {
-                  Navigator.pop(context);
-                  _updateThemeMode(ref, value);
-                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RadioListTile<String>(
+                      title: Text(l10n.themeLight),
+                      value: 'light',
+                    ),
+                    RadioListTile<String>(
+                      title: Text(l10n.themeDark),
+                      value: 'dark',
+                    ),
+                    RadioListTile<String>(
+                      title: Text(l10n.themeSystem),
+                      value: 'system',
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -363,7 +360,6 @@ class SettingsPage extends ConsumerWidget {
       case ThemeMode.dark:
         return 'dark';
       case ThemeMode.system:
-      default:
         return 'system';
     }
   }
@@ -383,7 +379,8 @@ class SettingsPage extends ConsumerWidget {
       context: context,
       applicationName: l10n.appTitle,
       applicationVersion: '${l10n.version} 1.0.0',
-      applicationIcon: const Icon(Icons.favorite, size: 48, color: AppColors.primary),
+      applicationIcon:
+          const Icon(Icons.favorite, size: 48, color: AppColors.primary),
       children: [
         Text(l10n.aboutDescription),
         const SizedBox(height: 16),

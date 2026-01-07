@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../../../core/models/profile_model.dart';
+import '../../../../core/utils/logger.dart';
 
 class ProfileRepository {
   final Dio _dio;
@@ -11,7 +12,10 @@ class ProfileRepository {
 
     final imagesRaw = normalized['profileImages'];
     if (imagesRaw is List) {
-      final images = imagesRaw.map((e) => e.toString()).where((e) => e.isNotEmpty).toList();
+      final images = imagesRaw
+          .map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList();
 
       final explicitIndexRaw = normalized.remove('mainProfileImageIndex') ??
           normalized.remove('mainImageIndex');
@@ -29,11 +33,15 @@ class ProfileRepository {
         if (index >= 0) mainIndex = index;
       }
 
-      if (mainIndex != null && images.isNotEmpty && mainIndex >= 0 && mainIndex < images.length) {
+      if (mainIndex != null &&
+          images.isNotEmpty &&
+          mainIndex >= 0 &&
+          mainIndex < images.length) {
         final mainUrl = images[mainIndex];
         normalized['profileImages'] = <String>[
           mainUrl,
-          for (var i = 0; i < images.length; i++) if (i != mainIndex) images[i],
+          for (var i = 0; i < images.length; i++)
+            if (i != mainIndex) images[i],
         ];
       } else {
         normalized['profileImages'] = images;
@@ -47,14 +55,14 @@ class ProfileRepository {
   Future<ProfileModel> createProfile(Map<String, dynamic> profileData) async {
     try {
       final payload = _normalizeProfileData(profileData);
-      print('[PROFILE_REPO] Creating profile with data: $payload');
+      logger.i('[PROFILE_REPO] Creating profile with data: $payload');
       final response = await _dio.post(
         '/api/profile',
         data: payload,
       );
 
-      print('[PROFILE_REPO] Response status: ${response.statusCode}');
-      print('[PROFILE_REPO] Response data: ${response.data}');
+      logger.d('[PROFILE_REPO] Response status: ${response.statusCode}');
+      logger.d('[PROFILE_REPO] Response data: ${response.data}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return ProfileModel.fromJson(response.data['data']);
@@ -62,10 +70,10 @@ class ProfileRepository {
         throw Exception('Failed to create profile: ${response.statusMessage}');
       }
     } on DioException catch (e) {
-      print('[PROFILE_REPO] DioException occurred:');
-      print('[PROFILE_REPO] - Status code: ${e.response?.statusCode}');
-      print('[PROFILE_REPO] - Response data: ${e.response?.data}');
-      print('[PROFILE_REPO] - Error message: ${e.message}');
+      logger.e('[PROFILE_REPO] DioException occurred:');
+      logger.e('[PROFILE_REPO] - Status code: ${e.response?.statusCode}');
+      logger.e('[PROFILE_REPO] - Response data: ${e.response?.data}');
+      logger.e('[PROFILE_REPO] - Error message: ${e.message}');
 
       if (e.response?.data != null) {
         final errorMessage = e.response?.data['error'] ?? e.message;
@@ -73,7 +81,7 @@ class ProfileRepository {
       }
       throw Exception('Network error: ${e.message}');
     } catch (e) {
-      print('[PROFILE_REPO] Unexpected error: $e');
+      logger.e('[PROFILE_REPO] Unexpected error: $e');
       rethrow;
     }
   }
@@ -82,14 +90,14 @@ class ProfileRepository {
   Future<ProfileModel> updateProfile(Map<String, dynamic> profileData) async {
     try {
       final payload = _normalizeProfileData(profileData);
-      print('[PROFILE_REPO] Updating profile with data: $payload');
+      logger.i('[PROFILE_REPO] Updating profile with data: $payload');
       final response = await _dio.put(
         '/api/profile',
         data: payload,
       );
 
-      print('[PROFILE_REPO] Response status: ${response.statusCode}');
-      print('[PROFILE_REPO] Response data: ${response.data}');
+      logger.d('[PROFILE_REPO] Response status: ${response.statusCode}');
+      logger.d('[PROFILE_REPO] Response data: ${response.data}');
 
       if (response.statusCode == 200) {
         return ProfileModel.fromJson(response.data['data']);
@@ -97,10 +105,10 @@ class ProfileRepository {
         throw Exception('Failed to update profile: ${response.statusMessage}');
       }
     } on DioException catch (e) {
-      print('[PROFILE_REPO] DioException occurred:');
-      print('[PROFILE_REPO] - Status code: ${e.response?.statusCode}');
-      print('[PROFILE_REPO] - Response data: ${e.response?.data}');
-      print('[PROFILE_REPO] - Error message: ${e.message}');
+      logger.e('[PROFILE_REPO] DioException occurred:');
+      logger.e('[PROFILE_REPO] - Status code: ${e.response?.statusCode}');
+      logger.e('[PROFILE_REPO] - Response data: ${e.response?.data}');
+      logger.e('[PROFILE_REPO] - Error message: ${e.message}');
 
       if (e.response?.data != null) {
         final errorMessage = e.response?.data['error'] ?? e.message;
@@ -108,7 +116,7 @@ class ProfileRepository {
       }
       throw Exception('Network error: ${e.message}');
     } catch (e) {
-      print('[PROFILE_REPO] Unexpected error: $e');
+      logger.e('[PROFILE_REPO] Unexpected error: $e');
       rethrow;
     }
   }

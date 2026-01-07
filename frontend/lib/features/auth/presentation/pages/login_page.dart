@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/utils/logger.dart';
 import '../../providers/auth_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -21,7 +22,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: ['email', 'profile'],
-    serverClientId: _googleServerClientId.isEmpty ? null : _googleServerClientId,
+    serverClientId:
+        _googleServerClientId.isEmpty ? null : _googleServerClientId,
   );
 
   bool _isLoading = false;
@@ -51,7 +53,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   }
 
   Future<void> _handleGoogleSignIn() async {
-    print('[LOGIN] Starting Google Sign-In');
+    logger.i('[LOGIN] Starting Google Sign-In');
     setState(() {
       _isLoading = true;
     });
@@ -60,18 +62,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
       final GoogleSignInAccount? account = await _googleSignIn.signIn();
 
       if (account != null) {
-        print('[LOGIN] Google account obtained');
+        logger.d('[LOGIN] Google account obtained');
         final GoogleSignInAuthentication auth = await account.authentication;
         final String? idToken = auth.idToken;
 
         if (idToken != null) {
-          print('[LOGIN] ID token obtained, calling googleLogin');
+          logger.d('[LOGIN] ID token obtained, calling googleLogin');
           final authNotifier = ref.read(authProvider.notifier);
           final response = await authNotifier.googleLogin(idToken);
 
-          print('[LOGIN] Login response: ${response != null ? "Success" : "Failed"}');
+          logger.d(
+              '[LOGIN] Login response: ${response != null ? "Success" : "Failed"}');
           if (response != null) {
-            print('[LOGIN] Response hasProfile: ${response.hasProfile}');
+            logger.d('[LOGIN] Response hasProfile: ${response.hasProfile}');
           }
 
           if (response != null && mounted) {
@@ -89,15 +92,16 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
             // Navigate to permissions page first for new users
             if (response.isNewUser) {
-              print('[LOGIN] Navigating to /permissions (new user)');
+              logger.i('[LOGIN] Navigating to /permissions (new user)');
               context.go('/permissions');
             } else if (!response.hasProfile) {
               // Navigate to profile creation page for users without profile
-              print('[LOGIN] Navigating to /profile/create (hasProfile: false)');
+              logger.i(
+                  '[LOGIN] Navigating to /profile/create (hasProfile: false)');
               context.go('/profile/create');
             } else {
               // Navigate to home page for users with profile
-              print('[LOGIN] Navigating to /main (hasProfile: true)');
+              logger.i('[LOGIN] Navigating to /main (hasProfile: true)');
               context.go('/main');
             }
           } else if (mounted) {
@@ -118,7 +122,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         }
       }
     } catch (error) {
-      debugPrint('Google Sign-In Error: $error');
+      logger.e('Google Sign-In Error: $error');
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
