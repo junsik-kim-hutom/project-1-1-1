@@ -959,4 +959,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String profilePhotoGuidelines(int max) {
     return '• 최소 1장, 최대 $max장까지 등록 가능합니다\n• 여러 장 등록 시 대표 사진을 선택해주세요\n• 이미지는 자동으로 서버에 업로드됩니다';
   }
+
+  @override
+  String get alreadyLiked => '이미 좋아요를 보냈습니다';
+
+  @override
+  String get alreadyBoosted => '이미 부스트를 보냈습니다';
+
+  @override
+  String get cancelAction => '취소';
+
+  @override
+  String get cancelConfirm => '정말 취소하시겠습니까?';
+
+  @override
+  String get actionCanceled => '취소되었습니다';
+
+  @override
+  String get locationNotSet => '내 동네를 설정해주세요';
+
+  @override
+  String get locationNotSetMessage => '거리 필터를 사용하려면 먼저 내 동네를 설정해야 합니다.';
+
+  @override
+  String get goToSettings => '설정하러 가기';
 }

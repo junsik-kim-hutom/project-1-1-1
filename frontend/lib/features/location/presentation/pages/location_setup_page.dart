@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import '../../providers/location_provider.dart';
+import '../../data/location_label_formatter.dart';
 
 class LocationSetupPage extends ConsumerStatefulWidget {
   const LocationSetupPage({super.key});
@@ -56,14 +57,19 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
 
       // Get address from coordinates
       try {
+        final locale = Localizations.localeOf(context);
+        final localeIdentifier = (locale.countryCode ?? '').trim().isEmpty
+            ? locale.languageCode
+            : '${locale.languageCode}_${locale.countryCode}';
         final placemarks = await placemarkFromCoordinates(
           position.latitude,
           position.longitude,
+          localeIdentifier: localeIdentifier,
         );
         if (placemarks.isNotEmpty) {
-          final place = placemarks.first;
           setState(() {
-            _currentAddress = '${place.locality}, ${place.administrativeArea}, ${place.country}';
+            _currentAddress =
+                formatNeighborhoodLabelFromPlacemark(placemarks.first) ?? _currentAddress;
           });
         }
       } catch (e) {

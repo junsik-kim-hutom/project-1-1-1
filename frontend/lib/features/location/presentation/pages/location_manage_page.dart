@@ -2,11 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 
 import '../../../../core/theme/app_text_styles.dart';
+import '../../data/google_geocoding_api.dart';
+import '../../data/location_label_formatter.dart';
+import '../../data/location_query_utils.dart';
 import '../../data/repositories/location_repository.dart';
 import '../../providers/location_provider.dart';
 import 'location_search_page.dart';
@@ -23,18 +27,75 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
   static const _nativeConfigChannel = MethodChannel('app/native_config');
 
   GoogleMapController? _mapController;
-  String? _selectedAreaId;
+  ProviderSubscription<LocationState>? _locationSubscription;
+  int? _selectedAreaId;
   bool _loadingPosition = false;
   Position? _currentPosition;
   bool _mapsConfigured = false;
+  String? _googleMapsApiKey;
+  final _googleGeocoding = GoogleGeocodingApi();
+  final Map<int, String> _localizedAreaLabels = {};
+  String? _lastLocaleTag;
 
   @override
   void initState() {
     super.initState();
     if (kDebugMode) debugPrint('[LocationManage] initState');
-    Future.microtask(() => ref.read(locationProvider.notifier).loadMyAreas());
+    _locationSubscription = ref.listenManual<LocationState>(locationProvider, (previous, next) {
+      if (!mounted) return;
+      if (previous?.areas == next.areas) return;
+      _refreshAreaLabels(next.areas);
+    });
+    Future.microtask(() async {
+      await _loadGoogleMapsKey();
+      await ref.read(locationProvider.notifier).loadMyAreas();
+      _checkForErrors();
+      _refreshAreaLabels(ref.read(locationProvider).areas);
+    });
     _loadCurrentPosition();
     _checkMapsConfigured();
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription?.close();
+    _mapController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final tag = Localizations.localeOf(context).toLanguageTag();
+    if (_lastLocaleTag != tag) {
+      _lastLocaleTag = tag;
+      _localizedAreaLabels.clear();
+      _refreshAreaLabels(ref.read(locationProvider).areas);
+    }
+  }
+
+  void _checkForErrors() {
+    final state = ref.read(locationProvider);
+    if (state.error != null && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final l10n = AppLocalizations.of(context)!;
+        String errorMessage = state.error!;
+
+        // 최대 개수 제한 오류 메시지를 사용자 친화적으로 변환
+        if (errorMessage.contains('Maximum')) {
+          errorMessage = l10n.locationMaxTwoAreas;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Theme.of(context).colorScheme.error,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      });
+    }
   }
 
   Future<void> _checkMapsConfigured() async {
@@ -50,22 +111,106 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     }
   }
 
+  Future<void> _loadGoogleMapsKey() async {
+    try {
+      final key = await _nativeConfigChannel.invokeMethod<String>('getGoogleMapsApiKey');
+      final trimmed = key?.trim();
+      if (!mounted) return;
+      setState(() => _googleMapsApiKey = (trimmed == null || trimmed.isEmpty) ? null : trimmed);
+    } catch (_) {
+      // ignore: optional enhancement
+    }
+  }
+
+  String _localeIdentifier() {
+    final locale = Localizations.localeOf(context);
+    final country = (locale.countryCode ?? '').trim();
+    if (country.isEmpty) return locale.languageCode;
+    return '${locale.languageCode}_$country';
+  }
+
+  Future<String?> _resolveLabel(double lat, double lng) async {
+    final key = _googleMapsApiKey;
+    if (key != null && key.isNotEmpty) {
+      try {
+        final results = await _googleGeocoding.reverseGeocode(
+          latitude: lat,
+          longitude: lng,
+          apiKey: key,
+          language: Localizations.localeOf(context).languageCode,
+          region: googleRegionForLocale(Localizations.localeOf(context)),
+          limit: 1,
+        );
+        if (results.isNotEmpty) {
+          final r = results.first;
+          final label = (formatNeighborhoodLabelFromGoogleComponents(r.components) ?? r.formattedAddress).trim();
+          if (label.isNotEmpty) return label;
+        }
+      } catch (_) {
+        // fallback below
+      }
+    }
+
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        lat,
+        lng,
+        localeIdentifier: _localeIdentifier(),
+      );
+      if (placemarks.isEmpty) return null;
+      return formatNeighborhoodLabelFromPlacemark(placemarks.first);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _refreshAreaLabels(List<LocationArea> areas) async {
+    if (!mounted) return;
+    if (areas.isEmpty) {
+      if (_localizedAreaLabels.isNotEmpty) setState(_localizedAreaLabels.clear);
+      return;
+    }
+
+    final currentIds = areas.map((a) => a.id).whereType<int>().toSet();
+    final staleKeys = _localizedAreaLabels.keys.where((k) => !currentIds.contains(k)).toList();
+    if (staleKeys.isNotEmpty) {
+      setState(() {
+        for (final k in staleKeys) {
+          _localizedAreaLabels.remove(k);
+        }
+      });
+    }
+
+    final pending = <int, Future<String?>>{};
+    for (final a in areas) {
+      final id = a.id;
+      if (id == null) continue;
+      if (_localizedAreaLabels.containsKey(id)) continue;
+      pending[id] = _resolveLabel(a.latitude, a.longitude);
+    }
+    if (pending.isEmpty) return;
+
+    final resolved = <int, String>{};
+    for (final entry in pending.entries) {
+      final label = await entry.value;
+      if (!mounted) return;
+      if (label != null && label.trim().isNotEmpty) resolved[entry.key] = label.trim();
+    }
+    if (!mounted) return;
+    if (resolved.isEmpty) return;
+    setState(() => _localizedAreaLabels.addAll(resolved));
+  }
+
+  String _displayAddress(LocationArea area) {
+    final id = area.id;
+    if (id == null) return area.address;
+    return _localizedAreaLabels[id] ?? area.address;
+  }
+
   Future<void> _loadCurrentPosition() async {
     setState(() => _loadingPosition = true);
     try {
-      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) throw Exception('Location services are disabled');
-
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-      if (permission == LocationPermission.denied) throw Exception('Location permission denied');
-      if (permission == LocationPermission.deniedForever) {
-        throw Exception('Location permission permanently denied');
-      }
-
-      final position = await _getSafeCurrentPosition();
+      final position = await _requestCurrentPosition(allowLastKnown: true);
       if (!mounted) return;
       setState(() => _currentPosition = position);
       if (kDebugMode) {
@@ -80,13 +225,56 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
     }
   }
 
-  Future<Position> _getSafeCurrentPosition() async {
-    final lastKnown = await Geolocator.getLastKnownPosition();
-    if (lastKnown != null) return lastKnown;
-    return Geolocator.getCurrentPosition(
+  Future<Position> _requestCurrentPosition({required bool allowLastKnown}) async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      if (kDebugMode) debugPrint('[LocationManage] Location services are disabled');
+      throw Exception('Location services are disabled');
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (kDebugMode) debugPrint('[LocationManage] Permission status: $permission');
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (kDebugMode) debugPrint('[LocationManage] Permission after request: $permission');
+    }
+    if (permission == LocationPermission.denied) throw Exception('Location permission denied');
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception('Location permission permanently denied');
+    }
+
+    if (allowLastKnown) {
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null) {
+        if (kDebugMode) {
+          debugPrint('[LocationManage] Using lastKnownPosition: (${lastKnown.latitude}, ${lastKnown.longitude})');
+          debugPrint('[LocationManage] Position accuracy: ${lastKnown.accuracy}m, age: ${DateTime.now().difference(lastKnown.timestamp)}');
+        }
+        return lastKnown;
+      }
+      if (kDebugMode) debugPrint('[LocationManage] No lastKnownPosition available');
+    }
+
+    if (kDebugMode) debugPrint('[LocationManage] Requesting current position...');
+    final position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.medium,
       timeLimit: const Duration(seconds: 10),
     );
+    if (kDebugMode) {
+      debugPrint('[LocationManage] Got current position: (${position.latitude}, ${position.longitude})');
+      debugPrint('[LocationManage] Position accuracy: ${position.accuracy}m, timestamp: ${position.timestamp}');
+
+      // Check if position is within South Korea bounds (approximately)
+      final isInKorea = position.latitude >= 33.0 &&
+                        position.latitude <= 43.0 &&
+                        position.longitude >= 124.0 &&
+                        position.longitude <= 132.0;
+      if (!isInKorea) {
+        debugPrint('[LocationManage] ⚠️ WARNING: Position is outside South Korea bounds!');
+        debugPrint('[LocationManage] This might be emulator default location or incorrect GPS data');
+      }
+    }
+    return position;
   }
 
   @override
@@ -106,7 +294,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       if (primary.isNotEmpty) {
         _selectedAreaId = primary.first.id;
       } else {
-        _selectedAreaId = areas.map((a) => a.id).whereType<String>().firstOrNull;
+        _selectedAreaId = areas.map((a) => a.id).whereType<int>().firstOrNull;
       }
     }
 
@@ -116,7 +304,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       final isSelected = a.id == _selectedAreaId;
       circles.add(
         Circle(
-          circleId: CircleId(a.id!),
+          circleId: CircleId(a.id!.toString()),
           center: LatLng(a.latitude, a.longitude),
           radius: a.radius.toDouble(),
           fillColor: (isSelected ? accent : colorScheme.onSurface).withValues(alpha: isSelected ? 0.14 : 0.10),
@@ -132,7 +320,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       final isSelected = a.id == _selectedAreaId;
       markers.add(
         Marker(
-          markerId: MarkerId(a.id!),
+          markerId: MarkerId(a.id!.toString()),
           position: LatLng(a.latitude, a.longitude),
           icon: BitmapDescriptor.defaultMarkerWithHue(
             isSelected ? BitmapDescriptor.hueOrange : BitmapDescriptor.hueRose,
@@ -210,6 +398,7 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
           _BottomSheet(
             selected: _selectedAreaId,
             areas: areas,
+            labelForArea: _displayAddress,
             onSelect: (area) async {
               await _setPrimaryArea(area);
               _selectArea(area.id!, area.latitude, area.longitude);
@@ -265,26 +454,37 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
   }
 
   Future<void> _moveToCurrent() async {
-    if (_currentPosition == null) {
-      await _loadCurrentPosition();
-    }
-    if (_currentPosition == null || _mapController == null) {
+    setState(() => _loadingPosition = true);
+    try {
+      final position = await _requestCurrentPosition(allowLastKnown: false);
+      if (!mounted) return;
+      setState(() => _currentPosition = position);
+      if (_mapController == null) {
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.locationCurrentLocationFailed)),
+        );
+        return;
+      }
+      await _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(
+          LatLng(position.latitude, position.longitude),
+          14,
+        ),
+      );
+    } catch (_) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.locationCurrentLocationFailed)),
       );
-      return;
+    } finally {
+      if (!mounted) return;
+      setState(() => _loadingPosition = false);
     }
-    await _mapController!.animateCamera(
-      CameraUpdate.newLatLngZoom(
-        LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-        14,
-      ),
-    );
   }
 
-  void _selectArea(String id, double lat, double lng) {
+  void _selectArea(int id, double lat, double lng) {
     setState(() => _selectedAreaId = id);
     _mapController?.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), 12.8));
   }
@@ -300,7 +500,10 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
       if (!context.mounted) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.locationMaxTwoAreas)),
+        SnackBar(
+          content: Text(l10n.locationMaxTwoAreas),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
       );
       return;
     }
@@ -312,7 +515,33 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
           radius: 10000,
           isPrimary: locationState.areas.isEmpty,
         );
-    if (!success || !mounted) return;
+
+    // 에러가 있으면 표시
+    final state = ref.read(locationProvider);
+    if (state.error != null) {
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+      String errorMessage = state.error!;
+
+      // 최대 개수 제한 오류 메시지를 사용자 친화적으로 변환
+      if (errorMessage.contains('Maximum')) {
+        errorMessage = l10n.locationMaxTwoAreas;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+
+    if (!success) return;
+
     await ref.read(locationProvider.notifier).loadMyAreas();
     final updated = ref.read(locationProvider).areas;
     if (updated.isNotEmpty) {
@@ -493,8 +722,9 @@ class _LocationManagePageState extends ConsumerState<LocationManagePage> {
 }
 
 class _BottomSheet extends StatelessWidget {
-  final String? selected;
+  final int? selected;
   final List<LocationArea> areas;
+  final String Function(LocationArea area) labelForArea;
   final ValueChanged<LocationArea> onSelect;
   final VoidCallback? onAdd;
   final ValueChanged<LocationArea> onEdit;
@@ -503,11 +733,14 @@ class _BottomSheet extends StatelessWidget {
   const _BottomSheet({
     required this.selected,
     required this.areas,
+    this.labelForArea = _defaultLabelForArea,
     required this.onSelect,
     required this.onAdd,
     required this.onEdit,
     required this.onRemove,
   });
+
+  static String _defaultLabelForArea(LocationArea area) => area.address;
 
   @override
   Widget build(BuildContext context) {
@@ -556,7 +789,7 @@ class _BottomSheet extends StatelessWidget {
                 children: [
                   for (var i = 0; i < areas.length; i++) ...[
                     _AreaChip(
-                      label: _shortLabel(areas[i].address),
+                      label: _shortLabel(labelForArea(areas[i])),
                       selected: areas[i].id != null && areas[i].id == selected,
                       onTap: () => onSelect(areas[i]),
                       onLongPress: () => onEdit(areas[i]),
@@ -581,9 +814,7 @@ class _BottomSheet extends StatelessWidget {
   }
 
   static String _shortLabel(String address) {
-    final parts = address.split(' ').where((p) => p.trim().isNotEmpty).toList();
-    if (parts.isEmpty) return address;
-    return parts.length >= 2 ? parts.sublist(parts.length - 2).join(' ') : parts.last;
+    return shortLocationLabel(address, maxParts: 2);
   }
 }
 

@@ -1,7 +1,16 @@
 import 'package:dio/dio.dart';
 
+// 커스텀 예외 클래스
+class LocationAreaLimitException implements Exception {
+  final String message;
+  LocationAreaLimitException(this.message);
+
+  @override
+  String toString() => message;
+}
+
 class LocationArea {
-  final String? id;
+  final int? id;
   final double latitude;
   final double longitude;
   final String address;
@@ -21,7 +30,7 @@ class LocationArea {
 
   factory LocationArea.fromJson(Map<String, dynamic> json) {
     return LocationArea(
-      id: json['id'] as String?,
+      id: _parseOptionalId(json['id']),
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       address: json['address'] as String,
@@ -46,6 +55,13 @@ class LocationArea {
   }
 }
 
+int? _parseOptionalId(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString());
+}
+
 class LocationRepository {
   final Dio _dio;
 
@@ -65,6 +81,13 @@ class LocationRepository {
         throw Exception('Failed to create area: ${response.statusMessage}');
       }
     } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        final errorMessage = e.response?.data['error'] ?? e.response?.data['message'];
+        if (errorMessage != null && errorMessage.toString().contains('Maximum')) {
+          throw LocationAreaLimitException(errorMessage.toString());
+        }
+        throw Exception(errorMessage ?? 'Invalid request');
+      }
       throw Exception('Network error: ${e.message}');
     }
   }
@@ -81,12 +104,19 @@ class LocationRepository {
         throw Exception('Failed to get areas: ${response.statusMessage}');
       }
     } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        final errorMessage = e.response?.data['error'] ?? e.response?.data['message'];
+        if (errorMessage != null && errorMessage.toString().contains('Maximum')) {
+          throw LocationAreaLimitException(errorMessage.toString());
+        }
+        throw Exception(errorMessage ?? 'Invalid request');
+      }
       throw Exception('Network error: ${e.message}');
     }
   }
 
   /// 지역 수정
-  Future<LocationArea> updateArea(String areaId, LocationArea area) async {
+  Future<LocationArea> updateArea(int areaId, LocationArea area) async {
     try {
       final response = await _dio.put(
         '/api/location/areas/$areaId',
@@ -104,7 +134,7 @@ class LocationRepository {
   }
 
   /// 지역 GPS 인증
-  Future<void> verifyArea(String areaId, double latitude, double longitude) async {
+  Future<void> verifyArea(int areaId, double latitude, double longitude) async {
     try {
       final response = await _dio.post(
         '/api/location/areas/$areaId/verify',
@@ -123,7 +153,7 @@ class LocationRepository {
   }
 
   /// 지역 삭제
-  Future<void> deleteArea(String areaId) async {
+  Future<void> deleteArea(int areaId) async {
     try {
       final response = await _dio.delete('/api/location/areas/$areaId');
 

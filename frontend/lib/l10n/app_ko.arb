@@ -407,5 +407,13 @@
         "type": "int"
       }
     }
-  }
+  },
+  "alreadyLiked": "이미 좋아요를 보냈습니다",
+  "alreadyBoosted": "이미 부스트를 보냈습니다",
+  "cancelAction": "취소",
+  "cancelConfirm": "정말 취소하시겠습니까?",
+  "actionCanceled": "취소되었습니다",
+  "locationNotSet": "내 동네를 설정해주세요",
+  "locationNotSetMessage": "거리 필터를 사용하려면 먼저 내 동네를 설정해야 합니다.",
+  "goToSettings": "설정하러 가기"
 }

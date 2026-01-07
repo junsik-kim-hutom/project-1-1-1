@@ -406,5 +406,13 @@
         "type": "int"
       }
     }
-  }
+  },
+  "alreadyLiked": "既にいいね！を送っています",
+  "alreadyBoosted": "既にスーパーいいね！を送っています",
+  "cancelAction": "キャンセル",
+  "cancelConfirm": "本当にキャンセルしますか？",
+  "actionCanceled": "キャンセルしました",
+  "locationNotSet": "近所を設定してください",
+  "locationNotSetMessage": "距離フィルターを使用するには、まず近所を設定する必要があります。",
+  "goToSettings": "設定へ"
 }

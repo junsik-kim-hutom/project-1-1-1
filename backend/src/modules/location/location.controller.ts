@@ -42,9 +42,12 @@ export class LocationController {
         success: true,
         data: areas,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Get location areas error:', error);
-      return res.status(500).json({ error: 'Failed to get location areas' });
+      return res.status(500).json({
+        error: 'Failed to get location areas',
+        message: error.message || 'Unknown error'
+      });
     }
   }
 

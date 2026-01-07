@@ -81,4 +81,17 @@ class MatchingRepository {
 
     throw Exception('Failed to load matching actions');
   }
+
+  Future<void> cancelAction({required int targetUserId}) async {
+    final response = await _dio.delete(
+      ApiConstants.matchingAction,
+      data: {
+        'targetUserId': targetUserId,
+      },
+    );
+
+    if (response.data['success'] != true) {
+      throw Exception('Failed to cancel action');
+    }
+  }
 }

@@ -39,7 +39,7 @@ class HomeAppBar extends ConsumerWidget {
               ],
             ),
             child: const Icon(
-              Icons.favorite_rounded,
+              Icons.auto_awesome_rounded,
               color: AppColors.white,
               size: 24,
             ),

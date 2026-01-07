@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Keep in sync with Flutter splash styling -->
+    <!-- Android 12+ system splash only supports a solid color background -->
+    <color name="splash_background">#FF3B82F6</color>
+    <color name="splash_icon_background">#33FFFFFF</color>
+</resources>

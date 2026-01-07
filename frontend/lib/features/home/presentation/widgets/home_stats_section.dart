@@ -61,6 +61,15 @@ class HomeStatsSection extends ConsumerWidget {
                 const SizedBox(width: 12),
                 _StatCard(
                   icon: Icons.bolt_rounded,
+                  label: l10n.boostsReceived,
+                  value: activity.boostReceived.toString(),
+                  color: AppColors.premium,
+                  onTap: () => context.push(
+                      '/matching/actions?action=SUPER_LIKE&direction=received'),
+                ),
+                const SizedBox(width: 12),
+                _StatCard(
+                  icon: Icons.bolt_rounded,
                   label: l10n.boostsSent,
                   value: activity.boostSent.toString(),
                   color: AppColors.premium,

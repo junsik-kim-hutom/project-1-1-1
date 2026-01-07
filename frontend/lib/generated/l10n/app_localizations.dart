@@ -1941,6 +1941,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'• Minimum 1, maximum {max} images can be registered\n• If you add multiple, please select a main photo\n• Images are uploaded automatically'**
   String profilePhotoGuidelines(int max);
+
+  /// No description provided for @alreadyLiked.
+  ///
+  /// In en, this message translates to:
+  /// **'You already liked this user'**
+  String get alreadyLiked;
+
+  /// No description provided for @alreadyBoosted.
+  ///
+  /// In en, this message translates to:
+  /// **'You already boosted this user'**
+  String get alreadyBoosted;
+
+  /// No description provided for @cancelAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelAction;
+
+  /// No description provided for @cancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel?'**
+  String get cancelConfirm;
+
+  /// No description provided for @actionCanceled.
+  ///
+  /// In en, this message translates to:
+  /// **'Canceled'**
+  String get actionCanceled;
+
+  /// No description provided for @locationNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Please set your neighborhood'**
+  String get locationNotSet;
+
+  /// No description provided for @locationNotSetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to set your neighborhood first to use distance filters.'**
+  String get locationNotSetMessage;
+
+  /// No description provided for @goToSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Settings'**
+  String get goToSettings;
 }
 
 class _AppLocalizationsDelegate

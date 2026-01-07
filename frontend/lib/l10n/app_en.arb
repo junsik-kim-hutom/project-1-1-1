@@ -408,5 +408,13 @@
         "type": "int"
       }
     }
-  }
+  },
+  "alreadyLiked": "You already liked this user",
+  "alreadyBoosted": "You already boosted this user",
+  "cancelAction": "Cancel",
+  "cancelConfirm": "Are you sure you want to cancel?",
+  "actionCanceled": "Canceled",
+  "locationNotSet": "Please set your neighborhood",
+  "locationNotSetMessage": "You need to set your neighborhood first to use distance filters.",
+  "goToSettings": "Go to Settings"
 }

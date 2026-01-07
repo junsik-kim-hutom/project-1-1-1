@@ -959,4 +959,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String profilePhotoGuidelines(int max) {
     return '• 最小1枚、最大$max枚まで登録できます\n• 複数枚登録する場合、メイン写真を選択してください\n• 画像は自動的にアップロードされます';
   }
+
+  @override
+  String get alreadyLiked => '既にいいね！を送っています';
+
+  @override
+  String get alreadyBoosted => '既にスーパーいいね！を送っています';
+
+  @override
+  String get cancelAction => 'キャンセル';
+
+  @override
+  String get cancelConfirm => '本当にキャンセルしますか？';
+
+  @override
+  String get actionCanceled => 'キャンセルしました';
+
+  @override
+  String get locationNotSet => '近所を設定してください';
+
+  @override
+  String get locationNotSetMessage => '距離フィルターを使用するには、まず近所を設定する必要があります。';
+
+  @override
+  String get goToSettings => '設定へ';
 }

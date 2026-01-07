@@ -9,5 +9,6 @@ router.get('/', authMiddleware, (req, res) => controller.getCandidates(req, res)
 router.get('/activity', authMiddleware, (req, res) => controller.getMyActivity(req, res));
 router.get('/actions', authMiddleware, (req, res) => controller.getActionUsers(req, res));
 router.post('/action', authMiddleware, (req, res) => controller.recordAction(req, res));
+router.delete('/action', authMiddleware, (req, res) => controller.cancelAction(req, res));
 
 export default router;

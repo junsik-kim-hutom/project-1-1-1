@@ -29,6 +29,8 @@ import GoogleMaps
         switch call.method {
         case "isGoogleMapsConfigured":
           result(mapsConfigured)
+        case "getGoogleMapsApiKey":
+          result(mapsConfigured ? trimmedKey : nil)
         default:
           result(FlutterMethodNotImplemented)
         }

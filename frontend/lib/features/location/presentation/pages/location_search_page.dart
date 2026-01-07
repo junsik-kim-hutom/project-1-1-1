@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 
 import '../../../../core/theme/app_text_styles.dart';
+import '../../data/google_geocoding_api.dart';
+import '../../data/location_label_formatter.dart';
+import '../../data/location_query_utils.dart';
 
 class LocationSearchResult {
   final double latitude;
@@ -27,6 +32,9 @@ class LocationSearchPage extends StatefulWidget {
 }
 
 class _LocationSearchPageState extends State<LocationSearchPage> {
+  static const _nativeConfigChannel = MethodChannel('app/native_config');
+  static final _random = Random();
+
   final _controller = TextEditingController();
   Timer? _debounce;
 
@@ -37,10 +45,18 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   List<LocationSearchResult> _results = const [];
   String? _error;
 
+  final _googleGeocoding = GoogleGeocodingApi();
+  String? _googleMapsApiKey;
+  int _searchGeneration = 0;
+  final Map<String, _ReverseGeocodeData> _reverseCache = {};
+
   @override
   void initState() {
     super.initState();
-    _loadNearby();
+    Future.microtask(() async {
+      await _loadGoogleMapsKey();
+      await _loadNearby();
+    });
   }
 
   @override
@@ -107,6 +123,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 250), () async {
       final query = value.trim();
+      final generation = ++_searchGeneration;
       if (!mounted) return;
       if (query.isEmpty) {
         setState(() {
@@ -123,31 +140,64 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       });
 
       try {
-        final locations = await locationFromAddress(query);
-        final limited = locations.take(10).toList();
-        final results = <LocationSearchResult>[];
-        for (final loc in limited) {
-          final label = await _formatAddress(loc.latitude, loc.longitude) ?? query;
-          results.add(
-            LocationSearchResult(
-              latitude: loc.latitude,
-              longitude: loc.longitude,
-              label: label,
-            ),
-          );
+        final key = _googleMapsApiKey;
+        List<LocationSearchResult> baseResults;
+        if (key != null && key.isNotEmpty) {
+          try {
+            final googleResults = await _googleGeocoding.geocodeAddress(
+              address: query,
+              apiKey: key,
+              language: _googleLanguage(),
+              region: googleRegionForLocale(Localizations.localeOf(context)),
+              limit: 10,
+            );
+            baseResults = [
+              for (final r in googleResults)
+                LocationSearchResult(
+                  latitude: r.location.lat,
+                  longitude: r.location.lng,
+                  label: () {
+                    final label =
+                        (formatNeighborhoodLabelFromGoogleComponents(r.components) ?? r.formattedAddress).trim();
+                    return label.isEmpty ? query : label;
+                  }(),
+                ),
+            ];
+          } catch (_) {
+            final localeIdentifier = _localeIdentifier();
+            final locations = await locationFromAddress(query, localeIdentifier: localeIdentifier);
+            final limited = locations.take(10).toList();
+            baseResults = await _formatLocations(limited, fallbackLabel: query);
+          }
+        } else {
+          final localeIdentifier = _localeIdentifier();
+          final locations = await locationFromAddress(query, localeIdentifier: localeIdentifier);
+          final limited = locations.take(10).toList();
+          baseResults = await _formatLocations(limited, fallbackLabel: query);
         }
-        if (!mounted) return;
-        setState(() {
-          _results = _uniqueByLabel(results);
-        });
+
+        var unique = _uniqueByLabel(baseResults);
+
+        if (unique.length <= 1) {
+          final expanded = await _expandAdministrativeQuery(
+            query: query,
+            generation: generation,
+          );
+          if (expanded.isNotEmpty) {
+            unique = _uniqueByLabel([...expanded, ...unique]);
+          }
+        }
+
+        if (!mounted || generation != _searchGeneration) return;
+        setState(() => _results = unique.take(30).toList());
       } catch (e) {
-        if (!mounted) return;
+        if (!mounted || generation != _searchGeneration) return;
         setState(() {
           _error = '${AppLocalizations.of(context)!.locationSearchFailed} $e';
           _results = const [];
         });
       } finally {
-        if (!mounted) return;
+        if (!mounted || generation != _searchGeneration) return;
         setState(() {
           _isSearching = false;
         });
@@ -155,48 +205,303 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     });
   }
 
+  Future<void> _loadGoogleMapsKey() async {
+    try {
+      final key = await _nativeConfigChannel.invokeMethod<String>('getGoogleMapsApiKey');
+      final trimmed = key?.trim();
+      if (!mounted) return;
+      setState(() => _googleMapsApiKey = (trimmed == null || trimmed.isEmpty) ? null : trimmed);
+    } catch (_) {
+      // ignore: optional enhancement
+    }
+  }
+
+  String _localeIdentifier() {
+    final locale = Localizations.localeOf(context);
+    final country = (locale.countryCode ?? '').trim();
+    if (country.isEmpty) return locale.languageCode;
+    return '${locale.languageCode}_$country';
+  }
+
+  String _googleLanguage() => Localizations.localeOf(context).languageCode;
+
+  bool _looksLikeAdministrativeQuery(String query) {
+    return looksLikeAdministrativeQuery(query, Localizations.localeOf(context));
+  }
+
+  Future<List<LocationSearchResult>> _formatLocations(
+    List<Location> locations, {
+    required String fallbackLabel,
+  }) async {
+    final results = <LocationSearchResult>[];
+    // keep concurrency modest to avoid platform geocoder throttling
+    const batchSize = 4;
+    for (var i = 0; i < locations.length; i += batchSize) {
+      final batch = locations.skip(i).take(batchSize).toList();
+      final batchResults = await Future.wait(
+        batch.map((loc) async {
+          final label = await _formatAddress(loc.latitude, loc.longitude) ?? fallbackLabel;
+          return LocationSearchResult(
+            latitude: loc.latitude,
+            longitude: loc.longitude,
+            label: label,
+          );
+        }),
+      );
+      results.addAll(batchResults);
+    }
+    return results;
+  }
+
   Future<String?> _formatAddress(double lat, double lng) async {
     try {
-      final placemarks = await placemarkFromCoordinates(lat, lng);
-      if (placemarks.isEmpty) return null;
-      final p = placemarks.first;
-      final parts = <String>[
-        if ((p.administrativeArea ?? '').isNotEmpty) p.administrativeArea!,
-        if ((p.subAdministrativeArea ?? '').isNotEmpty) p.subAdministrativeArea!,
-        if ((p.locality ?? '').isNotEmpty) p.locality!,
-        if ((p.subLocality ?? '').isNotEmpty) p.subLocality!,
-      ];
-      if (parts.isEmpty) return null;
-      return parts.join(' ');
+      final p = await _bestPlacemark(lat, lng);
+      if (p == null) return null;
+      return formatNeighborhoodLabelFromPlacemark(p);
     } catch (_) {
       return null;
     }
   }
 
-  Future<List<LocationSearchResult>> _reverseGeocodeCluster(double lat, double lng) async {
-    // Sample nearby points to emulate "근처 동네" list without a dedicated POI API.
-    const offsets = <List<double>>[
-      [0.0, 0.0],
-      [0.006, 0.0],
-      [-0.006, 0.0],
-      [0.0, 0.006],
-      [0.0, -0.006],
-      [0.008, 0.004],
-      [-0.008, -0.004],
-    ];
+  Future<Placemark?> _bestPlacemark(double lat, double lng) async {
+    final placemarks = await placemarkFromCoordinates(
+      lat,
+      lng,
+      localeIdentifier: _localeIdentifier(),
+    );
+    if (placemarks.isEmpty) return null;
 
-    final results = <LocationSearchResult>[];
-    for (final o in offsets) {
-      final lat2 = lat + o[0];
-      final lng2 = lng + o[1];
-      final label = await _formatAddress(lat2, lng2);
-      if (label == null || label.trim().isEmpty) continue;
-      results.add(
-        LocationSearchResult(latitude: lat2, longitude: lng2, label: label),
-      );
+    int score(Placemark p) {
+      var s = 0;
+      if ((p.subLocality ?? '').trim().isNotEmpty) s += 10;
+      if ((p.locality ?? '').trim().isNotEmpty) s += 6;
+      if ((p.thoroughfare ?? '').trim().isNotEmpty) s += 3;
+      if ((p.name ?? '').trim().isNotEmpty) s += 1;
+      return s;
     }
 
-    return _uniqueByLabel(results);
+    Placemark best = placemarks.first;
+    var bestScore = score(best);
+    for (final p in placemarks.skip(1)) {
+      final s = score(p);
+      if (s > bestScore) {
+        best = p;
+        bestScore = s;
+      }
+    }
+    return best;
+  }
+
+  String _areaKeyFromPlacemark(Placemark p) {
+    final admin = (p.administrativeArea ?? '').trim();
+    final subAdmin = (p.subAdministrativeArea ?? '').trim();
+    return '$admin|$subAdmin';
+  }
+
+  String _reverseCacheKey(double lat, double lng) {
+    // Round to reduce cache fragmentation from jitter.
+    final rLat = (lat * 1e5).round() / 1e5;
+    final rLng = (lng * 1e5).round() / 1e5;
+    final locale = Localizations.localeOf(context);
+    return '${locale.toLanguageTag()}|$rLat,$rLng';
+  }
+
+  Future<_ReverseGeocodeData?> _reverseGeocode(double lat, double lng) async {
+    final key = _googleMapsApiKey;
+    if (key == null || key.isEmpty) return null;
+
+    final cacheKey = _reverseCacheKey(lat, lng);
+    final cached = _reverseCache[cacheKey];
+    if (cached != null) return cached;
+
+    try {
+      final results = await _googleGeocoding.reverseGeocode(
+        latitude: lat,
+        longitude: lng,
+        apiKey: key,
+        language: _googleLanguage(),
+        region: googleRegionForLocale(Localizations.localeOf(context)),
+        limit: 1,
+      );
+      if (results.isEmpty) return null;
+
+      final r = results.first;
+      final label = (formatNeighborhoodLabelFromGoogleComponents(r.components) ?? '').trim();
+      final finalLabel = label.isNotEmpty ? label : r.formattedAddress.trim();
+      if (finalLabel.isEmpty) return null;
+
+      final out = _ReverseGeocodeData(
+        label: finalLabel,
+        areaKey: googleAreaKeyFromComponents(r.components),
+      );
+      _reverseCache[cacheKey] = out;
+      return out;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<List<LocationSearchResult>> _expandAdministrativeQuery({
+    required String query,
+    required int generation,
+  }) async {
+    if (!_looksLikeAdministrativeQuery(query)) return const [];
+    final key = _googleMapsApiKey;
+    if (key == null || key.isEmpty) return const [];
+
+    GoogleViewport? viewport;
+    try {
+      viewport = await _googleGeocoding.geocodeViewport(
+        address: query,
+        apiKey: key,
+        language: _googleLanguage(),
+        region: googleRegionForLocale(Localizations.localeOf(context)),
+      );
+    } catch (_) {
+      return const [];
+    }
+
+    if (!mounted || generation != _searchGeneration) return const [];
+    if (viewport == null) return const [];
+
+    // Avoid sampling huge areas (e.g., an entire city/province)
+    if (viewport.latSpan > 0.45 || viewport.lngSpan > 0.45) return const [];
+
+    final center = viewport.center;
+    String? expectedAreaKey;
+    try {
+      final centerReverse = await _reverseGeocode(center.lat, center.lng);
+      expectedAreaKey = centerReverse?.areaKey;
+    } catch (_) {
+      expectedAreaKey = null;
+    }
+    if (!mounted || generation != _searchGeneration) return const [];
+    if (expectedAreaKey == null) {
+      Placemark? centerPlacemark;
+      try {
+        centerPlacemark = await _bestPlacemark(center.lat, center.lng);
+      } catch (_) {
+        centerPlacemark = null;
+      }
+      if (!mounted || generation != _searchGeneration) return const [];
+      expectedAreaKey = centerPlacemark == null ? null : _areaKeyFromPlacemark(centerPlacemark);
+    }
+    final locale = Localizations.localeOf(context);
+
+    final points = _sampleViewportPoints(viewport, maxPoints: 36);
+    final candidates = <LocationSearchResult>[];
+
+    const batchSize = 4;
+    for (var i = 0; i < points.length; i += batchSize) {
+      final batch = points.skip(i).take(batchSize).toList();
+      final batchResults = await Future.wait(
+        batch.map((p) async {
+          final reverse = await _reverseGeocode(p.$1, p.$2);
+          if (reverse != null) {
+            if (expectedAreaKey != null && reverse.areaKey != expectedAreaKey) return null;
+            if (!labelMatchesQuery(reverse.label, query, locale)) return null;
+            return LocationSearchResult(latitude: p.$1, longitude: p.$2, label: reverse.label);
+          }
+
+          Placemark? pm;
+          try {
+            pm = await _bestPlacemark(p.$1, p.$2);
+          } catch (_) {
+            pm = null;
+          }
+          if (pm == null) return null;
+
+          if (expectedAreaKey != null && _areaKeyFromPlacemark(pm) != expectedAreaKey) return null;
+
+          final label = formatNeighborhoodLabelFromPlacemark(pm);
+          if (label == null || label.trim().isEmpty) return null;
+
+          // If user typed a district name, keep results that include it.
+          if (!labelMatchesQuery(label, query, locale)) return null;
+
+          return LocationSearchResult(latitude: p.$1, longitude: p.$2, label: label);
+        }),
+      );
+      for (final r in batchResults) {
+        if (r != null) candidates.add(r);
+      }
+      if (!mounted || generation != _searchGeneration) return const [];
+      if (_uniqueByLabel(candidates).length >= 25) break;
+    }
+
+    final unique = _uniqueByLabel(candidates);
+    unique.sort((a, b) => a.label.compareTo(b.label));
+    return unique.take(30).toList();
+  }
+
+  List<(double, double)> _sampleViewportPoints(GoogleViewport viewport, {required int maxPoints}) {
+    final latMin = min(viewport.southwest.lat, viewport.northeast.lat);
+    final latMax = max(viewport.southwest.lat, viewport.northeast.lat);
+    final lngMin = min(viewport.southwest.lng, viewport.northeast.lng);
+    final lngMax = max(viewport.southwest.lng, viewport.northeast.lng);
+
+    // Prefer a modest grid; larger areas will be rejected earlier.
+    const grid = 6; // 36 points
+    final points = <(double, double)>[];
+    for (var r = 0; r < grid; r++) {
+      for (var c = 0; c < grid; c++) {
+        final latT = (r + 0.5) / grid;
+        final lngT = (c + 0.5) / grid;
+        var lat = latMin + (latMax - latMin) * latT;
+        var lng = lngMin + (lngMax - lngMin) * lngT;
+
+        // Tiny random jitter to avoid hitting the same boundary lines repeatedly.
+        lat += (viewport.latSpan / 300) * (_random.nextDouble() - 0.5);
+        lng += (viewport.lngSpan / 300) * (_random.nextDouble() - 0.5);
+
+        points.add((lat, lng));
+      }
+    }
+    points.shuffle(_random);
+    return points.take(maxPoints).toList();
+  }
+
+  Future<List<LocationSearchResult>> _reverseGeocodeCluster(double lat, double lng) async {
+    // Sample points around the user to collect multiple neighboring "동네" entries.
+    const radii = <double>[0.0, 0.004, 0.008, 0.012, 0.016]; // ~0m, 400m..1.6km
+    const dirs = <List<double>>[
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [-1, 1],
+      [1, -1],
+      [-1, -1],
+    ];
+
+    final points = <(double, double)>[(lat, lng)];
+    for (final r in radii.skip(1)) {
+      for (final d in dirs) {
+        points.add((lat + r * d[0], lng + r * d[1]));
+      }
+    }
+
+    final results = <LocationSearchResult>[];
+    const batchSize = 4;
+    for (var i = 0; i < points.length; i += batchSize) {
+      final batch = points.skip(i).take(batchSize).toList();
+      final batchResults = await Future.wait(
+        batch.map((p) async {
+          final reverse = await _reverseGeocode(p.$1, p.$2);
+          final label = reverse?.label ?? await _formatAddress(p.$1, p.$2);
+          if (label == null || label.trim().isEmpty) return null;
+          return LocationSearchResult(latitude: p.$1, longitude: p.$2, label: label);
+        }),
+      );
+      for (final r in batchResults) {
+        if (r != null) results.add(r);
+      }
+    }
+
+    final unique = _uniqueByLabel(results);
+    unique.sort((a, b) => a.label.compareTo(b.label));
+    return unique.take(25).toList();
   }
 
   List<LocationSearchResult> _uniqueByLabel(List<LocationSearchResult> items) {
@@ -343,6 +648,16 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       ),
     );
   }
+}
+
+class _ReverseGeocodeData {
+  final String label;
+  final String areaKey;
+
+  const _ReverseGeocodeData({
+    required this.label,
+    required this.areaKey,
+  });
 }
 
 class _SearchField extends StatelessWidget {

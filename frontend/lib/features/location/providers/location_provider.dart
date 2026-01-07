@@ -60,6 +60,13 @@ class LocationNotifier extends StateNotifier<LocationState> {
         isLoading: false,
       );
       return true;
+    } on LocationAreaLimitException catch (e) {
+      // 최대 개수 제한 오류 - 사용자에게 알림
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
+      return false;
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -78,6 +85,12 @@ class LocationNotifier extends StateNotifier<LocationState> {
         areas: areas,
         isLoading: false,
       );
+    } on LocationAreaLimitException catch (e) {
+      // 최대 개수 제한 오류 - 기존 데이터 유지하고 에러 메시지만 설정
+      state = state.copyWith(
+        isLoading: false,
+        error: e.toString(),
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -88,7 +101,7 @@ class LocationNotifier extends StateNotifier<LocationState> {
 
   /// 지역 수정
   Future<bool> updateArea(
-    String areaId, {
+    int areaId, {
     required double latitude,
     required double longitude,
     required String address,
@@ -124,7 +137,7 @@ class LocationNotifier extends StateNotifier<LocationState> {
   }
 
   /// 지역 GPS 인증
-  Future<bool> verifyArea(String areaId, double latitude, double longitude) async {
+  Future<bool> verifyArea(int areaId, double latitude, double longitude) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       await _locationRepository.verifyArea(areaId, latitude, longitude);
@@ -140,7 +153,7 @@ class LocationNotifier extends StateNotifier<LocationState> {
   }
 
   /// 지역 삭제
-  Future<bool> deleteArea(String areaId) async {
+  Future<bool> deleteArea(int areaId) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
       await _locationRepository.deleteArea(areaId);

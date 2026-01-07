@@ -94,4 +94,25 @@ export class MatchingController {
       return res.status(400).json({ error: error.message ?? 'Failed to get action users' });
     }
   }
+
+  async cancelAction(req: AuthRequest, res: Response) {
+    try {
+      const userId = req.user?.userId;
+      if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
+      const rawTargetUserId = req.body?.targetUserId;
+      const targetUserId = Number(rawTargetUserId);
+
+      if (!Number.isInteger(targetUserId) || targetUserId <= 0) {
+        return res.status(400).json({ error: 'targetUserId is required' });
+      }
+
+      await matchingService.cancelAction(userId, targetUserId);
+
+      return res.status(200).json({ success: true });
+    } catch (error: any) {
+      console.error('Cancel matching action error:', error);
+      return res.status(400).json({ error: error.message ?? 'Failed to cancel action' });
+    }
+  }
 }

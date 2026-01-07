@@ -63,6 +63,14 @@ export class MatchingService {
       select: { action: true },
     });
 
+    // Prevent duplicate LIKE or SUPER_LIKE actions
+    if (
+      (input.action === 'LIKE' || input.action === 'SUPER_LIKE') &&
+      previous?.action === input.action
+    ) {
+      throw new Error(`Already ${input.action === 'LIKE' ? 'liked' : 'boosted'} this user`);
+    }
+
     // Enforce mutual blocks at write time too.
     const isBlocked = await prisma.userBlock.findFirst({
       where: {
@@ -183,6 +191,48 @@ export class MatchingService {
       boostReceived,
       ongoingChats,
     };
+  }
+
+  async cancelAction(userId: number, targetUserId: number): Promise<void> {
+    if (userId === targetUserId) {
+      throw new Error('Invalid target user');
+    }
+
+    // Check if there's a previous action to cancel
+    const previous = await prisma.matchingHistory.findUnique({
+      where: {
+        userId_targetUserId: { userId, targetUserId },
+      },
+      select: { action: true },
+    });
+
+    if (!previous) {
+      throw new Error('No action to cancel');
+    }
+
+    // Only allow canceling LIKE or SUPER_LIKE
+    if (previous.action !== 'LIKE' && previous.action !== 'SUPER_LIKE') {
+      throw new Error('Cannot cancel this action type');
+    }
+
+    // Delete the matching history
+    await prisma.matchingHistory.delete({
+      where: {
+        userId_targetUserId: { userId, targetUserId },
+      },
+    });
+
+    // Note: We keep the action log for audit purposes
+    // Optionally, delete related notifications
+    await prisma.notification.deleteMany({
+      where: {
+        userId: targetUserId,
+        relatedUserId: userId,
+        type: {
+          in: ['MATCH_LIKE', 'MATCH_SUPER_LIKE'],
+        },
+      },
+    });
   }
 
   async getActionUsers(

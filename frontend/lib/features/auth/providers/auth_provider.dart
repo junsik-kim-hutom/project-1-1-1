@@ -61,7 +61,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
         // If hasProfile is null or false, verify with backend to avoid stale state.
         if (hasProfile != true) {
-          print('[AUTH_PROVIDER] hasProfile is not true, verifying with backend');
+          print(
+              '[AUTH_PROVIDER] hasProfile is not true, verifying with backend');
           try {
             hasProfile = await _authRepository.checkProfileFromBackend();
             print('[AUTH_PROVIDER] hasProfile from backend: $hasProfile');
@@ -74,11 +75,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
             );
             print('[AUTH_PROVIDER] Saved hasProfile to storage: $hasProfile');
           } catch (e) {
-            print('[AUTH_PROVIDER] Failed to fetch hasProfile from backend: $e');
+            print(
+                '[AUTH_PROVIDER] Failed to fetch hasProfile from backend: $e');
             // Keep existing value if backend call fails.
-            if (hasProfile == null) {
-              hasProfile = null;
-            }
+            hasProfile ??= null;
           }
         }
 
@@ -87,7 +87,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           hasProfile: hasProfile,
           isLoading: false,
         );
-        print('[AUTH_PROVIDER] State updated - isAuthenticated: true, hasProfile: $hasProfile');
+        print(
+            '[AUTH_PROVIDER] State updated - isAuthenticated: true, hasProfile: $hasProfile');
       } else {
         state = state.copyWith(
           isAuthenticated: false,
@@ -112,14 +113,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final response = await _authRepository.googleLogin(idToken);
-      print('[AUTH_PROVIDER] Login response received - hasProfile: ${response.hasProfile}');
+      print(
+          '[AUTH_PROVIDER] Login response received - hasProfile: ${response.hasProfile}');
 
       await _authRepository.saveTokens(
         response.accessToken,
         response.refreshToken,
         hasProfile: response.hasProfile,
       );
-      print('[AUTH_PROVIDER] Tokens saved with hasProfile: ${response.hasProfile}');
+      print(
+          '[AUTH_PROVIDER] Tokens saved with hasProfile: ${response.hasProfile}');
 
       state = state.copyWith(
         user: response.user,
@@ -127,7 +130,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         hasProfile: response.hasProfile,
         isLoading: false,
       );
-      print('[AUTH_PROVIDER] State updated with hasProfile: ${response.hasProfile}');
+      print(
+          '[AUTH_PROVIDER] State updated with hasProfile: ${response.hasProfile}');
 
       return response;
     } catch (e) {

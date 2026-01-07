@@ -172,10 +172,15 @@ class _ChatListPageState extends ConsumerState<ChatListPage> {
                       color: AppColors.white, size: 28),
                 ),
                 confirmDismiss: (direction) async {
-                  return _confirmDeleteAll(context);
+                  final confirmed = await _confirmDeleteAll(context);
+                  if (confirmed) {
+                    // Remove the item immediately before dismissal animation completes
+                    await _deleteRoomAllMessages(room: room);
+                  }
+                  return confirmed;
                 },
                 onDismissed: (_) {
-                  _deleteRoomAllMessages(room: room);
+                  // Item already removed in confirmDismiss
                 },
                 child: ChatListItem(
                   partnerName: partnerName,

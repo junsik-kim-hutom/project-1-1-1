@@ -9,6 +9,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../providers/matching_provider.dart';
 import '../../data/models/match_candidate_model.dart';
 import '../../../chat/providers/chat_provider.dart';
+import '../../../location/providers/location_provider.dart';
 import '../widgets/matching_app_bar.dart';
 import '../widgets/matching_filter_bar.dart';
 import '../widgets/matching_card_stack.dart';
@@ -36,6 +37,15 @@ class _MatchingListPageState extends ConsumerState<MatchingListPage> {
   bool _isCardView = true;
 
   @override
+  void initState() {
+    super.initState();
+    // Load location areas when the page initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(locationProvider.notifier).loadMyAreas();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -56,7 +66,16 @@ class _MatchingListPageState extends ConsumerState<MatchingListPage> {
             // Distance Filter (Replace local widget with component)
             MatchingFilterBar(
               selectedDistance: _selectedDistance,
-              onDistanceChanged: (distance) {
+              onDistanceChanged: (distance) async {
+                // Check if user has location area set when selecting distance filter (not "전체")
+                if (distance > 0) {
+                  final locationState = ref.read(locationProvider);
+                  if (locationState.areas.isEmpty) {
+                    await _showLocationNotSetDialog(context);
+                    return;
+                  }
+                }
+
                 setState(() {
                   _selectedDistance = distance;
                   _currentCardIndex = 0;
@@ -206,9 +225,20 @@ class _MatchingListPageState extends ConsumerState<MatchingListPage> {
       );
     } catch (e) {
       if (!mounted) return;
+      final errorMessage = e.toString();
+      final String displayMessage;
+
+      if (errorMessage.contains('liked')) {
+        displayMessage = l10n.alreadyLiked;
+      } else if (errorMessage.contains('boosted')) {
+        displayMessage = l10n.alreadyBoosted;
+      } else {
+        displayMessage = '${l10n.error}: $e';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${l10n.error}: $e'),
+          content: Text(displayMessage),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -243,9 +273,20 @@ class _MatchingListPageState extends ConsumerState<MatchingListPage> {
       );
     } catch (e) {
       if (!mounted) return;
+      final errorMessage = e.toString();
+      final String displayMessage;
+
+      if (errorMessage.contains('liked')) {
+        displayMessage = l10n.alreadyLiked;
+      } else if (errorMessage.contains('boosted')) {
+        displayMessage = l10n.alreadyBoosted;
+      } else {
+        displayMessage = '${l10n.error}: $e';
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${l10n.error}: $e'),
+          content: Text(displayMessage),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -294,6 +335,32 @@ class _MatchingListPageState extends ConsumerState<MatchingListPage> {
         ),
       );
     }
+  }
+
+  Future<void> _showLocationNotSetDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.locationNotSet),
+        content: Text(l10n.locationNotSetMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.push('/profile/settings/location');
+            },
+            style: TextButton.styleFrom(foregroundColor: AppColors.primary),
+            child: Text(l10n.goToSettings),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showFilterDialog() {

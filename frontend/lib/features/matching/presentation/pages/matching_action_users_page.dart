@@ -65,6 +65,8 @@ class MatchingActionUsersPage extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final user = users[index];
+              final isSent = direction == 'sent';
+
               return Container(
                 decoration: BoxDecoration(
                   color: AppColors.white,
@@ -81,7 +83,16 @@ class MatchingActionUsersPage extends ConsumerWidget {
                     user.age != null ? '${user.age}${l10n.years}' : '-',
                     style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
                   ),
-                  trailing: const Icon(Icons.chevron_right_rounded, color: AppColors.textHint),
+                  trailing: isSent
+                      ? TextButton(
+                          onPressed: () => _handleCancel(context, ref, user.userId, l10n),
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.error,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                          child: Text(l10n.cancelAction),
+                        )
+                      : const Icon(Icons.chevron_right_rounded, color: AppColors.textHint),
                   onTap: () {},
                 ),
               );
@@ -103,6 +114,62 @@ class MatchingActionUsersPage extends ConsumerWidget {
         return l10n.pass;
       default:
         return l10n.myActivity;
+    }
+  }
+
+  Future<void> _handleCancel(
+    BuildContext context,
+    WidgetRef ref,
+    int targetUserId,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.cancelAction),
+        content: Text(l10n.cancelConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: Text(l10n.confirm),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await ref.read(matchingRepositoryProvider).cancelAction(targetUserId: targetUserId);
+
+      if (!context.mounted) return;
+
+      // Refresh the list
+      ref.invalidate(matchingActionUsersProvider(
+        MatchingActionUsersQuery(action: action, direction: direction, limit: 50),
+      ));
+      ref.invalidate(matchingActivityProvider);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.actionCanceled),
+          duration: const Duration(milliseconds: 1500),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${l10n.error}: $e'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }

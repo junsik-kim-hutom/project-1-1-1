@@ -30,6 +30,22 @@ class MainActivity : FlutterActivity() {
                             result.success(false)
                         }
                     }
+                    "getGoogleMapsApiKey" -> {
+                        try {
+                            val appInfo = packageManager.getApplicationInfo(
+                                packageName,
+                                PackageManager.GET_META_DATA
+                            )
+                            val rawKey =
+                                appInfo.metaData?.getString("com.google.android.geo.API_KEY") ?: ""
+                            val trimmed = rawKey.trim()
+                            val looksUnresolved = trimmed.contains("\${") || trimmed.contains("$(")
+                            val configured = trimmed.isNotEmpty() && !looksUnresolved
+                            result.success(if (configured) trimmed else null)
+                        } catch (e: Exception) {
+                            result.success(null)
+                        }
+                    }
 
                     else -> result.notImplemented()
                 }

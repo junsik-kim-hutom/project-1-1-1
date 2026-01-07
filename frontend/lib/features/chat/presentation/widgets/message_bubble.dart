@@ -42,12 +42,11 @@ class MessageBubble extends StatelessWidget {
       child: Row(
         mainAxisAlignment:
             isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment:
-            CrossAxisAlignment.start, // Changed to start for avatar alignment
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (isSelectionMode && isMine)
             Padding(
-              padding: const EdgeInsets.only(right: 8, top: 12),
+              padding: const EdgeInsets.only(right: 8, bottom: 4),
               child: Checkbox(
                 value: isSelected,
                 activeColor: AppColors.primary,
@@ -60,7 +59,7 @@ class MessageBubble extends StatelessWidget {
           // Partner Avatar
           if (!isMine) ...[
             Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.only(right: 8, bottom: 20),
               child: CircleAvatar(
                 radius: 18,
                 backgroundColor: AppColors.surfaceVariant,
@@ -75,60 +74,55 @@ class MessageBubble extends StatelessWidget {
             ),
           ],
 
-          if (isMine) ...[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+          Flexible(
+            child: Column(
+              crossAxisAlignment:
+                  isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
               children: [
-                if (!isRead)
-                  Text(
-                    '1',
-                    style: AppTextStyles.labelSmall
-                        .copyWith(color: AppColors.primary),
+                GestureDetector(
+                  onTap: isSelectionMode ? onToggleSelection : null,
+                  onLongPress: onToggleSelection,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.primaryLight.withValues(alpha: 0.3)
+                          : bubbleColor,
+                      borderRadius: borderRadius,
+                      border: isSelected
+                          ? Border.all(color: AppColors.primary, width: 2)
+                          : null,
+                    ),
+                    child: Text(
+                      message,
+                      style: AppTextStyles.bodyMedium.copyWith(color: textColor),
+                    ),
                   ),
-                const SizedBox(height: 2),
-                Text(
-                  timeText,
-                  style: AppTextStyles.labelSmall
-                      .copyWith(color: AppColors.textHint),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (isMine && !isRead)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Text(
+                          '1',
+                          style: AppTextStyles.labelSmall
+                              .copyWith(color: AppColors.primary),
+                        ),
+                      ),
+                    Text(
+                      timeText,
+                      style: AppTextStyles.labelSmall
+                          .copyWith(color: AppColors.textHint),
+                    ),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(width: 8),
-          ],
-          Flexible(
-            child: GestureDetector(
-              onTap: isSelectionMode ? onToggleSelection : null,
-              onLongPress: onToggleSelection,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.primaryLight.withValues(alpha: 0.3)
-                      : bubbleColor,
-                  borderRadius: borderRadius,
-                  border: isSelected
-                      ? Border.all(color: AppColors.primary, width: 2)
-                      : null,
-                ),
-                child: Text(
-                  message,
-                  style: AppTextStyles.bodyMedium.copyWith(color: textColor),
-                ),
-              ),
-            ),
           ),
-          if (!isMine) ...[
-            const SizedBox(width: 8),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                timeText,
-                style: AppTextStyles.labelSmall
-                    .copyWith(color: AppColors.textHint),
-              ),
-            ),
-          ],
         ],
       ),
     );

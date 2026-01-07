@@ -966,4 +966,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String profilePhotoGuidelines(int max) {
     return '• Minimum 1, maximum $max images can be registered\n• If you add multiple, please select a main photo\n• Images are uploaded automatically';
   }
+
+  @override
+  String get alreadyLiked => 'You already liked this user';
+
+  @override
+  String get alreadyBoosted => 'You already boosted this user';
+
+  @override
+  String get cancelAction => 'Cancel';
+
+  @override
+  String get cancelConfirm => 'Are you sure you want to cancel?';
+
+  @override
+  String get actionCanceled => 'Canceled';
+
+  @override
+  String get locationNotSet => 'Please set your neighborhood';
+
+  @override
+  String get locationNotSetMessage =>
+      'You need to set your neighborhood first to use distance filters.';
+
+  @override
+  String get goToSettings => 'Go to Settings';
 }
