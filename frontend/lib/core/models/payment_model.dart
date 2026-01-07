@@ -6,13 +6,13 @@ import 'enums/payment_status.dart';
 /// v2.0에서 환불 정보 및 메타데이터 필드 추가
 class PaymentModel {
   /// 결제 ID
-  final String id;
+  final int id;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 구독 ID (구독 결제인 경우)
-  final String? subscriptionId;
+  final int? subscriptionId;
 
   /// 결제 방법 (paypay, stripe, toss, kakao_pay, etc.)
   final String paymentMethod;
@@ -79,9 +79,9 @@ class PaymentModel {
   /// JSON → Model
   factory PaymentModel.fromJson(Map<String, dynamic> json) {
     return PaymentModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      subscriptionId: json['subscriptionId'] as String?,
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId']),
+      subscriptionId: _parseNullableId(json['subscriptionId']),
       paymentMethod: json['paymentMethod'] as String,
       amount: (json['amount'] as num).toDouble(),
       currency: json['currency'] as String,
@@ -224,9 +224,9 @@ class PaymentModel {
 
   /// copyWith
   PaymentModel copyWith({
-    String? id,
-    String? userId,
-    String? subscriptionId,
+    int? id,
+    int? userId,
+    int? subscriptionId,
     String? paymentMethod,
     double? amount,
     String? currency,
@@ -267,4 +267,15 @@ class PaymentModel {
   String toString() {
     return 'PaymentModel(id: $id, amount: $formattedAmount, status: ${status.value})';
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
+}
+
+int? _parseNullableId(dynamic value) {
+  if (value == null) return null;
+  return _parseId(value);
 }

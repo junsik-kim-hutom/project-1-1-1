@@ -59,9 +59,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         var hasProfile = await _authRepository.getHasProfile();
         print('[AUTH_PROVIDER] hasProfile from storage: $hasProfile');
 
-        // If hasProfile is null, fetch from backend
-        if (hasProfile == null) {
-          print('[AUTH_PROVIDER] hasProfile is null, fetching from backend');
+        // If hasProfile is null or false, verify with backend to avoid stale state.
+        if (hasProfile != true) {
+          print('[AUTH_PROVIDER] hasProfile is not true, verifying with backend');
           try {
             hasProfile = await _authRepository.checkProfileFromBackend();
             print('[AUTH_PROVIDER] hasProfile from backend: $hasProfile');
@@ -75,8 +75,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
             print('[AUTH_PROVIDER] Saved hasProfile to storage: $hasProfile');
           } catch (e) {
             print('[AUTH_PROVIDER] Failed to fetch hasProfile from backend: $e');
-            // If backend call fails, default to null
-            hasProfile = null;
+            // Keep existing value if backend call fails.
+            if (hasProfile == null) {
+              hasProfile = null;
+            }
           }
         }
 

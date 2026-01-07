@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import 'dart:io';
+import '../../../../core/utils/url_utils.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../providers/image_upload_provider.dart';
 
@@ -24,12 +25,14 @@ class ProfileImageUploadWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProfileImageUploadWidget> createState() => _ProfileImageUploadWidgetState();
+  ConsumerState<ProfileImageUploadWidget> createState() =>
+      _ProfileImageUploadWidgetState();
 }
 
-class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWidget> {
+class _ProfileImageUploadWidgetState
+    extends ConsumerState<ProfileImageUploadWidget> {
   final ImagePicker _picker = ImagePicker();
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   List<String> _uploadedImageUrls = [];
 
   @override
@@ -66,7 +69,8 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
   }
 
   Future<void> _pickAndUploadImage(ImageSource source) async {
-    if (_selectedImages.length + _uploadedImageUrls.length >= widget.maxImages) {
+    if (_selectedImages.length + _uploadedImageUrls.length >=
+        widget.maxImages) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -100,7 +104,8 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
   }
 
   Future<void> _pickAndUploadMultipleImages() async {
-    final remaining = widget.maxImages - _selectedImages.length - _uploadedImageUrls.length;
+    final remaining =
+        widget.maxImages - _selectedImages.length - _uploadedImageUrls.length;
     if (remaining <= 0) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -121,7 +126,8 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
       );
 
       if (images.isNotEmpty && mounted) {
-        final List<File> newImages = images.take(remaining).map((xFile) => File(xFile.path)).toList();
+        final List<File> newImages =
+            images.take(remaining).map((xFile) => File(xFile.path)).toList();
         await _uploadImages(newImages);
 
         if (images.length > remaining && mounted) {
@@ -148,11 +154,15 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
       return;
     }
     try {
-      final url = await ref.read(imageUploadProvider.notifier).uploadSingleImage(image);
+      final url =
+          await ref.read(imageUploadProvider.notifier).uploadSingleImage(image);
       setState(() {
         _uploadedImageUrls.add(url);
       });
       widget.onImagesUploaded(_uploadedImageUrls);
+      if (widget.mainImageIndex == null && _uploadedImageUrls.isNotEmpty) {
+        widget.onMainImageIndexChanged?.call(0);
+      }
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -178,11 +188,15 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
       return;
     }
     try {
-      final urls = await ref.read(imageUploadProvider.notifier).uploadImages(images);
+      final urls =
+          await ref.read(imageUploadProvider.notifier).uploadImages(images);
       setState(() {
         _uploadedImageUrls.addAll(urls);
       });
       widget.onImagesUploaded(_uploadedImageUrls);
+      if (widget.mainImageIndex == null && _uploadedImageUrls.isNotEmpty) {
+        widget.onMainImageIndexChanged?.call(0);
+      }
 
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -359,11 +373,13 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_a_photo, size: 32, color: colorScheme.onSurfaceVariant),
+            Icon(Icons.add_a_photo,
+                size: 32, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 4),
             Text(
               l10n.addPhoto,
-              style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+              style:
+                  TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -390,7 +406,10 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
                   ? Border.all(color: colorScheme.primary, width: 2)
                   : Border.all(color: Colors.transparent, width: 2),
               image: DecorationImage(
-                image: NetworkImage(_uploadedImageUrls[index]),
+                image: NetworkImage(
+                  resolveNetworkUrl(_uploadedImageUrls[index]) ??
+                      _uploadedImageUrls[index],
+                ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -414,16 +433,23 @@ class _ProfileImageUploadWidgetState extends ConsumerState<ProfileImageUploadWid
         Positioned(
           top: 4,
           left: 4,
-          child: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(
-              isMain ? Icons.star : Icons.star_border,
-              color: isMain ? Colors.amber : Colors.white,
-              size: 16,
+          child: Material(
+            color: Colors.transparent,
+            child: InkResponse(
+              onTap: () => _setMainImage(index),
+              radius: 24,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Icon(
+                  isMain ? Icons.star : Icons.star_border,
+                  color: isMain ? Colors.amber : Colors.white,
+                  size: 16,
+                ),
+              ),
             ),
           ),
         ),

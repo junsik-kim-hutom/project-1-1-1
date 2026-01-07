@@ -24,25 +24,29 @@ final eqResultsProvider = FutureProvider<EQResultModel?>((ref) async {
 });
 
 class EQTestState {
-  final Map<String, int> answers;
+  final Map<int, int> answers;
   final int currentQuestionIndex;
   final bool isSubmitting;
+  final bool isAnswerSubmitting;
 
   EQTestState({
     this.answers = const {},
     this.currentQuestionIndex = 0,
     this.isSubmitting = false,
+    this.isAnswerSubmitting = false,
   });
 
   EQTestState copyWith({
-    Map<String, int>? answers,
+    Map<int, int>? answers,
     int? currentQuestionIndex,
     bool? isSubmitting,
+    bool? isAnswerSubmitting,
   }) {
     return EQTestState(
       answers: answers ?? this.answers,
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       isSubmitting: isSubmitting ?? this.isSubmitting,
+      isAnswerSubmitting: isAnswerSubmitting ?? this.isAnswerSubmitting,
     );
   }
 }
@@ -52,8 +56,8 @@ class EQTestNotifier extends StateNotifier<EQTestState> {
 
   EQTestNotifier(this._repository) : super(EQTestState());
 
-  void setAnswer(String questionId, int answer) {
-    final newAnswers = Map<String, int>.from(state.answers);
+  void setAnswer(int questionId, int answer) {
+    final newAnswers = Map<int, int>.from(state.answers);
     newAnswers[questionId] = answer;
     state = state.copyWith(answers: newAnswers);
   }
@@ -72,7 +76,7 @@ class EQTestNotifier extends StateNotifier<EQTestState> {
     }
   }
 
-  Future<void> submitAnswer(String questionId, int answer) async {
+  Future<void> submitAnswer(int questionId, int answer) async {
     try {
       await _repository.submitAnswer(
         questionId: questionId,
@@ -81,6 +85,28 @@ class EQTestNotifier extends StateNotifier<EQTestState> {
       setAnswer(questionId, answer);
     } catch (e) {
       throw Exception('Failed to submit answer: $e');
+    }
+  }
+
+  Future<void> submitAnswerAndAdvance(int questionId, int answer) async {
+    if (state.isAnswerSubmitting) return;
+    try {
+      state = state.copyWith(isAnswerSubmitting: true);
+      await _repository.submitAnswer(
+        questionId: questionId,
+        answer: answer,
+      );
+
+      final newAnswers = Map<int, int>.from(state.answers);
+      newAnswers[questionId] = answer;
+      state = state.copyWith(
+        answers: newAnswers,
+        currentQuestionIndex: state.currentQuestionIndex + 1,
+      );
+    } catch (e) {
+      throw Exception('Failed to submit answer: $e');
+    } finally {
+      state = state.copyWith(isAnswerSubmitting: false);
     }
   }
 

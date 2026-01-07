@@ -4,19 +4,19 @@
 /// v2.0에서 신규 추가 - 그룹 채팅 지원을 위해 user1/user2에서 분리
 class ChatRoomParticipantModel {
   /// ID
-  final String id;
+  final int id;
 
   /// 채팅방 ID
-  final String roomId;
+  final int roomId;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 역할 (owner, admin, member)
   final String role;
 
   /// 마지막으로 읽은 메시지 ID - v2.0 추가
-  final String? lastReadMessageId;
+  final int? lastReadMessageId;
 
   /// 마지막 읽은 시간 - v2.0 추가
   final DateTime? lastReadAt;
@@ -45,11 +45,11 @@ class ChatRoomParticipantModel {
   /// JSON → Model
   factory ChatRoomParticipantModel.fromJson(Map<String, dynamic> json) {
     return ChatRoomParticipantModel(
-      id: json['id'] as String,
-      roomId: json['roomId'] as String,
-      userId: json['userId'] as String,
+      id: _parseId(json['id']),
+      roomId: _parseId(json['roomId']),
+      userId: _parseId(json['userId']),
       role: json['role'] as String,
-      lastReadMessageId: json['lastReadMessageId'] as String?,
+      lastReadMessageId: _parseNullableId(json['lastReadMessageId']),
       lastReadAt: json['lastReadAt'] != null
           ? DateTime.parse(json['lastReadAt'] as String)
           : null,
@@ -91,11 +91,11 @@ class ChatRoomParticipantModel {
 
   /// copyWith
   ChatRoomParticipantModel copyWith({
-    String? id,
-    String? roomId,
-    String? userId,
+    int? id,
+    int? roomId,
+    int? userId,
     String? role,
-    String? lastReadMessageId,
+    int? lastReadMessageId,
     DateTime? lastReadAt,
     int? unreadCount,
     DateTime? joinedAt,
@@ -120,7 +120,7 @@ class ChatRoomParticipantModel {
   }
 
   /// 읽지 않은 메시지 수 초기화
-  ChatRoomParticipantModel resetUnreadCount({String? messageId}) {
+  ChatRoomParticipantModel resetUnreadCount({int? messageId}) {
     return copyWith(
       unreadCount: 0,
       lastReadMessageId: messageId ?? lastReadMessageId,
@@ -147,4 +147,15 @@ class ChatRoomParticipantModel {
   int get hashCode {
     return id.hashCode ^ roomId.hashCode ^ userId.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
+}
+
+int? _parseNullableId(dynamic value) {
+  if (value == null) return null;
+  return _parseId(value);
 }

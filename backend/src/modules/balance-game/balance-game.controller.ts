@@ -46,7 +46,12 @@ export class BalanceGameController {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      const { gameId, selectedOption } = req.body;
+      const { gameId: gameIdRaw, selectedOption } = req.body;
+      const gameId = typeof gameIdRaw === 'number' ? gameIdRaw : Number(gameIdRaw);
+
+      if (!Number.isInteger(gameId)) {
+        return res.status(400).json({ error: 'Invalid game ID' });
+      }
 
       if (!['A', 'B'].includes(selectedOption)) {
         return res.status(400).json({ error: 'Invalid option' });
@@ -91,10 +96,14 @@ export class BalanceGameController {
   async calculateCompatibility(req: AuthRequest, res: Response) {
     try {
       const userId = req.user?.userId;
-      const { targetUserId } = req.params;
+      const targetUserId = parseInt(req.params.targetUserId);
 
       if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      if (isNaN(targetUserId)) {
+        return res.status(400).json({ error: 'Invalid target user ID' });
       }
 
       const result = await balanceGameService.calculateCompatibility(

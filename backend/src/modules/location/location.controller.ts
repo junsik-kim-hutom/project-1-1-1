@@ -59,7 +59,7 @@ export class LocationController {
       }
 
       const updatedArea = await locationService.verifyLocation(
-        areaId,
+        parseInt(areaId),
         userId,
         latitude,
         longitude
@@ -85,7 +85,7 @@ export class LocationController {
       }
 
       const updatedArea = await locationService.updateLocationArea(
-        areaId,
+        parseInt(areaId),
         userId,
         req.body
       );
@@ -109,7 +109,7 @@ export class LocationController {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
-      await locationService.deleteLocationArea(areaId, userId);
+      await locationService.deleteLocationArea(parseInt(areaId), userId);
 
       return res.status(200).json({
         success: true,

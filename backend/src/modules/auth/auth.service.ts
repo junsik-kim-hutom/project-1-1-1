@@ -224,7 +224,7 @@ export class AuthService {
     }
   }
 
-  async logout(userId: string) {
+  async logout(userId: number) {
     // Redis에서 세션 정보 삭제 등의 로직 추가 가능
     return { success: true };
   }

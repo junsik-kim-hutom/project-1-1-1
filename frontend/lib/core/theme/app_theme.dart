@@ -266,15 +266,13 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
-
       scaffoldBackgroundColor: AppColors.darkBackground,
-
       appBarTheme: AppBarTheme(
         centerTitle: true,
         elevation: 0,
         backgroundColor: AppColors.darkSurface,
         foregroundColor: AppColors.darkTextPrimary,
-        systemOverlayStyle: SystemUiOverlayStyle(
+        systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarBrightness: Brightness.dark,
           statusBarIconBrightness: Brightness.light,
           statusBarColor: Colors.transparent,
@@ -355,7 +353,6 @@ class AppTheme {
           color: AppColors.darkTextSecondary,
         ),
       ),
-
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           elevation: 0,
@@ -369,7 +366,6 @@ class AppTheme {
           minimumSize: const Size(88, 44),
         ),
       ),
-
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
@@ -380,7 +376,6 @@ class AppTheme {
           ),
         ),
       ),
-
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.darkSurfaceVariant,
         selectedColor: AppColors.primaryDark,
@@ -397,15 +392,13 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
         ),
       ),
-
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         elevation: 4,
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
         shape: CircleBorder(),
       ),
-
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         elevation: 8,
         backgroundColor: AppColors.darkSurface,
         selectedItemColor: AppColors.primary,
@@ -416,7 +409,6 @@ class AppTheme {
         showSelectedLabels: true,
         showUnselectedLabels: true,
       ),
-
       dialogTheme: DialogThemeData(
         elevation: 8,
         backgroundColor: AppColors.darkSurface,
@@ -428,7 +420,6 @@ class AppTheme {
         contentTextStyle:
             AppTextStyles.bodyMedium.copyWith(color: AppColors.darkTextPrimary),
       ),
-
       snackBarTheme: SnackBarThemeData(
         elevation: 4,
         backgroundColor: AppColors.darkSurfaceVariant,
@@ -439,18 +430,15 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
         linearTrackColor: AppColors.darkBorder,
       ),
-
       dividerTheme: const DividerThemeData(
         color: AppColors.darkBorder,
         thickness: 1,
         space: 1,
       ),
-
       tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.darkTextSecondary,
@@ -459,8 +447,8 @@ class AppTheme {
         indicator: UnderlineTabIndicator(
           borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
+        indicatorSize: TabBarIndicatorSize.label,
       ),
-
       iconTheme: const IconThemeData(
         color: AppColors.darkTextPrimary,
         size: 24,

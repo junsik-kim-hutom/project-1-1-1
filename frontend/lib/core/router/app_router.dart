@@ -7,11 +7,15 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/home/presentation/pages/main_navigation_page.dart';
 import '../../features/profile/presentation/pages/profile_create_page.dart';
 import '../../features/profile/presentation/pages/dynamic_profile_create_page.dart';
-import '../../features/location/presentation/pages/location_setup_page.dart';
+import '../../features/location/presentation/pages/location_manage_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
 import '../../features/payment/presentation/pages/payment_plans_page.dart';
 import '../../features/chat/presentation/pages/chat_room_page.dart';
 import '../../features/permissions/presentation/pages/permissions_page.dart';
+import '../../features/eq_test/presentation/pages/eq_test_page.dart';
+import '../../features/eq_test/presentation/pages/eq_test_result_page.dart';
+import '../../features/eq_test/data/models/eq_result_model.dart';
+import '../../features/matching/presentation/pages/matching_action_users_page.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -57,11 +61,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       // Location Routes
       GoRoute(
         path: '/location/setup',
-        builder: (context, state) => const LocationSetupPage(),
+        builder: (context, state) => const LocationManagePage(),
       ),
       GoRoute(
         path: '/location/manage',
-        builder: (context, state) => const LocationSetupPage(),
+        builder: (context, state) => const LocationManagePage(),
       ),
 
       // Settings Routes
@@ -74,13 +78,27 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/chat/rooms/:roomId',
         builder: (context, state) {
-          final roomId = state.pathParameters['roomId']!;
+          final roomId = int.tryParse(state.pathParameters['roomId'] ?? '') ?? 0;
           final extra = state.extra as Map<String, dynamic>?;
           final partnerName = extra?['partnerName'] as String? ?? '채팅';
+          final partnerUserId = _parseNullableId(extra?['partnerUserId']);
+          final partnerImageUrl = extra?['partnerImageUrl'] as String?;
           return ChatRoomPage(
             roomId: roomId,
             partnerName: partnerName,
+            partnerUserId: partnerUserId,
+            partnerImageUrl: partnerImageUrl,
           );
+        },
+      ),
+
+      // Matching Activity Routes
+      GoRoute(
+        path: '/matching/actions',
+        builder: (context, state) {
+          final action = state.uri.queryParameters['action'] ?? 'LIKE';
+          final direction = state.uri.queryParameters['direction'] ?? 'sent';
+          return MatchingActionUsersPage(action: action, direction: direction);
         },
       ),
 
@@ -88,6 +106,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/payment/plans',
         builder: (context, state) => const PaymentPlansPage(),
+      ),
+
+      // EQ Test Routes
+      GoRoute(
+        path: '/eq-test',
+        builder: (context, state) => const EQTestPage(),
+      ),
+      GoRoute(
+        path: '/eq-test/result',
+        builder: (context, state) {
+          final result = state.extra as EQResultModel;
+          return EQTestResultPage(result: result);
+        },
       ),
     ],
 
@@ -110,3 +141,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     ),
   );
 });
+
+int? _parseNullableId(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value.toString());
+}

@@ -1,7 +1,7 @@
 import prisma from '../../config/database';
 
 export interface CreateLocationAreaDto {
-  userId: string;
+  userId: number;
   latitude: number;
   longitude: number;
   address: string;
@@ -38,7 +38,7 @@ export class LocationService {
     return locationArea;
   }
 
-  async getLocationAreas(userId: string) {
+  async getLocationAreas(userId: number) {
     const areas = await prisma.locationArea.findMany({
       where: { userId },
       orderBy: [
@@ -50,7 +50,7 @@ export class LocationService {
     return areas;
   }
 
-  async verifyLocation(areaId: string, userId: string, latitude: number, longitude: number) {
+  async verifyLocation(areaId: number, userId: number, latitude: number, longitude: number) {
     const area = await prisma.locationArea.findFirst({
       where: {
         id: areaId,
@@ -81,7 +81,7 @@ export class LocationService {
     return updatedArea;
   }
 
-  async updateLocationArea(areaId: string, userId: string, data: Partial<CreateLocationAreaDto>) {
+  async updateLocationArea(areaId: number, userId: number, data: Partial<CreateLocationAreaDto>) {
     const area = await prisma.locationArea.findFirst({
       where: {
         id: areaId,
@@ -108,7 +108,7 @@ export class LocationService {
     return updatedArea;
   }
 
-  async deleteLocationArea(areaId: string, userId: string) {
+  async deleteLocationArea(areaId: number, userId: number) {
     const area = await prisma.locationArea.findFirst({
       where: {
         id: areaId,
@@ -127,7 +127,7 @@ export class LocationService {
     return { success: true };
   }
 
-  async findNearbyUsers(userId: string, maxDistance: number = 10000) {
+  async findNearbyUsers(userId: number, maxDistance: number = 10000) {
     const userAreas = await prisma.locationArea.findMany({
       where: { userId },
     });
@@ -143,20 +143,35 @@ export class LocationService {
     const userLng = userAreas[0].longitude;
 
     // Using Haversine formula to calculate distance in PostgreSQL
+    // clamped to [-1, 1] for acos stability
     const nearbyUsers = await prisma.$queryRaw<any[]>`
-      SELECT DISTINCT
+      SELECT DISTINCT ON (u.id)
         u.id,
         u.email,
-        p.display_name,
+        p.display_name as "displayName",
         p.gender,
-        p.birth_date,
+        p.birth_date as "birthDate",
+        p.bio,
+        (
+          SELECT json_build_object(
+            'imageUrl', pi.image_url,
+            'thumbnailUrl', pi.thumbnail_url
+          )
+          FROM profile_images pi
+          WHERE pi.profile_id = p.id
+            AND pi.is_approved = true
+          ORDER BY pi.is_primary DESC, pi.display_order ASC
+          LIMIT 1
+        ) as "mainImage",
         la.latitude,
         la.longitude,
         (
           6371000 * acos(
-            cos(radians(${userLat})) * cos(radians(la.latitude)) *
-            cos(radians(la.longitude) - radians(${userLng})) +
-            sin(radians(${userLat})) * sin(radians(la.latitude))
+            GREATEST(-1, LEAST(1,
+              cos(radians(${userLat})) * cos(radians(la.latitude)) *
+              cos(radians(la.longitude) - radians(${userLng})) +
+              sin(radians(${userLat})) * sin(radians(la.latitude))
+            ))
           )
         ) as distance
       FROM users u
@@ -167,16 +182,19 @@ export class LocationService {
         AND la.verified_at > ${thirtyDaysAgo}
         AND (
           6371000 * acos(
-            cos(radians(${userLat})) * cos(radians(la.latitude)) *
-            cos(radians(la.longitude) - radians(${userLng})) +
-            sin(radians(${userLat})) * sin(radians(la.latitude))
+            GREATEST(-1, LEAST(1,
+              cos(radians(${userLat})) * cos(radians(la.latitude)) *
+              cos(radians(la.longitude) - radians(${userLng})) +
+              sin(radians(${userLat})) * sin(radians(la.latitude))
+            ))
           )
         ) <= ${maxDistance}
-      ORDER BY distance
+      ORDER BY u.id, distance ASC
       LIMIT 50
     `;
 
-    return nearbyUsers;
+    // Re-sort by distance since DISTINCT ON required u.id as first sort key
+    return nearbyUsers.sort((a, b) => a.distance - b.distance);
   }
 
   private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {

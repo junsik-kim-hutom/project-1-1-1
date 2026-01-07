@@ -7,13 +7,13 @@ import 'message_read_status_model.dart';
 /// v2.0에서 그룹 채팅 지원을 위한 readStatus 배열 추가
 class ChatMessageModel {
   /// 메시지 ID
-  final String id;
+  final int id;
 
   /// 채팅방 ID
-  final String roomId;
+  final int roomId;
 
   /// 발신자 ID
-  final String senderId;
+  final int senderId;
 
   /// 메시지 타입 (TEXT, IMAGE, SYSTEM)
   final MessageType messageType;
@@ -49,9 +49,9 @@ class ChatMessageModel {
   /// JSON → Model
   factory ChatMessageModel.fromJson(Map<String, dynamic> json) {
     return ChatMessageModel(
-      id: json['id'] as String,
-      roomId: json['roomId'] as String,
-      senderId: json['senderId'] as String,
+      id: _parseId(json['id']),
+      roomId: _parseId(json['roomId']),
+      senderId: _parseId(json['senderId']),
       messageType: MessageType.fromString(json['messageType'] as String),
       content: json['content'] as String,
       isRead: json['isRead'] as bool,
@@ -93,7 +93,7 @@ class ChatMessageModel {
   bool get isUnread => !isRead;
 
   /// 그룹 채팅에서 특정 사용자가 읽었는지 확인
-  bool isReadByUser(String userId) {
+  bool isReadByUser(int userId) {
     // 발신자는 항상 읽은 것으로 간주
     if (senderId == userId) return true;
 
@@ -115,7 +115,7 @@ class ChatMessageModel {
   }
 
   /// 그룹 채팅에서 특정 사용자가 읽은 시간 조회
-  DateTime? getReadTimeByUser(String userId) {
+  DateTime? getReadTimeByUser(int userId) {
     if (senderId == userId) return createdAt; // 발신자는 생성 시간
     if (readStatus == null) return readAt; // 1:1 채팅
 
@@ -147,9 +147,9 @@ class ChatMessageModel {
 
   /// copyWith
   ChatMessageModel copyWith({
-    String? id,
-    String? roomId,
-    String? senderId,
+    int? id,
+    int? roomId,
+    int? senderId,
     MessageType? messageType,
     String? content,
     bool? isRead,
@@ -225,4 +225,10 @@ class ChatMessageModel {
         readAt.hashCode ^
         createdAt.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

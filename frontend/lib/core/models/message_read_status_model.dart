@@ -4,13 +4,13 @@
 /// 백엔드 MessageReadStatus 테이블과 동기화
 class MessageReadStatusModel {
   /// ID
-  final String id;
+  final int id;
 
   /// 메시지 ID
-  final String messageId;
+  final int messageId;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 읽은 시간
   final DateTime readAt;
@@ -25,9 +25,9 @@ class MessageReadStatusModel {
   /// JSON → Model
   factory MessageReadStatusModel.fromJson(Map<String, dynamic> json) {
     return MessageReadStatusModel(
-      id: json['id'] as String,
-      messageId: json['messageId'] as String,
-      userId: json['userId'] as String,
+      id: _parseId(json['id']),
+      messageId: _parseId(json['messageId']),
+      userId: _parseId(json['userId']),
       readAt: DateTime.parse(json['readAt'] as String),
     );
   }
@@ -42,9 +42,9 @@ class MessageReadStatusModel {
 
   /// copyWith
   MessageReadStatusModel copyWith({
-    String? id,
-    String? messageId,
-    String? userId,
+    int? id,
+    int? messageId,
+    int? userId,
     DateTime? readAt,
   }) {
     return MessageReadStatusModel(
@@ -75,4 +75,10 @@ class MessageReadStatusModel {
   int get hashCode {
     return id.hashCode ^ messageId.hashCode ^ userId.hashCode ^ readAt.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

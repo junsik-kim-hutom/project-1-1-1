@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import 'dart:io';
+import '../../../../core/utils/url_utils.dart';
 
 class ImageUploadWidget extends StatefulWidget {
   final List<String> initialImages;
@@ -21,7 +22,7 @@ class ImageUploadWidget extends StatefulWidget {
 
 class _ImageUploadWidgetState extends State<ImageUploadWidget> {
   final ImagePicker _picker = ImagePicker();
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
   List<String> _networkImages = [];
 
   @override
@@ -64,7 +65,8 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
   }
 
   Future<void> _pickMultipleImages() async {
-    final remaining = widget.maxImages - _selectedImages.length - _networkImages.length;
+    final remaining =
+        widget.maxImages - _selectedImages.length - _networkImages.length;
     if (remaining <= 0) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +84,8 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
 
       if (!mounted) return;
       if (images.isNotEmpty) {
-        final List<File> newImages = images.take(remaining).map((xFile) => File(xFile.path)).toList();
+        final List<File> newImages =
+            images.take(remaining).map((xFile) => File(xFile.path)).toList();
         setState(() {
           _selectedImages.addAll(newImages);
         });
@@ -226,16 +229,21 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
         decoration: BoxDecoration(
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: colorScheme.outlineVariant, width: 2, style: BorderStyle.solid),
+          border: Border.all(
+              color: colorScheme.outlineVariant,
+              width: 2,
+              style: BorderStyle.solid),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_a_photo, size: 32, color: colorScheme.onSurfaceVariant),
+            Icon(Icons.add_a_photo,
+                size: 32, color: colorScheme.onSurfaceVariant),
             const SizedBox(height: 4),
             Text(
               l10n.addPhoto,
-              style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
+              style:
+                  TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -253,7 +261,8 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             image: DecorationImage(
-              image: NetworkImage(_networkImages[index]),
+              image: NetworkImage(resolveNetworkUrl(_networkImages[index]) ??
+                  _networkImages[index]),
               fit: BoxFit.cover,
             ),
           ),
@@ -285,7 +294,7 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
               ),
               child: Text(
                 AppLocalizations.of(context)!.mainPhoto,
-                style: TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
               ),
             ),
           ),
@@ -335,7 +344,7 @@ class _ImageUploadWidgetState extends State<ImageUploadWidget> {
               ),
               child: Text(
                 AppLocalizations.of(context)!.mainPhoto,
-                style: TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
               ),
             ),
           ),

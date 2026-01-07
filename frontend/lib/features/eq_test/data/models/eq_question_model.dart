@@ -1,5 +1,5 @@
 class EQQuestionModel {
-  final String id;
+  final int id;
   final String questionKey;
   final String category;
   final Map<String, dynamic> questionText;
@@ -22,15 +22,17 @@ class EQQuestionModel {
   });
 
   factory EQQuestionModel.fromJson(Map<String, dynamic> json) {
+    final rawCategory = (json['category'] ?? '').toString();
+    final rawAnswerType = (json['answerType'] ?? json['answer_type'] ?? '').toString();
     return EQQuestionModel(
-      id: json['id'],
-      questionKey: json['questionKey'] ?? json['question_key'],
-      category: json['category'],
+      id: _parseId(json['id']),
+      questionKey: (json['questionKey'] ?? json['question_key'] ?? '').toString(),
+      category: rawCategory.toLowerCase(),
       questionText: json['questionText'] ?? json['question_text'],
-      answerType: json['answerType'] ?? json['answer_type'],
+      answerType: rawAnswerType.toLowerCase(),
       options: json['options'],
       scoring: json['scoring'],
-      displayOrder: json['displayOrder'] ?? json['display_order'],
+      displayOrder: _parseId(json['displayOrder'] ?? json['display_order']),
       isActive: json['isActive'] ?? json['is_active'] ?? true,
     );
   }
@@ -38,4 +40,10 @@ class EQQuestionModel {
   String getQuestionText(String locale) {
     return questionText[locale] ?? questionText['en'] ?? '';
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

@@ -3,7 +3,7 @@
  * 다양한 OAuth 제공자의 데이터를 통합된 형식으로 변환
  */
 export interface UserResponseDto {
-  id: string;
+  id: number;
   email: string;
   emailVerified: boolean;
   phoneNumber: string | null;

@@ -6,13 +6,13 @@ import 'enums/matching_action.dart';
 /// 백엔드 MatchingHistory 테이블과 동기화
 class MatchingHistoryModel {
   /// ID
-  final String id;
+  final int id;
 
   /// 행동을 취한 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 대상 사용자 ID
-  final String targetUserId;
+  final int targetUserId;
 
   /// 액션 타입 (LIKE, PASS, SUPER_LIKE, BLOCK)
   final MatchingAction action;
@@ -31,9 +31,9 @@ class MatchingHistoryModel {
   /// JSON → Model
   factory MatchingHistoryModel.fromJson(Map<String, dynamic> json) {
     return MatchingHistoryModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      targetUserId: json['targetUserId'] as String,
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId']),
+      targetUserId: _parseId(json['targetUserId']),
       action: MatchingAction.fromString(json['action'] as String),
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
@@ -65,9 +65,9 @@ class MatchingHistoryModel {
 
   /// copyWith
   MatchingHistoryModel copyWith({
-    String? id,
-    String? userId,
-    String? targetUserId,
+    int? id,
+    int? userId,
+    int? targetUserId,
     MatchingAction? action,
     DateTime? createdAt,
   }) {
@@ -105,4 +105,10 @@ class MatchingHistoryModel {
         action.hashCode ^
         createdAt.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

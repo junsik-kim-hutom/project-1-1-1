@@ -5,10 +5,10 @@ import 'enums/notification_type.dart';
 /// 백엔드 Notification 테이블과 동기화
 class NotificationModel {
   /// 알림 ID
-  final String id;
+  final int id;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 알림 타입
   final NotificationType type;
@@ -27,19 +27,19 @@ class NotificationModel {
   final DateTime? readAt;
 
   /// 관련 사용자 ID (좋아요를 보낸 사람 등)
-  final String? relatedUserId;
+  final int? relatedUserId;
 
   /// 관련 대화 요청 ID
-  final String? relatedChatRequestId;
+  final int? relatedChatRequestId;
 
   /// 관련 채팅방 ID
-  final String? relatedChatRoomId;
+  final int? relatedChatRoomId;
 
   /// 관련 메시지 ID
-  final String? relatedMessageId;
+  final int? relatedMessageId;
 
   /// 관련 결제 ID
-  final String? relatedPaymentId;
+  final int? relatedPaymentId;
 
   /// Push 알림 전송 여부
   final bool isPushSent;
@@ -76,18 +76,18 @@ class NotificationModel {
   /// JSON → Model
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId']),
       type: NotificationType.fromString(json['type'] as String),
       title: json['title'] as Map<String, dynamic>,
       message: json['message'] as Map<String, dynamic>,
       isRead: json['isRead'] as bool,
       readAt: json['readAt'] != null ? DateTime.parse(json['readAt'] as String) : null,
-      relatedUserId: json['relatedUserId'] as String?,
-      relatedChatRequestId: json['relatedChatRequestId'] as String?,
-      relatedChatRoomId: json['relatedChatRoomId'] as String?,
-      relatedMessageId: json['relatedMessageId'] as String?,
-      relatedPaymentId: json['relatedPaymentId'] as String?,
+      relatedUserId: _parseNullableId(json['relatedUserId']),
+      relatedChatRequestId: _parseNullableId(json['relatedChatRequestId']),
+      relatedChatRoomId: _parseNullableId(json['relatedChatRoomId']),
+      relatedMessageId: _parseNullableId(json['relatedMessageId']),
+      relatedPaymentId: _parseNullableId(json['relatedPaymentId']),
       isPushSent: json['isPushSent'] as bool,
       pushSentAt: json['pushSentAt'] != null ? DateTime.parse(json['pushSentAt'] as String) : null,
       actionUrl: json['actionUrl'] as String?,
@@ -149,18 +149,18 @@ class NotificationModel {
 
   /// copyWith
   NotificationModel copyWith({
-    String? id,
-    String? userId,
+    int? id,
+    int? userId,
     NotificationType? type,
     Map<String, dynamic>? title,
     Map<String, dynamic>? message,
     bool? isRead,
     DateTime? readAt,
-    String? relatedUserId,
-    String? relatedChatRequestId,
-    String? relatedChatRoomId,
-    String? relatedMessageId,
-    String? relatedPaymentId,
+    int? relatedUserId,
+    int? relatedChatRequestId,
+    int? relatedChatRoomId,
+    int? relatedMessageId,
+    int? relatedPaymentId,
     bool? isPushSent,
     DateTime? pushSentAt,
     String? actionUrl,
@@ -202,8 +202,8 @@ class NotificationModel {
 
 /// 알림 설정 모델
 class NotificationSettingsModel {
-  final String id;
-  final String userId;
+  final int id;
+  final int userId;
 
   // 카테고리별 푸시 알림 설정
   final bool matchingPushEnabled;
@@ -249,8 +249,8 @@ class NotificationSettingsModel {
 
   factory NotificationSettingsModel.fromJson(Map<String, dynamic> json) {
     return NotificationSettingsModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId']),
       matchingPushEnabled: json['matchingPushEnabled'] as bool,
       chatPushEnabled: json['chatPushEnabled'] as bool,
       profilePushEnabled: json['profilePushEnabled'] as bool,
@@ -328,4 +328,15 @@ class NotificationSettingsModel {
         return true;
     }
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
+}
+
+int? _parseNullableId(dynamic value) {
+  if (value == null) return null;
+  return _parseId(value);
 }

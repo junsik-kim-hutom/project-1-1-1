@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../../core/constants/api_constants.dart';
 import '../models/eq_question_model.dart';
 import '../models/eq_result_model.dart';
 
@@ -10,7 +11,7 @@ class EQTestRepository {
   Future<List<EQQuestionModel>> getQuestions({String? category}) async {
     try {
       final response = await _dio.get(
-        '/eq-test/questions',
+        ApiConstants.eqTestQuestions,
         queryParameters: category != null ? {'category': category} : null,
       );
 
@@ -28,12 +29,12 @@ class EQTestRepository {
   }
 
   Future<void> submitAnswer({
-    required String questionId,
+    required int questionId,
     required int answer,
   }) async {
     try {
       final response = await _dio.post(
-        '/eq-test/answers',
+        ApiConstants.eqTestAnswers,
         data: {
           'questionId': questionId,
           'answer': answer,
@@ -50,7 +51,7 @@ class EQTestRepository {
 
   Future<EQResultModel> calculateResults() async {
     try {
-      final response = await _dio.post('/eq-test/results/calculate');
+      final response = await _dio.post(ApiConstants.eqTestResultsCalculate);
 
       if (response.data['success'] == true) {
         return EQResultModel.fromJson(response.data['data']);
@@ -64,7 +65,7 @@ class EQTestRepository {
 
   Future<EQResultModel> getResults() async {
     try {
-      final response = await _dio.get('/eq-test/results');
+      final response = await _dio.get(ApiConstants.eqTestResults);
 
       if (response.data['success'] == true) {
         return EQResultModel.fromJson(response.data['data']);

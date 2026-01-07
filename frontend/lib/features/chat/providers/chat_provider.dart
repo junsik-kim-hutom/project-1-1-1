@@ -14,7 +14,8 @@ final chatRoomsProvider = FutureProvider<List<ChatRoomSummaryModel>>((ref) async
   return repository.fetchChatRooms();
 });
 
-final chatMessagesProvider = FutureProvider.family<List<ChatMessageModel>, String>((ref, roomId) async {
+final chatMessagesProvider =
+    FutureProvider.autoDispose.family<List<ChatMessageModel>, int>((ref, roomId) async {
   final repository = ref.watch(chatRepositoryProvider);
   return repository.fetchMessages(roomId);
 });

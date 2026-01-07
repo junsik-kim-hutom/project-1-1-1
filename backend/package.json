@@ -17,6 +17,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts",
+    "seed:eq-test": "ts-node prisma/seed-eq-test.ts",
     "test": "jest"
   },
   "keywords": [

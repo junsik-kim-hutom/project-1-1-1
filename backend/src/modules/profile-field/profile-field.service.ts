@@ -63,7 +63,7 @@ export class ProfileFieldService {
     return fields;
   }
 
-  async updateField(fieldId: string, data: Partial<CreateProfileFieldDto>) {
+  async updateField(fieldId: number, data: Partial<CreateProfileFieldDto>) {
     const field = await prisma.profileField.update({
       where: { id: fieldId },
       data: {
@@ -82,7 +82,7 @@ export class ProfileFieldService {
     return field;
   }
 
-  async toggleField(fieldId: string) {
+  async toggleField(fieldId: number) {
     const field = await prisma.profileField.findUnique({
       where: { id: fieldId },
     });
@@ -99,7 +99,7 @@ export class ProfileFieldService {
     return updated;
   }
 
-  async deleteField(fieldId: string) {
+  async deleteField(fieldId: number) {
     await prisma.profileField.delete({
       where: { id: fieldId },
     });

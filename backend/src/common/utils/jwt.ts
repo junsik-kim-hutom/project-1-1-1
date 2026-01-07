@@ -4,7 +4,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-jwt-refresh-secret-key';
 
 export interface JwtPayload {
-  userId: string;
+  userId: number;
   email: string;
 }
 

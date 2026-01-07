@@ -5,6 +5,10 @@ Thumbs.db
 # IDEs
 .idea/
 .vscode/
+.DS_Store
+
+# iOS secrets (do not commit)
+frontend/ios/Flutter/Secrets.xcconfig
 *.swp
 *.swo
 *~
@@ -13,6 +17,7 @@ Thumbs.db
 backend/node_modules/
 backend/dist/
 backend/build/
+backend/uploads/
 backend/.env
 backend/.env.local
 backend/npm-debug.log*

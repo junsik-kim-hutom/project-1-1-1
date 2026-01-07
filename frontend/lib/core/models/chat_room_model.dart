@@ -6,7 +6,7 @@ import 'chat_room_participant_model.dart';
 /// v2.0에서 그룹 채팅 지원을 위해 user1/user2에서 participants로 변경
 class ChatRoomModel {
   /// 채팅방 ID
-  final String id;
+  final int id;
 
   /// 채팅방 타입 (direct = 1:1, group = 그룹)
   /// v2.0 추가
@@ -50,7 +50,7 @@ class ChatRoomModel {
   /// JSON → Model
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) {
     return ChatRoomModel(
-      id: json['id'] as String,
+      id: _parseId(json['id']),
       roomType: json['roomType'] as String? ?? 'direct',
       name: json['name'] as String?,
       participants: json['participants'] != null
@@ -138,18 +138,18 @@ class ChatRoomModel {
   }
 
   /// 특정 사용자가 참여 중인지
-  bool hasParticipant(String userId) {
+  bool hasParticipant(int userId) {
     return activeParticipants.any((p) => p.userId == userId);
   }
 
   /// 특정 사용자의 참여자 정보 조회
-  ChatRoomParticipantModel? getParticipant(String userId) {
+  ChatRoomParticipantModel? getParticipant(int userId) {
     if (participants == null) return null;
     return participants!.where((p) => p.userId == userId && p.isActive).firstOrNull;
   }
 
   /// 상대방 참여자 조회 (1:1 채팅용)
-  ChatRoomParticipantModel? getOtherParticipant(String myUserId) {
+  ChatRoomParticipantModel? getOtherParticipant(int myUserId) {
     if (!isDirectChat) return null;
     return activeParticipants.where((p) => p.userId != myUserId).firstOrNull;
   }
@@ -161,7 +161,7 @@ class ChatRoomModel {
   }
 
   /// 채팅방 표시 이름 (그룹명 또는 상대방 이름)
-  String getDisplayName(String myUserId, {String? otherUserName}) {
+  String getDisplayName(int myUserId, {String? otherUserName}) {
     if (isGroupChat) {
       return name ?? '그룹 채팅';
     }
@@ -176,7 +176,7 @@ class ChatRoomModel {
   }
 
   /// 읽지 않은 메시지 수 (특정 사용자 기준)
-  int getUnreadCount(String userId) {
+  int getUnreadCount(int userId) {
     final participant = getParticipant(userId);
     return participant?.unreadCount ?? 0;
   }
@@ -193,7 +193,7 @@ class ChatRoomModel {
 
   /// copyWith
   ChatRoomModel copyWith({
-    String? id,
+    int? id,
     String? roomType,
     String? name,
     List<ChatRoomParticipantModel>? participants,
@@ -235,4 +235,10 @@ class ChatRoomModel {
   int get hashCode {
     return id.hashCode ^ roomType.hashCode ^ status.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

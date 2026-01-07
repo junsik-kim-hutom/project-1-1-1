@@ -322,6 +322,12 @@ abstract class AppLocalizations {
   /// **'Sometimes'**
   String get sometimes;
 
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
   /// No description provided for @bio.
   ///
   /// In en, this message translates to:
@@ -520,17 +526,47 @@ abstract class AppLocalizations {
   /// **'Profile Views'**
   String get profileViews;
 
+  /// No description provided for @likesSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent Likes'**
+  String get likesSent;
+
   /// No description provided for @likesReceived.
   ///
   /// In en, this message translates to:
   /// **'Likes Received'**
   String get likesReceived;
 
+  /// No description provided for @boostsSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent Super Likes'**
+  String get boostsSent;
+
+  /// No description provided for @boostsReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Likes Received'**
+  String get boostsReceived;
+
   /// No description provided for @ongoingChats.
   ///
   /// In en, this message translates to:
   /// **'Ongoing Chats'**
   String get ongoingChats;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications.'**
+  String get noNotifications;
+
+  /// No description provided for @noActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity to show.'**
+  String get noActivity;
 
   /// No description provided for @recommendedMatches.
   ///
@@ -567,6 +603,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start Test'**
   String get startTest;
+
+  /// No description provided for @eqTestResultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EQ Test Results'**
+  String get eqTestResultTitle;
+
+  /// No description provided for @eqTestNoQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'No questions available.'**
+  String get eqTestNoQuestions;
+
+  /// No description provided for @eqTestAutoAdvanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Selecting an option will move to the next question automatically.'**
+  String get eqTestAutoAdvanceHint;
+
+  /// No description provided for @eqTestCategoryEmpathy.
+  ///
+  /// In en, this message translates to:
+  /// **'Empathy'**
+  String get eqTestCategoryEmpathy;
+
+  /// No description provided for @eqTestCategorySelfAwareness.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-awareness'**
+  String get eqTestCategorySelfAwareness;
+
+  /// No description provided for @eqTestCategorySocialSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Social skills'**
+  String get eqTestCategorySocialSkills;
+
+  /// No description provided for @eqTestCategoryMotivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Motivation'**
+  String get eqTestCategoryMotivation;
+
+  /// No description provided for @eqTestCategoryEmotionRegulation.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion regulation'**
+  String get eqTestCategoryEmotionRegulation;
+
+  /// No description provided for @eqTestCategoryEQ.
+  ///
+  /// In en, this message translates to:
+  /// **'EQ'**
+  String get eqTestCategoryEQ;
+
+  /// No description provided for @eqTestLikert1.
+  ///
+  /// In en, this message translates to:
+  /// **'Strongly disagree'**
+  String get eqTestLikert1;
+
+  /// No description provided for @eqTestLikert2.
+  ///
+  /// In en, this message translates to:
+  /// **'Disagree'**
+  String get eqTestLikert2;
+
+  /// No description provided for @eqTestLikert3.
+  ///
+  /// In en, this message translates to:
+  /// **'Neutral'**
+  String get eqTestLikert3;
+
+  /// No description provided for @eqTestLikert4.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree'**
+  String get eqTestLikert4;
+
+  /// No description provided for @eqTestLikert5.
+  ///
+  /// In en, this message translates to:
+  /// **'Strongly agree'**
+  String get eqTestLikert5;
+
+  /// No description provided for @eqTestAllAnsweredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You’ve answered all questions!'**
+  String get eqTestAllAnsweredTitle;
+
+  /// No description provided for @eqTestCalculatingResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculating your results...'**
+  String get eqTestCalculatingResult;
+
+  /// No description provided for @eqTestViewResult.
+  ///
+  /// In en, this message translates to:
+  /// **'View results'**
+  String get eqTestViewResult;
+
+  /// No description provided for @eqTestResultCalculationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Result calculation error'**
+  String get eqTestResultCalculationError;
+
+  /// No description provided for @eqTestStrengthsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your strengths'**
+  String get eqTestStrengthsTitle;
+
+  /// No description provided for @eqTestImprovementsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Areas to improve'**
+  String get eqTestImprovementsTitle;
+
+  /// No description provided for @eqTestMatchingTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Matching tips'**
+  String get eqTestMatchingTipsTitle;
+
+  /// No description provided for @eqTestPersonalityType.
+  ///
+  /// In en, this message translates to:
+  /// **'Personality type'**
+  String get eqTestPersonalityType;
+
+  /// No description provided for @eqTestOverallScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall score'**
+  String get eqTestOverallScore;
+
+  /// No description provided for @eqTestDetailedScores.
+  ///
+  /// In en, this message translates to:
+  /// **'Detailed scores'**
+  String get eqTestDetailedScores;
+
+  /// No description provided for @eqTestScoreEmpathy.
+  ///
+  /// In en, this message translates to:
+  /// **'Empathy'**
+  String get eqTestScoreEmpathy;
+
+  /// No description provided for @eqTestScoreSelfAwareness.
+  ///
+  /// In en, this message translates to:
+  /// **'Self-awareness'**
+  String get eqTestScoreSelfAwareness;
+
+  /// No description provided for @eqTestScoreSocialSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Social skills'**
+  String get eqTestScoreSocialSkills;
+
+  /// No description provided for @eqTestScoreMotivation.
+  ///
+  /// In en, this message translates to:
+  /// **'Motivation'**
+  String get eqTestScoreMotivation;
+
+  /// No description provided for @eqTestScoreEmotionRegulation.
+  ///
+  /// In en, this message translates to:
+  /// **'Emotion regulation'**
+  String get eqTestScoreEmotionRegulation;
 
   /// No description provided for @years.
   ///
@@ -610,6 +820,30 @@ abstract class AppLocalizations {
   /// **'Filter Settings'**
   String get filterSettings;
 
+  /// No description provided for @matchingActionGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How matching works'**
+  String get matchingActionGuideTitle;
+
+  /// No description provided for @matchingActionGuideInterest.
+  ///
+  /// In en, this message translates to:
+  /// **'Like: Like a profile.'**
+  String get matchingActionGuideInterest;
+
+  /// No description provided for @matchingActionGuideBoost.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Like: A stronger signal that may be shown with higher priority.'**
+  String get matchingActionGuideBoost;
+
+  /// No description provided for @matchingActionGuideChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Message: Start a chat.'**
+  String get matchingActionGuideChat;
+
   /// No description provided for @age.
   ///
   /// In en, this message translates to:
@@ -649,13 +883,13 @@ abstract class AppLocalizations {
   /// No description provided for @interest.
   ///
   /// In en, this message translates to:
-  /// **'Interest'**
+  /// **'Like'**
   String get interest;
 
   /// No description provided for @boost.
   ///
   /// In en, this message translates to:
-  /// **'Boost'**
+  /// **'Super Like'**
   String get boost;
 
   /// No description provided for @swipeHint.
@@ -691,13 +925,13 @@ abstract class AppLocalizations {
   /// No description provided for @superLike.
   ///
   /// In en, this message translates to:
-  /// **'Boost sent!'**
+  /// **'Super Like sent!'**
   String get superLike;
 
   /// No description provided for @likeSent.
   ///
   /// In en, this message translates to:
-  /// **'Interest sent'**
+  /// **'Like sent'**
   String get likeSent;
 
   /// No description provided for @nextMatch.
@@ -903,6 +1137,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Manage Locations'**
   String get manageLocations;
+
+  /// No description provided for @locationMyNeighborhoodSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'My Neighborhood Settings'**
+  String get locationMyNeighborhoodSettings;
+
+  /// No description provided for @locationSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by neighborhood name'**
+  String get locationSearchHint;
+
+  /// No description provided for @locationFindByCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Find by current location'**
+  String get locationFindByCurrentLocation;
+
+  /// No description provided for @locationFinding.
+  ///
+  /// In en, this message translates to:
+  /// **'Finding...'**
+  String get locationFinding;
+
+  /// No description provided for @locationNearbyNeighborhoods.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby neighborhoods'**
+  String get locationNearbyNeighborhoods;
+
+  /// No description provided for @locationSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results'**
+  String get locationSearchResults;
+
+  /// No description provided for @locationNoSearchResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found.'**
+  String get locationNoSearchResults;
+
+  /// No description provided for @locationFailedToLoadNearby.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load nearby neighborhoods.'**
+  String get locationFailedToLoadNearby;
+
+  /// No description provided for @locationCurrentLocationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t get your current location.'**
+  String get locationCurrentLocationFailed;
+
+  /// No description provided for @locationSearchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Search failed.'**
+  String get locationSearchFailed;
+
+  /// No description provided for @locationMaxTwoAreas.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add up to 2 areas.'**
+  String get locationMaxTwoAreas;
+
+  /// No description provided for @locationMyNeighborhood.
+  ///
+  /// In en, this message translates to:
+  /// **'My neighborhood'**
+  String get locationMyNeighborhood;
+
+  /// No description provided for @locationMyNeighborhoodSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll see posts based on the selected neighborhood.'**
+  String get locationMyNeighborhoodSubtitle;
+
+  /// No description provided for @locationHelpBody.
+  ///
+  /// In en, this message translates to:
+  /// **'• You can set up to 2 active areas.\n• Content is shown based on the selected neighborhood.\n• Long-press an area chip to change it.'**
+  String get locationHelpBody;
+
+  /// No description provided for @locationMapSetupRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Map setup required'**
+  String get locationMapSetupRequiredTitle;
+
+  /// No description provided for @locationMapSetupRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Maps API Key is not configured, so the map can\'t be displayed.\n\niOS: Set `GOOGLE_MAPS_API_KEY` in `frontend/ios/Flutter/Secrets.xcconfig`.\nAndroid: Set `GOOGLE_MAPS_API_KEY` in `frontend/android/local.properties` (or export it as an env var).'**
+  String get locationMapSetupRequiredBody;
+
+  /// No description provided for @locationMapCannotShowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t show the map'**
+  String get locationMapCannotShowTitle;
+
+  /// No description provided for @locationMapCannotShowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Maps API Key is not configured.\nTap below to see how to set it up.'**
+  String get locationMapCannotShowBody;
+
+  /// No description provided for @locationViewSetupGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'View setup guide'**
+  String get locationViewSetupGuide;
 
   /// No description provided for @languageSettings.
   ///

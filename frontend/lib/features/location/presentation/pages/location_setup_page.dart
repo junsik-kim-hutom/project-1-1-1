@@ -47,9 +47,12 @@ class _LocationSetupPageState extends ConsumerState<LocationSetupPage> {
         }
       }
 
-      final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      final position = lastKnown ??
+          await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.medium,
+            timeLimit: const Duration(seconds: 10),
+          );
 
       // Get address from coordinates
       try {

@@ -4,7 +4,7 @@
 /// v2.0에서 이메일/전화번호 인증, 로그인 추적, Soft Delete 필드 추가
 class UserModel {
   /// 사용자 ID
-  final String id;
+  final int id;
 
   /// 이메일
   final String email;
@@ -65,7 +65,7 @@ class UserModel {
   /// JSON → Model
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] as String,
+      id: _parseId(json['id']),
       email: json['email'] as String,
       emailVerified: json['emailVerified'] as bool? ?? false,
       phoneNumber: json['phoneNumber'] as String?,
@@ -193,7 +193,7 @@ class UserModel {
 
   /// copyWith
   UserModel copyWith({
-    String? id,
+    int? id,
     String? email,
     bool? emailVerified,
     String? phoneNumber,
@@ -245,4 +245,10 @@ class UserModel {
   int get hashCode {
     return id.hashCode ^ email.hashCode ^ status.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

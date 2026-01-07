@@ -108,9 +108,9 @@ class _PermissionsPageState extends State<PermissionsPage> {
         case PermissionType.location:
           return '설정 > 앱 > 위치 > "앱 사용 중/항상"';
         case PermissionType.photos:
-          return '설정 > 앱 > 사진 > "모든 사진"';
+          return '설정 > 개인정보 보호 및 보안 > 사진 > (앱 선택) > "모든 사진"';
         case PermissionType.notification:
-          return '설정 > 앱 > 알림 > "알림 허용"';
+          return '설정 > 알림 > (앱 선택) > "알림 허용"';
       }
     }
 
@@ -289,6 +289,41 @@ class _PermissionsPageState extends State<PermissionsPage> {
                       onTap: _requestNotificationPermission,
                     ),
                     const SizedBox(height: 32),
+
+                    // iOS settings note
+                    if (_isIOS) ...[
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.background,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: AppColors.border,
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.info_outline,
+                              color: AppColors.primary,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'iOS에서는 "알림"은 설정 > 알림에서, "사진"은 설정 > 개인정보 보호 및 보안 > 사진에서 관리돼요.\n(앱에서 한 번 권한을 요청한 뒤에 목록에 보일 수 있어요)',
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textSecondary,
+                                  height: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
 
                     // Battery optimization note
                     Container(

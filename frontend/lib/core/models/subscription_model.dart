@@ -6,13 +6,13 @@ import 'enums/subscription_status.dart';
 /// v2.0에서 취소 시간(cancelledAt) 필드 추가
 class SubscriptionModel {
   /// 구독 ID
-  final String id;
+  final int id;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 플랜 ID
-  final String planId;
+  final int planId;
 
   /// 구독 상태
   final SubscriptionStatus status;
@@ -47,9 +47,9 @@ class SubscriptionModel {
   /// JSON → Model
   factory SubscriptionModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      planId: json['planId'] as String,
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId']),
+      planId: _parseId(json['planId']),
       status: SubscriptionStatus.fromString(json['status'] as String),
       startedAt: DateTime.parse(json['startedAt'] as String),
       expiresAt: DateTime.parse(json['expiresAt'] as String),
@@ -158,9 +158,9 @@ class SubscriptionModel {
 
   /// copyWith
   SubscriptionModel copyWith({
-    String? id,
-    String? userId,
-    String? planId,
+    int? id,
+    int? userId,
+    int? planId,
     SubscriptionStatus? status,
     DateTime? startedAt,
     DateTime? expiresAt,
@@ -185,4 +185,10 @@ class SubscriptionModel {
   String toString() {
     return 'SubscriptionModel(id: $id, status: ${status.value}, expiresAt: $expiresAt)';
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

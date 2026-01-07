@@ -6,10 +6,10 @@ import 'profile_image_model.dart';
 /// v2.0에서 검색 최적화 필드 추가 및 profileImages를 별도 테이블로 분리
 class ProfileModel {
   /// 프로필 ID
-  final String id;
+  final int id;
 
   /// 사용자 ID
-  final String userId;
+  final int userId;
 
   /// 표시 이름
   final String displayName;
@@ -96,19 +96,21 @@ class ProfileModel {
         : <String>[];
 
     return ProfileModel(
-      id: json['id'] as String,
-      userId: json['userId'] as String,
-      displayName: json['displayName'] as String? ?? '',
+      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
+      userId: json['userId'] is int
+          ? json['userId']
+          : int.parse(json['userId'].toString()),
+      displayName: json['displayName']?.toString() ?? '',
       gender: json['gender'] as String,
       birthDate: DateTime.parse(json['birthDate'] as String),
       age: json['age'] as int?,
       height: json['height'] as int?,
-      occupation: json['occupation'] as String?,
-      education: json['education'] as String?,
-      income: json['income'] as String?,
-      smoking: json['smoking'] as String?,
-      drinking: json['drinking'] as String?,
-      bio: json['bio'] as String? ?? '',
+      occupation: json['occupation']?.toString(),
+      education: json['education']?.toString(),
+      income: json['income']?.toString(),
+      smoking: json['smoking']?.toString(),
+      drinking: json['drinking']?.toString(),
+      bio: json['bio']?.toString() ?? '',
       interests: interests,
       images: json['images'] != null
           ? (json['images'] as List)
@@ -151,8 +153,8 @@ class ProfileModel {
 
   /// 승인된 이미지만 필터링
   List<ProfileImageModel> get approvedImages {
-    if (images == null) return [];
-    return images!.where((img) => img.isApproved).toList();
+    // 현재 앱 정책: 대표 사진/프로필 이미지는 승인 여부와 무관하게 노출합니다.
+    return images ?? [];
   }
 
   /// 메인 프로필 이미지
@@ -173,7 +175,9 @@ class ProfileModel {
   /// 인증 이미지
   ProfileImageModel? get verificationImage {
     if (images == null) return null;
-    return images!.where((img) => img.isVerification && img.isApproved).firstOrNull;
+    return images!
+        .where((img) => img.isVerification && img.isApproved)
+        .firstOrNull;
   }
 
   /// 승인 대기 중인 이미지 개수
@@ -245,8 +249,8 @@ class ProfileModel {
 
   /// copyWith
   ProfileModel copyWith({
-    String? id,
-    String? userId,
+    int? id,
+    int? userId,
     String? displayName,
     String? gender,
     DateTime? birthDate,

@@ -6,10 +6,10 @@ import 'enums/image_type.dart';
 /// v2.0에서 Profile.profileImages (JSON)에서 분리됨
 class ProfileImageModel {
   /// ID
-  final String id;
+  final int id;
 
   /// 프로필 ID
-  final String profileId;
+  final int profileId;
 
   /// 이미지 URL
   final String imageUrl;
@@ -47,8 +47,10 @@ class ProfileImageModel {
   /// JSON → Model
   factory ProfileImageModel.fromJson(Map<String, dynamic> json) {
     return ProfileImageModel(
-      id: json['id'] as String,
-      profileId: json['profileId'] as String,
+      id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
+      profileId: json['profileId'] is int
+          ? json['profileId']
+          : int.parse(json['profileId'].toString()),
       imageUrl: json['imageUrl'] as String,
       imageType: ImageType.fromString(json['imageType'] as String),
       displayOrder: json['displayOrder'] as int,
@@ -84,15 +86,16 @@ class ProfileImageModel {
   bool get isVerification => imageType == ImageType.verification;
 
   /// 승인 대기 중인지
-  bool get isPending => !isApproved && rejectionReason == null && reviewedAt == null;
+  bool get isPending =>
+      !isApproved && rejectionReason == null && reviewedAt == null;
 
   /// 거부되었는지
   bool get isRejected => !isApproved && rejectionReason != null;
 
   /// copyWith
   ProfileImageModel copyWith({
-    String? id,
-    String? profileId,
+    int? id,
+    int? profileId,
     String? imageUrl,
     ImageType? imageType,
     int? displayOrder,

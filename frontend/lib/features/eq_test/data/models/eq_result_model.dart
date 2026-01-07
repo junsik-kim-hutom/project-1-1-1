@@ -1,6 +1,6 @@
 class EQResultModel {
-  final String id;
-  final String userId;
+  final int id;
+  final int userId;
   final int totalScore;
   final int empathyScore;
   final int selfAwarenessScore;
@@ -26,16 +26,18 @@ class EQResultModel {
   });
 
   factory EQResultModel.fromJson(Map<String, dynamic> json) {
+    final rawPersonalityType = (json['personalityType'] ?? json['personality_type'] ?? '').toString();
     return EQResultModel(
-      id: json['id'],
-      userId: json['userId'] ?? json['user_id'],
-      totalScore: json['totalScore'] ?? json['total_score'],
-      empathyScore: json['empathyScore'] ?? json['empathy_score'],
-      selfAwarenessScore: json['selfAwarenessScore'] ?? json['self_awareness_score'],
-      socialSkillsScore: json['socialSkillsScore'] ?? json['social_skills_score'],
-      motivationScore: json['motivationScore'] ?? json['motivation_score'],
-      emotionRegulationScore: json['emotionRegulationScore'] ?? json['emotion_regulation_score'],
-      personalityType: json['personalityType'] ?? json['personality_type'],
+      id: _parseId(json['id']),
+      userId: _parseId(json['userId'] ?? json['user_id']),
+      totalScore: _parseId(json['totalScore'] ?? json['total_score']),
+      empathyScore: _parseId(json['empathyScore'] ?? json['empathy_score']),
+      selfAwarenessScore: _parseId(json['selfAwarenessScore'] ?? json['self_awareness_score']),
+      socialSkillsScore: _parseId(json['socialSkillsScore'] ?? json['social_skills_score']),
+      motivationScore: _parseId(json['motivationScore'] ?? json['motivation_score']),
+      emotionRegulationScore:
+          _parseId(json['emotionRegulationScore'] ?? json['emotion_regulation_score']),
+      personalityType: rawPersonalityType.toLowerCase(),
       insights: json['insights'],
       completedAt: DateTime.parse(json['completedAt'] ?? json['completed_at']),
     );
@@ -95,4 +97,10 @@ class EQResultModel {
 
     return labels[personalityType]?[locale] ?? personalityType;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

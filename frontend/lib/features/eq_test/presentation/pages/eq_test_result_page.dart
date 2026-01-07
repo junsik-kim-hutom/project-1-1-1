@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../data/models/eq_result_model.dart';
 
 class EQTestResultPage extends StatelessWidget {
@@ -12,64 +15,55 @@ class EQTestResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final localeCode = Localizations.localeOf(context).languageCode;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('EQ 테스트 결과'),
+        title: Text(l10n.eqTestResultTitle),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // 성격 유형 카드
-            _buildPersonalityTypeCard(context),
-            const SizedBox(height: 24),
-            // 총점 카드
-            _buildTotalScoreCard(context),
-            const SizedBox(height: 24),
-            // 카테고리별 점수
+            _buildHeroCard(context, localeCode),
+            const SizedBox(height: 16),
             _buildCategoryScores(context),
+            const SizedBox(height: 16),
+            _buildInsightSection(
+              context,
+              title: l10n.eqTestStrengthsTitle,
+              icon: Icons.star_rounded,
+              color: Colors.amber,
+              items: result.getStrengths(localeCode),
+            ),
+            const SizedBox(height: 12),
+            _buildInsightSection(
+              context,
+              title: l10n.eqTestImprovementsTitle,
+              icon: Icons.trending_up_rounded,
+              color: AppColors.accent,
+              items: result.getImprovements(localeCode),
+            ),
+            const SizedBox(height: 12),
+            _buildInsightSection(
+              context,
+              title: l10n.eqTestMatchingTipsTitle,
+              icon: Icons.auto_awesome_rounded,
+              color: AppColors.secondary,
+              items: result.getMatchingTips(localeCode),
+            ),
             const SizedBox(height: 24),
-            // 강점
-            _buildInsightSection(
-              context,
-              '당신의 강점',
-              Icons.star,
-              Colors.amber,
-              result.getStrengths('ko'),
-            ),
-            const SizedBox(height: 16),
-            // 개선점
-            _buildInsightSection(
-              context,
-              '개선할 점',
-              Icons.trending_up,
-              Colors.blue,
-              result.getImprovements('ko'),
-            ),
-            const SizedBox(height: 16),
-            // 매칭 팁
-            _buildInsightSection(
-              context,
-              '매칭 팁',
-              Icons.auto_awesome_rounded,
-              AppColors.secondary,
-              result.getMatchingTips('ko'),
-            ),
-            const SizedBox(height: 32),
-            // 완료 버튼
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-              child: const Text(
-                '확인',
-                style: TextStyle(fontSize: 18),
+            ElevatedButton(
+              onPressed: () => context.go('/main'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                l10n.confirm,
+                style: const TextStyle(fontSize: 18),
               ),
             ),
           ],
@@ -78,277 +72,304 @@ class EQTestResultPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPersonalityTypeCard(BuildContext context) {
-    final typeEmojis = {
-      'empathetic': '✨',
-      'introspective': '🤔',
-      'social': '🎉',
-      'achiever': '🏆',
-      'rational': '🧠',
-      'balanced': '⚖️',
-    };
+  Widget _buildHeroCard(BuildContext context, String localeCode) {
+    final l10n = AppLocalizations.of(context)!;
+    final personalityIcon = _personalityIcon(result.personalityType);
+    final score = result.totalScore.clamp(0, 5);
+    final progress = score / 5;
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: [AppColors.primary, AppColors.secondary],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: AppColors.primaryGradient,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadow,
+            blurRadius: 18,
+            offset: Offset(0, 10),
           ),
-        ),
-        child: Column(
-          children: [
-            Text(
-              typeEmojis[result.personalityType] ?? '✨',
-              style: const TextStyle(fontSize: 64),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              '당신의 성격 유형은',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              result.getPersonalityTypeLabel('ko'),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildTotalScoreCard(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              '종합 점수',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+      child: Row(
+        children: [
+          // Score
+          SizedBox(
+            width: 74,
+            height: 74,
+            child: Stack(
               children: [
-                Text(
-                  '${result.totalScore}',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                Positioned.fill(
+                  child: CircularProgressIndicator(
+                    value: progress,
+                    strokeWidth: 8,
+                    backgroundColor: Colors.white.withValues(alpha: 0.25),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8, left: 4),
+                Center(
                   child: Text(
-                    '/ 5',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.textSecondary,
+                    '$score',
+                    style: AppTextStyles.headlineSmall.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 16),
+          // Summary
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(personalityIcon, color: Colors.white, size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.eqTestPersonalityType,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  result.getPersonalityTypeLabel(localeCode),
+                  style: AppTextStyles.headlineSmall.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${l10n.eqTestOverallScore}: $score / 5',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: Colors.white.withValues(alpha: 0.85),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildCategoryScores(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final categories = [
       {
-        'label': '공감 능력',
+        'label': l10n.eqTestScoreEmpathy,
         'score': result.empathyScore,
         'color': AppColors.primary,
         'icon': Icons.sentiment_satisfied_rounded,
       },
       {
-        'label': '자기 인식',
+        'label': l10n.eqTestScoreSelfAwareness,
         'score': result.selfAwarenessScore,
         'color': AppColors.accent,
         'icon': Icons.self_improvement,
       },
       {
-        'label': '사회적 기술',
+        'label': l10n.eqTestScoreSocialSkills,
         'score': result.socialSkillsScore,
         'color': AppColors.secondary,
         'icon': Icons.people,
       },
       {
-        'label': '동기부여',
+        'label': l10n.eqTestScoreMotivation,
         'score': result.motivationScore,
         'color': AppColors.warning,
         'icon': Icons.emoji_events,
       },
       {
-        'label': '감정 조절',
+        'label': l10n.eqTestScoreEmotionRegulation,
         'score': result.emotionRegulationScore,
         'color': AppColors.info,
         'icon': Icons.spa,
       },
     ];
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 14,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              '세부 점수',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            ...categories.map((category) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.eqTestDetailedScores,
+            style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w800),
+          ),
+          const SizedBox(height: 16),
+          ...categories.map((category) {
+            final score = (category['score'] as int).clamp(0, 5);
+            final color = category['color'] as Color;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
                           category['icon'] as IconData,
-                          size: 20,
-                          color: category['color'] as Color,
+                          size: 18,
+                          color: color,
                         ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            category['label'] as String,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          '${category['score']} / 5',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: category['color'] as Color,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: (category['score'] as int) / 5,
-                      backgroundColor: Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        category['color'] as Color,
                       ),
-                      minHeight: 8,
-                      borderRadius: BorderRadius.circular(4),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          category['label'] as String,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '$score / 5',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: color,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: LinearProgressIndicator(
+                      value: score / 5,
+                      backgroundColor: AppColors.border,
+                      valueColor: AlwaysStoppedAnimation<Color>(color),
+                      minHeight: 10,
                     ),
-                  ],
-                ),
-              );
-            }),
-          ],
-        ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
   }
 
   Widget _buildInsightSection(
     BuildContext context,
-    String title,
-    IconData icon,
-    Color color,
-    List<dynamic> items,
+    {required String title,
+    required IconData icon,
+    required Color color,
+    required List<dynamic> items}
   ) {
     if (items.isEmpty) return const SizedBox.shrink();
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.border),
+        boxShadow: const [
+          BoxShadow(
+            color: AppColors.shadowLight,
+            blurRadius: 14,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 24),
-                const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 34,
+                height: 34,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w800),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ...items.asMap().entries.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ...items.asMap().entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 6),
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                      ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      entry.value.toString(),
+                      style: AppTextStyles.bodyMedium.copyWith(height: 1.55),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        entry.value.toString(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ],
-        ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
       ),
     );
+  }
+
+  IconData _personalityIcon(String type) {
+    switch (type) {
+      case 'empathetic':
+        return Icons.favorite_rounded;
+      case 'introspective':
+        return Icons.self_improvement_rounded;
+      case 'social':
+        return Icons.people_alt_rounded;
+      case 'achiever':
+        return Icons.emoji_events_rounded;
+      case 'rational':
+        return Icons.psychology_rounded;
+      case 'balanced':
+      default:
+        return Icons.balance_rounded;
+    }
   }
 }

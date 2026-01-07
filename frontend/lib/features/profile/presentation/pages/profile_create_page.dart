@@ -3,9 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:marriage_matching_app/core/models/profile_model.dart';
-import 'package:marriage_matching_app/core/widgets/custom_card.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import 'package:marriage_matching_app/features/auth/providers/auth_provider.dart';
 import 'package:marriage_matching_app/features/profile/providers/profile_provider.dart';
+import '../widgets/profile_form_section.dart';
+
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../widgets/profile_image_upload_widget.dart';
 
@@ -157,7 +160,8 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
   }
 
   List<String> _orderedProfileImages() {
-    final mainIndex = _coerceMainImageIndex(_mainImageIndex, _profileImageUrls.length);
+    final mainIndex =
+        _coerceMainImageIndex(_mainImageIndex, _profileImageUrls.length);
     if (_profileImageUrls.isEmpty) return const [];
     if (mainIndex == null) return List<String>.from(_profileImageUrls);
     final mainUrl = _profileImageUrls[mainIndex];
@@ -216,7 +220,8 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
       return;
     }
 
-    final mainIndex = _coerceMainImageIndex(_mainImageIndex, _profileImageUrls.length);
+    final mainIndex =
+        _coerceMainImageIndex(_mainImageIndex, _profileImageUrls.length);
     if (_profileImageUrls.length > 1 && mainIndex == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.selectMainPhoto)),
@@ -292,10 +297,10 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
 
     if (_isEditMode && profileState.profile == null && isBusy) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.editProfile),
-        ),
-        body: const Center(child: CircularProgressIndicator()),
+        backgroundColor: AppColors.background,
+        appBar: AppBar(title: Text(l10n.editProfile)),
+        body: const Center(
+            child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
@@ -307,8 +312,23 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
     }
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(_isEditMode ? l10n.editProfile : l10n.createProfile),
+        title: Text(
+          _isEditMode ? l10n.editProfile : l10n.createProfile,
+          style:
+              AppTextStyles.headlineSmall.copyWith(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        leading: _isEditMode
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                    color: AppColors.textPrimary),
+                onPressed: () => context.pop(),
+              )
+            : null,
       ),
       body: Stack(
         children: [
@@ -317,10 +337,12 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
             child: Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 children: [
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  // Photos
+                  ProfileFormSection(
+                    title: '프로필 사진', // Default to Korean if l10n missing
                     child: ProfileImageUploadWidget(
                       initialImages: _profileImageUrls,
                       mainImageIndex: _mainImageIndex,
@@ -344,19 +366,18 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
                       maxImages: 6,
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  const SizedBox(height: 24),
+
+                  // Basic Info
+                  ProfileFormSection(
+                    title: '기본 정보',
                     child: Column(
                       children: [
                         TextFormField(
                           controller: _nameController,
                           textInputAction: TextInputAction.next,
                           autofillHints: const [AutofillHints.name],
-                          decoration: InputDecoration(
-                            labelText: l10n.name,
-                            hintText: '${l10n.user} 1',
-                          ),
+                          decoration: _inputDecoration(l10n.name, '사용자 1'),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return '${l10n.name} ${l10n.confirm}';
@@ -364,18 +385,36 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                              l10n.gender,
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
+                            child: Text(l10n.gender,
+                                style: AppTextStyles.labelMedium),
                           ),
                         ),
                         SegmentedButton<String>(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                              (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return AppColors.primary.withOpacity(0.1);
+                                }
+                                return AppColors.surfaceExposed;
+                              },
+                            ),
+                            foregroundColor:
+                                WidgetStateProperty.resolveWith<Color>(
+                              (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.selected)) {
+                                  return AppColors.primary;
+                                }
+                                return AppColors.textSecondary;
+                              },
+                            ),
+                          ),
                           segments: [
                             ButtonSegment(
                               value: 'male',
@@ -400,23 +439,23 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
                             });
                           },
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _birthDateController,
                           readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: l10n.birthDate,
-                            hintText: l10n.pleaseSelect,
-                            suffixIcon: const Icon(Icons.calendar_today_outlined),
+                          decoration: _inputDecoration(l10n.birthDate, '선택해주세요')
+                              .copyWith(
+                            suffixIcon: const Icon(Icons.calendar_today_rounded,
+                                color: AppColors.textSecondary),
                           ),
                           onTap: _selectDate,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _heightController,
-                          decoration: InputDecoration(
-                            labelText: '${l10n.height} (${l10n.cm})',
-                            hintText: '175',
+                          decoration:
+                              _inputDecoration(l10n.height, '175').copyWith(
+                            suffixText: 'cm',
                           ),
                           keyboardType: TextInputType.number,
                           inputFormatters: [
@@ -432,488 +471,306 @@ class _ProfileCreatePageState extends ConsumerState<ProfileCreatePage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  const SizedBox(height: 24),
+
+                  // Job & Education
+                  ProfileFormSection(
+                    title: '${l10n.occupation} & ${l10n.education}',
                     child: Column(
                       children: [
                         DropdownButtonFormField<String>(
-                          value: _occupation,
+                          initialValue: _occupation,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.occupation),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '회사원',
-                              child: Text(l10n.occupationOfficeWorker),
-                            ),
-                            DropdownMenuItem(
-                              value: '공무원',
-                              child: Text(l10n.occupationPublicServant),
-                            ),
-                            DropdownMenuItem(
-                              value: '자영업',
-                              child: Text(l10n.occupationSelfEmployed),
-                            ),
-                            DropdownMenuItem(
-                              value: '전문직 (의사, 변호사 등)',
-                              child: Text(l10n.occupationProfessional),
-                            ),
-                            DropdownMenuItem(
-                              value: '개발자/IT',
-                              child: Text(l10n.occupationDeveloper),
-                            ),
-                            DropdownMenuItem(
-                              value: '교육/강사',
-                              child: Text(l10n.occupationEducation),
-                            ),
-                            DropdownMenuItem(
-                              value: '서비스업',
-                              child: Text(l10n.occupationService),
-                            ),
-                            DropdownMenuItem(
-                              value: '예술/디자인',
-                              child: Text(l10n.occupationArtDesign),
-                            ),
-                            DropdownMenuItem(
-                              value: '학생',
-                              child: Text(l10n.occupationStudent),
-                            ),
-                            DropdownMenuItem(
-                              value: '기타',
-                              child: Text(l10n.occupationOther),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _occupation = value;
-                            });
-                          },
+                          decoration: _inputDecoration(l10n.occupation, ''),
+                          hint: const Text('선택해주세요'),
+                          items: _occupationValues.map((val) {
+                            return DropdownMenuItem(
+                                value: val, child: Text(val));
+                          }).toList()
+                            ..add(const DropdownMenuItem(
+                                value: '기타', child: Text('기타'))),
+                          onChanged: (value) =>
+                              setState(() => _occupation = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _education,
+                          initialValue: _education,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.education),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '고등학교 졸업',
-                              child: Text(l10n.educationHighSchoolGraduate),
-                            ),
-                            DropdownMenuItem(
-                              value: '전문대 졸업',
-                              child: Text(l10n.educationJuniorCollegeGraduate),
-                            ),
-                            DropdownMenuItem(
-                              value: '대학교 졸업',
-                              child: Text(l10n.educationUniversityGraduate),
-                            ),
-                            DropdownMenuItem(
-                              value: '대학원 석사',
-                              child: Text(l10n.educationMasters),
-                            ),
-                            DropdownMenuItem(
-                              value: '대학원 박사',
-                              child: Text(l10n.educationPhd),
-                            ),
-                            DropdownMenuItem(
-                              value: '기타',
-                              child: Text(l10n.educationOther),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _education = value;
-                            });
-                          },
+                          decoration: _inputDecoration(l10n.education, ''),
+                          hint: const Text('선택해주세요'),
+                          items: _educationValues
+                              .map((val) => DropdownMenuItem(
+                                  value: val, child: Text(val)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _education = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _incomeController,
-                          decoration: InputDecoration(
-                            labelText: l10n.annualIncome,
-                            hintText: l10n.annualIncomeHint,
-                          ),
+                          decoration: _inputDecoration('연수입', '예: 5000만원'),
                           textInputAction: TextInputAction.next,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  const SizedBox(height: 24),
+
+                  // Lifestyle
+                  ProfileFormSection(
+                    title: '라이프스타일',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l10n.smoking,
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
+                        Text(l10n.smoking, style: AppTextStyles.labelMedium),
                         const SizedBox(height: 8),
                         SegmentedButton<String>(
                           segments: [
                             ButtonSegment(value: 'no', label: Text(l10n.no)),
-                            ButtonSegment(value: 'sometimes', label: Text(l10n.sometimes)),
+                            ButtonSegment(
+                                value: 'sometimes',
+                                label: Text(l10n.sometimes)),
                             ButtonSegment(value: 'yes', label: Text(l10n.yes)),
                           ],
                           selected: {_smoking ?? 'no'},
-                          onSelectionChanged: (selection) {
-                            setState(() {
-                              _smoking = selection.first;
-                            });
-                          },
+                          onSelectionChanged: (s) =>
+                              setState(() => _smoking = s.first),
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n.drinking,
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
+                        const SizedBox(height: 20),
+                        Text(l10n.drinking, style: AppTextStyles.labelMedium),
                         const SizedBox(height: 8),
                         SegmentedButton<String>(
                           segments: [
                             ButtonSegment(value: 'no', label: Text(l10n.no)),
-                            ButtonSegment(value: 'sometimes', label: Text(l10n.sometimes)),
+                            ButtonSegment(
+                                value: 'sometimes',
+                                label: Text(l10n.sometimes)),
                             ButtonSegment(value: 'yes', label: Text(l10n.yes)),
                           ],
                           selected: {_drinking ?? 'no'},
-                          onSelectionChanged: (selection) {
-                            setState(() {
-                              _drinking = selection.first;
-                            });
-                          },
+                          onSelectionChanged: (s) =>
+                              setState(() => _drinking = s.first),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _residenceController,
-                          decoration: InputDecoration(
-                            labelText: l10n.residence,
-                            hintText: l10n.residenceHint,
-                          ),
+                          decoration: _inputDecoration('거주지', '예: 서울시 강남구'),
                           textInputAction: TextInputAction.next,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _bodyType,
+                          initialValue: _bodyType,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.bodyType),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(value: '슬림', child: Text(l10n.bodyTypeSlim)),
-                            DropdownMenuItem(value: '보통', child: Text(l10n.bodyTypeAverage)),
-                            DropdownMenuItem(
-                              value: '글래머러스',
-                              child: Text(l10n.bodyTypeGlamorous),
-                            ),
-                            DropdownMenuItem(value: '근육질', child: Text(l10n.bodyTypeMuscular)),
-                            DropdownMenuItem(value: '통통', child: Text(l10n.bodyTypeChubby)),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _bodyType = value;
-                            });
-                          },
+                          decoration: _inputDecoration('체형', ''),
+                          items: ['슬림', '보통', '글래머러스', '근육질', '통통']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _bodyType = value),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  const SizedBox(height: 24),
+
+                  // Values
+                  ProfileFormSection(
+                    title: '가치관 & 결혼관',
                     child: Column(
                       children: [
                         DropdownButtonFormField<String>(
-                          value: _marriageIntention,
+                          initialValue: _marriageIntention,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.marriageIntention),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '적극적',
-                              child: Text(l10n.marriageIntentionActive),
-                            ),
-                            DropdownMenuItem(
-                              value: '있음',
-                              child: Text(l10n.marriageIntentionYes),
-                            ),
-                            DropdownMenuItem(
-                              value: '천천히 생각 중',
-                              child: Text(l10n.marriageIntentionSlow),
-                            ),
-                            DropdownMenuItem(
-                              value: '미정',
-                              child: Text(l10n.marriageIntentionNotSure),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _marriageIntention = value;
-                            });
-                          },
+                          decoration: _inputDecoration('결혼 의향', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['적극적', '있음', '천천히 생각 중', '미정']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _marriageIntention = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _childrenPlan,
+                          initialValue: _childrenPlan,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.childrenPlan),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '원함',
-                              child: Text(l10n.childrenPlanWant),
-                            ),
-                            DropdownMenuItem(
-                              value: '원하지 않음',
-                              child: Text(l10n.childrenPlanNo),
-                            ),
-                            DropdownMenuItem(
-                              value: '상의 후 결정',
-                              child: Text(l10n.childrenPlanDiscuss),
-                            ),
-                            DropdownMenuItem(
-                              value: '미정',
-                              child: Text(l10n.childrenPlanUndecided),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _childrenPlan = value;
-                            });
-                          },
+                          decoration: _inputDecoration('자녀 계획', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['원함', '원하지 않음', '상의 후 결정', '미정']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _childrenPlan = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _marriageTiming,
+                          initialValue: _marriageTiming,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.marriageTiming),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '6개월 이내',
-                              child: Text(l10n.marriageTimingWithin6Months),
-                            ),
-                            DropdownMenuItem(
-                              value: '1년 이내',
-                              child: Text(l10n.marriageTimingWithin1Year),
-                            ),
-                            DropdownMenuItem(
-                              value: '2-3년 이내',
-                              child: Text(l10n.marriageTimingWithin2to3Years),
-                            ),
-                            DropdownMenuItem(
-                              value: '천천히',
-                              child: Text(l10n.marriageTimingSlowly),
-                            ),
-                            DropdownMenuItem(
-                              value: '미정',
-                              child: Text(l10n.marriageTimingUndecided),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _marriageTiming = value;
-                            });
-                          },
+                          decoration: _inputDecoration('결혼 시기', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['6개월 이내', '1년 이내', '2-3년 이내', '천천히', '미정']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _marriageTiming = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _dateCostSharing,
+                          initialValue: _dateCostSharing,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.dateCostSharing),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '남성 부담',
-                              child: Text(l10n.dateCostSharingManPays),
-                            ),
-                            DropdownMenuItem(
-                              value: '여성 부담',
-                              child: Text(l10n.dateCostSharingWomanPays),
-                            ),
-                            DropdownMenuItem(
-                              value: '더치페이',
-                              child: Text(l10n.dateCostSharingDutch),
-                            ),
-                            DropdownMenuItem(
-                              value: '번갈아 부담',
-                              child: Text(l10n.dateCostSharingAlternate),
-                            ),
-                            DropdownMenuItem(
-                              value: '협의',
-                              child: Text(l10n.dateCostSharingDiscuss),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _dateCostSharing = value;
-                            });
-                          },
+                          decoration: _inputDecoration('데이트 비용', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['남성 부담', '여성 부담', '더치페이', '번갈아 부담', '협의']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _dateCostSharing = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _importantValue,
+                          initialValue: _importantValue,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.importantValue),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '성격',
-                              child: Text(l10n.importantValuePersonality),
-                            ),
-                            DropdownMenuItem(
-                              value: '경제력',
-                              child: Text(l10n.importantValueFinancial),
-                            ),
-                            DropdownMenuItem(
-                              value: '외모',
-                              child: Text(l10n.importantValueAppearance),
-                            ),
-                            DropdownMenuItem(
-                              value: '가정환경',
-                              child: Text(l10n.importantValueFamily),
-                            ),
-                            DropdownMenuItem(
-                              value: '직업',
-                              child: Text(l10n.importantValueOccupationEducation),
-                            ),
-                            DropdownMenuItem(
-                              value: '가치관',
-                              child: Text(l10n.importantValueValues),
-                            ),
-                            DropdownMenuItem(
-                              value: '종교',
-                              child: Text(l10n.importantValueReligion),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _importantValue = value;
-                            });
-                          },
+                          decoration: _inputDecoration('중요하게 생각하는 가치', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['성격', '경제력', '외모', '가정환경', '직업', '가치관', '종교']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _importantValue = value),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         DropdownButtonFormField<String>(
-                          value: _houseworkSharing,
+                          initialValue: _houseworkSharing,
                           isExpanded: true,
-                          decoration: InputDecoration(labelText: l10n.houseworkSharing),
-                          hint: Text(l10n.pleaseSelect),
-                          items: [
-                            DropdownMenuItem(
-                              value: '평등 분담',
-                              child: Text(l10n.houseworkSharingEqual),
-                            ),
-                            DropdownMenuItem(
-                              value: '유연하게',
-                              child: Text(l10n.houseworkSharingFlexible),
-                            ),
-                            DropdownMenuItem(
-                              value: '주로 여성',
-                              child: Text(l10n.houseworkSharingMostlyWoman),
-                            ),
-                            DropdownMenuItem(
-                              value: '주로 남성',
-                              child: Text(l10n.houseworkSharingMostlyMan),
-                            ),
-                            DropdownMenuItem(
-                              value: '협의',
-                              child: Text(l10n.houseworkSharingDiscuss),
-                            ),
-                          ],
-                          onChanged: (value) {
-                            setState(() {
-                              _houseworkSharing = value;
-                            });
-                          },
+                          decoration: _inputDecoration('가사 분담', ''),
+                          hint: const Text('선택해주세요'),
+                          items: ['평등 분담', '유연하게', '주로 여성', '주로 남성', '협의']
+                              .map((e) =>
+                                  DropdownMenuItem(value: e, child: Text(e)))
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _houseworkSharing = value),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  CustomCard(
-                    margin: EdgeInsets.zero,
+                  const SizedBox(height: 24),
+
+                  // Introduction
+                  ProfileFormSection(
+                    title: '자기소개',
                     child: Column(
                       children: [
                         TextFormField(
                           controller: _charmPointController,
-                          decoration: InputDecoration(
-                            labelText: l10n.charmPoint,
-                            hintText: l10n.charmPointHint,
-                          ),
+                          decoration: _inputDecoration(
+                              '나의 매력 포인트', '예: 요리를 잘해요, 잘 웃어요'),
                           maxLines: 2,
-                          textInputAction: TextInputAction.newline,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _idealPartnerController,
-                          decoration: InputDecoration(
-                            labelText: l10n.idealPartner,
-                            hintText: l10n.idealPartnerHint,
-                          ),
-                          maxLines: 3,
-                          textInputAction: TextInputAction.newline,
+                          decoration: _inputDecoration(
+                              '이상형', '예: 다정한 사람, 대화가 잘 통하는 사람'),
+                          maxLines: 2,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _holidayActivityController,
-                          decoration: InputDecoration(
-                            labelText: l10n.holidayActivity,
-                            hintText: l10n.holidayActivityHint,
-                          ),
+                          decoration:
+                              _inputDecoration('휴일 데이터 선호', '예: 맛집 탐방, 드라이브'),
                           maxLines: 2,
-                          textInputAction: TextInputAction.newline,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 20),
                         TextFormField(
                           controller: _bioController,
-                          decoration: InputDecoration(
-                            labelText: l10n.bio,
-                            hintText: l10n.bio,
+                          decoration:
+                              _inputDecoration(l10n.bio, '간단한 자기소개를 입력해주세요.')
+                                  .copyWith(
                             alignLabelWithHint: true,
                           ),
                           maxLines: 5,
-                          maxLength: 500,
-                          textInputAction: TextInputAction.newline,
                         ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 100), // Spacing for FAB
                 ],
               ),
             ),
           ),
-          if (isBusy)
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: LinearProgressIndicator(),
-            ),
-        ],
-      ),
-      bottomSheet: Material(
-        elevation: 8,
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: SafeArea(
-          top: false,
-          child: AnimatedPadding(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-            padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 12,
-              bottom: 12 + MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: isBusy ? null : _saveProfile,
-                child: Text('${l10n.profile} ${l10n.save}'),
+
+          // Save Button
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 10,
+                    offset: Offset(0, -4),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: isBusy ? null : _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 0,
+                  ),
+                  child: isBusy
+                      ? const CircularProgressIndicator(color: AppColors.white)
+                      : Text(
+                          l10n.save,
+                          style: AppTextStyles.titleMedium
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+
+  InputDecoration _inputDecoration(String label, String hint) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      filled: true,
+      fillColor: AppColors.inputBackground,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      labelStyle:
+          AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+      hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.textHint),
     );
   }
 }

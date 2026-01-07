@@ -122,6 +122,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sometimes => '時々';
 
   @override
+  String get all => 'すべて';
+
+  @override
   String get bio => '自己紹介';
 
   @override
@@ -221,10 +224,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get profileViews => 'プロフィール閲覧';
 
   @override
+  String get likesSent => '送ったいいね';
+
+  @override
   String get likesReceived => '受け取ったいいね';
 
   @override
+  String get boostsSent => '送ったスーパーいいね！';
+
+  @override
+  String get boostsReceived => '受け取ったスーパーいいね！';
+
+  @override
   String get ongoingChats => '進行中のチャット';
+
+  @override
+  String get noNotifications => '通知はありません。';
+
+  @override
+  String get noActivity => '表示する履歴がありません。';
 
   @override
   String get recommendedMatches => 'おすすめマッチング';
@@ -243,6 +261,93 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get startTest => 'テスト開始';
+
+  @override
+  String get eqTestResultTitle => 'EQテスト結果';
+
+  @override
+  String get eqTestNoQuestions => '質問がありません。';
+
+  @override
+  String get eqTestAutoAdvanceHint => '選択すると自動的に次の質問へ進みます';
+
+  @override
+  String get eqTestCategoryEmpathy => '共感';
+
+  @override
+  String get eqTestCategorySelfAwareness => '自己認識';
+
+  @override
+  String get eqTestCategorySocialSkills => '社会性';
+
+  @override
+  String get eqTestCategoryMotivation => '動機';
+
+  @override
+  String get eqTestCategoryEmotionRegulation => '感情調整';
+
+  @override
+  String get eqTestCategoryEQ => 'EQ';
+
+  @override
+  String get eqTestLikert1 => 'まったくそう思わない';
+
+  @override
+  String get eqTestLikert2 => 'そう思わない';
+
+  @override
+  String get eqTestLikert3 => 'どちらともいえない';
+
+  @override
+  String get eqTestLikert4 => 'そう思う';
+
+  @override
+  String get eqTestLikert5 => 'とてもそう思う';
+
+  @override
+  String get eqTestAllAnsweredTitle => 'すべての質問に回答しました！';
+
+  @override
+  String get eqTestCalculatingResult => '結果を計算しています...';
+
+  @override
+  String get eqTestViewResult => '結果を見る';
+
+  @override
+  String get eqTestResultCalculationError => '結果計算エラー';
+
+  @override
+  String get eqTestStrengthsTitle => 'あなたの強み';
+
+  @override
+  String get eqTestImprovementsTitle => '改善点';
+
+  @override
+  String get eqTestMatchingTipsTitle => 'マッチングのヒント';
+
+  @override
+  String get eqTestPersonalityType => '性格タイプ';
+
+  @override
+  String get eqTestOverallScore => '総合スコア';
+
+  @override
+  String get eqTestDetailedScores => '詳細スコア';
+
+  @override
+  String get eqTestScoreEmpathy => '共感力';
+
+  @override
+  String get eqTestScoreSelfAwareness => '自己認識';
+
+  @override
+  String get eqTestScoreSocialSkills => '社会的スキル';
+
+  @override
+  String get eqTestScoreMotivation => '動機づけ';
+
+  @override
+  String get eqTestScoreEmotionRegulation => '感情調整';
 
   @override
   String get years => '歳';
@@ -268,6 +373,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get filterSettings => 'フィルター設定';
 
   @override
+  String get matchingActionGuideTitle => 'マッチングの使い方';
+
+  @override
+  String get matchingActionGuideInterest => 'いいね！：相手にいいね！を送ります。';
+
+  @override
+  String get matchingActionGuideBoost =>
+      'スーパーいいね！：いいね！より強いシグナルで、優先表示される場合があります。';
+
+  @override
+  String get matchingActionGuideChat => 'メッセージ：チャットを開始します。';
+
+  @override
   String get age => '年齢';
 
   @override
@@ -286,10 +404,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pass => 'パス';
 
   @override
-  String get interest => '関心';
+  String get interest => 'いいね！';
 
   @override
-  String get boost => 'ブースト';
+  String get boost => 'スーパーいいね！';
 
   @override
   String get swipeHint => '左右にスワイプ';
@@ -307,10 +425,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get viewAgain => 'もう一度見る';
 
   @override
-  String get superLike => 'ブーストを送りました！';
+  String get superLike => 'スーパーいいね！を送りました！';
 
   @override
-  String get likeSent => '関心を送りました';
+  String get likeSent => 'いいね！を送りました';
 
   @override
   String get nextMatch => '次のプロフィールへ';
@@ -419,6 +537,66 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get manageLocations => '活動地域管理';
+
+  @override
+  String get locationMyNeighborhoodSettings => 'マイエリア設定';
+
+  @override
+  String get locationSearchHint => '町名（洞/邑/面）で検索';
+
+  @override
+  String get locationFindByCurrentLocation => '現在地で探す';
+
+  @override
+  String get locationFinding => '検索中...';
+
+  @override
+  String get locationNearbyNeighborhoods => '近くの地域';
+
+  @override
+  String get locationSearchResults => '検索結果';
+
+  @override
+  String get locationNoSearchResults => '結果がありません。';
+
+  @override
+  String get locationFailedToLoadNearby => '近くの地域を読み込めませんでした。';
+
+  @override
+  String get locationCurrentLocationFailed => '現在地を取得できませんでした。';
+
+  @override
+  String get locationSearchFailed => '検索に失敗しました。';
+
+  @override
+  String get locationMaxTwoAreas => '登録できる地域は最大2つです。';
+
+  @override
+  String get locationMyNeighborhood => 'マイエリア';
+
+  @override
+  String get locationMyNeighborhoodSubtitle => '選択した地域を基準に投稿を表示します。';
+
+  @override
+  String get locationHelpBody =>
+      '・活動地域は最大2つまで設定できます。\n・選択した地域を基準にコンテンツを表示します。\n・地域チップを長押しすると変更できます。';
+
+  @override
+  String get locationMapSetupRequiredTitle => '地図の設定が必要です';
+
+  @override
+  String get locationMapSetupRequiredBody =>
+      'Google Maps API Key が設定されていないため、地図を表示できません。\n\niOS: `frontend/ios/Flutter/Secrets.xcconfig` に `GOOGLE_MAPS_API_KEY` を設定してください。\nAndroid: `frontend/android/local.properties` に `GOOGLE_MAPS_API_KEY` を設定してください（または環境変数）。';
+
+  @override
+  String get locationMapCannotShowTitle => '地図を表示できません';
+
+  @override
+  String get locationMapCannotShowBody =>
+      'Google Maps API Key が設定されていません。\n下のボタンから設定方法を確認してください。';
+
+  @override
+  String get locationViewSetupGuide => '設定方法を見る';
 
   @override
   String get languageSettings => '言語設定';

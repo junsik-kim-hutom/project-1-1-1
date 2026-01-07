@@ -77,6 +77,10 @@
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>새로운 매칭과 메시지 알림을 받기 위해 알림 권한이 필요합니다.</string>
 
+	<!-- Google Maps API Key (required for google_maps_flutter on iOS) -->
+	<key>GOOGLE_MAPS_API_KEY</key>
+	<string>$(GOOGLE_MAPS_API_KEY)</string>
+
 	<!-- Background Modes -->
 	<key>UIBackgroundModes</key>
 	<array>

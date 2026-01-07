@@ -122,6 +122,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sometimes => '가끔';
 
   @override
+  String get all => '전체';
+
+  @override
   String get bio => '자기소개';
 
   @override
@@ -221,10 +224,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get profileViews => '프로필 조회';
 
   @override
+  String get likesSent => '보낸 좋아요';
+
+  @override
   String get likesReceived => '받은 좋아요';
 
   @override
+  String get boostsSent => '보낸 부스트';
+
+  @override
+  String get boostsReceived => '받은 부스트';
+
+  @override
   String get ongoingChats => '진행 중인 채팅';
+
+  @override
+  String get noNotifications => '알림이 없습니다.';
+
+  @override
+  String get noActivity => '표시할 내역이 없습니다.';
 
   @override
   String get recommendedMatches => '추천 매칭';
@@ -244,6 +262,93 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get startTest => '테스트 시작하기';
+
+  @override
+  String get eqTestResultTitle => 'EQ 테스트 결과';
+
+  @override
+  String get eqTestNoQuestions => '질문이 없습니다.';
+
+  @override
+  String get eqTestAutoAdvanceHint => '선택하면 자동으로 다음 문항으로 이동해요';
+
+  @override
+  String get eqTestCategoryEmpathy => '공감';
+
+  @override
+  String get eqTestCategorySelfAwareness => '자기 인식';
+
+  @override
+  String get eqTestCategorySocialSkills => '사회성';
+
+  @override
+  String get eqTestCategoryMotivation => '동기';
+
+  @override
+  String get eqTestCategoryEmotionRegulation => '감정 조절';
+
+  @override
+  String get eqTestCategoryEQ => 'EQ';
+
+  @override
+  String get eqTestLikert1 => '전혀 아니다';
+
+  @override
+  String get eqTestLikert2 => '아니다';
+
+  @override
+  String get eqTestLikert3 => '보통이다';
+
+  @override
+  String get eqTestLikert4 => '그렇다';
+
+  @override
+  String get eqTestLikert5 => '매우 그렇다';
+
+  @override
+  String get eqTestAllAnsweredTitle => '모든 질문에 답변하셨습니다!';
+
+  @override
+  String get eqTestCalculatingResult => '결과를 계산하고 있습니다...';
+
+  @override
+  String get eqTestViewResult => '결과 보기';
+
+  @override
+  String get eqTestResultCalculationError => '결과 계산 오류';
+
+  @override
+  String get eqTestStrengthsTitle => '당신의 강점';
+
+  @override
+  String get eqTestImprovementsTitle => '개선할 점';
+
+  @override
+  String get eqTestMatchingTipsTitle => '매칭 팁';
+
+  @override
+  String get eqTestPersonalityType => '성격 유형';
+
+  @override
+  String get eqTestOverallScore => '종합 점수';
+
+  @override
+  String get eqTestDetailedScores => '세부 점수';
+
+  @override
+  String get eqTestScoreEmpathy => '공감 능력';
+
+  @override
+  String get eqTestScoreSelfAwareness => '자기 인식';
+
+  @override
+  String get eqTestScoreSocialSkills => '사회적 기술';
+
+  @override
+  String get eqTestScoreMotivation => '동기부여';
+
+  @override
+  String get eqTestScoreEmotionRegulation => '감정 조절';
 
   @override
   String get years => '세';
@@ -267,6 +372,18 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get filterSettings => '필터 설정';
+
+  @override
+  String get matchingActionGuideTitle => '매칭 사용 안내';
+
+  @override
+  String get matchingActionGuideInterest => '관심: 상대에게 관심을 표시해요.';
+
+  @override
+  String get matchingActionGuideBoost => '부스트: 관심보다 더 강하게 표시되어 우선 노출될 수 있어요.';
+
+  @override
+  String get matchingActionGuideChat => '메시지: 채팅을 시작해요.';
 
   @override
   String get age => '나이';
@@ -420,6 +537,66 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get manageLocations => '활동 지역 관리';
+
+  @override
+  String get locationMyNeighborhoodSettings => '내 동네 설정';
+
+  @override
+  String get locationSearchHint => '내 동네 이름(동,읍,면)으로 검색';
+
+  @override
+  String get locationFindByCurrentLocation => '현재 위치로 찾기';
+
+  @override
+  String get locationFinding => '찾는 중...';
+
+  @override
+  String get locationNearbyNeighborhoods => '근처 동네';
+
+  @override
+  String get locationSearchResults => '검색 결과';
+
+  @override
+  String get locationNoSearchResults => '검색 결과가 없어요.';
+
+  @override
+  String get locationFailedToLoadNearby => '근처 동네를 불러오지 못했어요.';
+
+  @override
+  String get locationCurrentLocationFailed => '현재 위치를 가져오지 못했어요.';
+
+  @override
+  String get locationSearchFailed => '검색에 실패했어요.';
+
+  @override
+  String get locationMaxTwoAreas => '최대 2개의 지역만 등록할 수 있습니다';
+
+  @override
+  String get locationMyNeighborhood => '내 동네';
+
+  @override
+  String get locationMyNeighborhoodSubtitle => '선택한 동네를 기준으로 게시글을 볼 수 있어요.';
+
+  @override
+  String get locationHelpBody =>
+      '• 최대 2개의 활동 지역을 설정할 수 있어요.\n• 선택한 동네를 기준으로 매칭/게시글을 볼 수 있어요.\n• 동네 칩을 길게 누르면 동네를 변경할 수 있어요.';
+
+  @override
+  String get locationMapSetupRequiredTitle => '지도 설정 필요';
+
+  @override
+  String get locationMapSetupRequiredBody =>
+      'Google Maps API Key가 설정되어 있지 않아 지도 화면을 표시할 수 없어요.\n\niOS: `frontend/ios/Flutter/Secrets.xcconfig`에 `GOOGLE_MAPS_API_KEY`를 설정하세요.\nAndroid: `frontend/android/local.properties`에 `GOOGLE_MAPS_API_KEY`를 설정하세요(또는 환경변수로 설정).';
+
+  @override
+  String get locationMapCannotShowTitle => '지도를 표시할 수 없어요';
+
+  @override
+  String get locationMapCannotShowBody =>
+      'Google Maps API Key가 설정되지 않았습니다.\n아래 버튼을 눌러 설정 방법을 확인해주세요.';
+
+  @override
+  String get locationViewSetupGuide => '설정 안내 보기';
 
   @override
   String get languageSettings => '언어 설정';

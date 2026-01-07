@@ -50,7 +50,12 @@ export class ProfileFieldController {
 
   async updateField(req: Request, res: Response) {
     try {
-      const { fieldId } = req.params;
+      const fieldId = Number(req.params.fieldId);
+
+      if (!Number.isInteger(fieldId)) {
+        return res.status(400).json({ error: 'Invalid field ID' });
+      }
+
       const field = await profileFieldService.updateField(fieldId, req.body);
 
       return res.status(200).json({
@@ -65,7 +70,12 @@ export class ProfileFieldController {
 
   async toggleField(req: Request, res: Response) {
     try {
-      const { fieldId } = req.params;
+      const fieldId = Number(req.params.fieldId);
+
+      if (!Number.isInteger(fieldId)) {
+        return res.status(400).json({ error: 'Invalid field ID' });
+      }
+
       const field = await profileFieldService.toggleField(fieldId);
 
       return res.status(200).json({

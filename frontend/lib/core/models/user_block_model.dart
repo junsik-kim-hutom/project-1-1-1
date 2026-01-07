@@ -3,13 +3,13 @@
 /// 백엔드 UserBlock 테이블과 동기화
 class UserBlockModel {
   /// ID
-  final String id;
+  final int id;
 
   /// 차단을 실행한 사용자 ID
-  final String blockerId;
+  final int blockerId;
 
   /// 차단된 사용자 ID
-  final String blockedId;
+  final int blockedId;
 
   /// 차단 사유
   final String? reason;
@@ -28,9 +28,9 @@ class UserBlockModel {
   /// JSON → Model
   factory UserBlockModel.fromJson(Map<String, dynamic> json) {
     return UserBlockModel(
-      id: json['id'] as String,
-      blockerId: json['blockerId'] as String,
-      blockedId: json['blockedId'] as String,
+      id: _parseId(json['id']),
+      blockerId: _parseId(json['blockerId']),
+      blockedId: _parseId(json['blockedId']),
       reason: json['reason'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
@@ -47,9 +47,9 @@ class UserBlockModel {
 
   /// copyWith
   UserBlockModel copyWith({
-    String? id,
-    String? blockerId,
-    String? blockedId,
+    int? id,
+    int? blockerId,
+    int? blockedId,
     String? reason,
     DateTime? createdAt,
   }) {
@@ -87,4 +87,10 @@ class UserBlockModel {
         reason.hashCode ^
         createdAt.hashCode;
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

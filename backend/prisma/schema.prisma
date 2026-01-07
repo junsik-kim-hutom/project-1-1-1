@@ -171,7 +171,7 @@ enum DevicePlatform {
 // ========================================
 
 model User {
-  id              String       @id @default(uuid())
+  id              Int          @id @default(autoincrement())
   email           String       @unique
   emailVerified   Boolean      @default(false) @map("email_verified")
   phoneNumber     String?      @unique @map("phone_number")
@@ -199,6 +199,8 @@ model User {
   eqTestResults        EQTestResult[]
   matchingHistoryAsUser   MatchingHistory[]       @relation("MatchingUser")
   matchingHistoryAsTarget MatchingHistory[]       @relation("MatchingTarget")
+  matchingActionLogsAsUser   MatchingActionLog[]   @relation("MatchingActionLogUser")
+  matchingActionLogsAsTarget MatchingActionLog[]   @relation("MatchingActionLogTarget")
   blockingUsers        UserBlock[]                @relation("BlockingUser")
   blockedByUsers       UserBlock[]                @relation("BlockedUser")
   notifications        Notification[]
@@ -219,8 +221,8 @@ model User {
 // ========================================
 
 model Profile {
-  id          String   @id @default(uuid())
-  userId      String   @unique @map("user_id")
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique @map("user_id")
   displayName String   @map("display_name")
   gender      Gender
   birthDate   DateTime @map("birth_date") @db.Date
@@ -263,8 +265,8 @@ model Profile {
 // ========================================
 
 model ProfileImage {
-  id           String    @id @default(uuid())
-  profileId    String    @map("profile_id")
+  id           Int       @id @default(autoincrement())
+  profileId    Int       @map("profile_id")
   imageUrl     String    @map("image_url")
   thumbnailUrl String?   @map("thumbnail_url")
   imageType    ImageType @default(SUB) @map("image_type")
@@ -287,7 +289,7 @@ model ProfileImage {
 // ========================================
 
 model ProfileField {
-  id           String               @id @default(uuid())
+  id           Int                  @id @default(autoincrement())
   fieldKey     String               @unique @map("field_key")
   fieldType    ProfileFieldType     @map("field_type")
   category     ProfileFieldCategory
@@ -315,9 +317,9 @@ model ProfileField {
 // ========================================
 
 model UserProfileValue {
-  id        String   @id @default(uuid())
-  userId    String   @map("user_id")
-  fieldId   String   @map("field_id")
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  fieldId   Int      @map("field_id")
   value     Json
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -336,8 +338,8 @@ model UserProfileValue {
 // ========================================
 
 model LocationArea {
-  id         String   @id @default(uuid())
-  userId     String   @map("user_id")
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
   latitude   Float
   longitude  Float
   address    String
@@ -360,7 +362,7 @@ model LocationArea {
 // ========================================
 
 model BalanceGame {
-  id           String   @id @default(uuid())
+  id           Int      @id @default(autoincrement())
   question     Json
   optionA      Json     @map("option_a")
   optionB      Json     @map("option_b")
@@ -379,9 +381,9 @@ model BalanceGame {
 }
 
 model UserBalanceGameAnswer {
-  id             String   @id @default(uuid())
-  userId         String   @map("user_id")
-  gameId         String   @map("game_id")
+  id             Int      @id @default(autoincrement())
+  userId         Int      @map("user_id")
+  gameId         Int      @map("game_id")
   selectedOption String   @map("selected_option")
   answeredAt     DateTime @default(now()) @map("answered_at")
 
@@ -399,9 +401,9 @@ model UserBalanceGameAnswer {
 // ========================================
 
 model MatchingHistory {
-  id            String         @id @default(uuid())
-  userId        String         @map("user_id")
-  targetUserId  String         @map("target_user_id")
+  id            Int            @id @default(autoincrement())
+  userId        Int            @map("user_id")
+  targetUserId  Int            @map("target_user_id")
   matchScore    Int            @map("match_score") // 0-100
   action        MatchingAction
   viewedProfile Boolean        @default(false) @map("viewed_profile")
@@ -418,14 +420,31 @@ model MatchingHistory {
   @@map("matching_history")
 }
 
+model MatchingActionLog {
+  id           Int            @id @default(autoincrement())
+  userId       Int            @map("user_id")
+  targetUserId Int            @map("target_user_id")
+  matchScore   Int?           @map("match_score")
+  action       MatchingAction
+  createdAt    DateTime       @default(now()) @map("created_at")
+
+  user   User @relation("MatchingActionLogUser", fields: [userId], references: [id], onDelete: Cascade)
+  target User @relation("MatchingActionLogTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@index([userId, action, createdAt(sort: Desc)])
+  @@index([targetUserId, action, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+  @@map("matching_action_logs")
+}
+
 // ========================================
 // 차단 관리 (신규 추가)
 // ========================================
 
 model UserBlock {
-  id            String   @id @default(uuid())
-  userId        String   @map("user_id")
-  blockedUserId String   @map("blocked_user_id")
+  id            Int      @id @default(autoincrement())
+  userId        Int      @map("user_id")
+  blockedUserId Int      @map("blocked_user_id")
   reason        String?
   createdAt     DateTime @default(now()) @map("created_at")
 
@@ -443,9 +462,9 @@ model UserBlock {
 // ========================================
 
 model ChatRequest {
-  id             String            @id @default(uuid())
-  senderId       String            @map("sender_id")
-  receiverId     String            @map("receiver_id")
+  id             Int               @id @default(autoincrement())
+  senderId       Int               @map("sender_id")
+  receiverId     Int               @map("receiver_id")
   initialMessage String            @map("initial_message") @db.Text
   status         ChatRequestStatus @default(PENDING)
   createdAt      DateTime          @default(now()) @map("created_at")
@@ -464,7 +483,7 @@ model ChatRequest {
 }
 
 model ChatRoom {
-  id        String         @id @default(uuid())
+  id        Int            @id @default(autoincrement())
   roomType  String         @default("direct") @map("room_type") // 'direct', 'group'
   name      String?
   startedAt DateTime       @default(now()) @map("started_at")
@@ -482,13 +501,13 @@ model ChatRoom {
 }
 
 model ChatRoomParticipant {
-  id       String    @id @default(uuid())
-  roomId   String    @map("room_id")
-  userId   String    @map("user_id")
+  id       Int       @id @default(autoincrement())
+  roomId   Int       @map("room_id")
+  userId   Int       @map("user_id")
   role     String    @default("member") // 'owner', 'admin', 'member'
 
   // 읽음 상태 추적
-  lastReadMessageId String?   @map("last_read_message_id")
+  lastReadMessageId Int?      @map("last_read_message_id")
   lastReadAt        DateTime? @map("last_read_at")
   unreadCount       Int       @default(0) @map("unread_count")
 
@@ -506,9 +525,9 @@ model ChatRoomParticipant {
 }
 
 model ChatMessage {
-  id          String      @id @default(uuid())
-  roomId      String      @map("room_id")
-  senderId    String      @map("sender_id")
+  id          Int         @id @default(autoincrement())
+  roomId      Int         @map("room_id")
+  senderId    Int         @map("sender_id")
   content     String      @db.Text
   messageType MessageType @default(TEXT) @map("message_type")
 
@@ -536,7 +555,7 @@ model ChatMessage {
 // ========================================
 
 model SubscriptionPlan {
-  id             String   @id @default(uuid())
+  id             Int      @id @default(autoincrement())
   planKey        String   @unique @map("plan_key") // 'basic_monthly', 'premium_monthly'
   name           Json
   description    Json
@@ -561,9 +580,9 @@ model SubscriptionPlan {
 }
 
 model Payment {
-  id              String        @id @default(uuid())
-  userId          String        @map("user_id")
-  planId          String        @map("plan_id")
+  id              Int           @id @default(autoincrement())
+  userId          Int           @map("user_id")
+  planId          Int           @map("plan_id")
   amount          Decimal       @db.Decimal(10, 2)
   currency        String        @default("JPY")
   paymentMethod   String        @map("payment_method") // 'stripe', 'paypay', 'toss', etc
@@ -598,9 +617,9 @@ model Payment {
 }
 
 model Subscription {
-  id        String             @id @default(uuid())
-  userId    String             @map("user_id")
-  planId    String             @map("plan_id")
+  id        Int                @id @default(autoincrement())
+  userId    Int                @map("user_id")
+  planId    Int                @map("plan_id")
   status    SubscriptionStatus @default(ACTIVE)
   startedAt DateTime           @default(now()) @map("started_at")
   expiresAt DateTime           @map("expires_at")
@@ -624,7 +643,7 @@ model Subscription {
 // ========================================
 
 model EQTestQuestion {
-  id           String     @id @default(uuid())
+  id           Int        @id @default(autoincrement())
   questionKey  String     @unique @map("question_key")
   category     EQCategory
   questionText Json       @map("question_text")
@@ -645,9 +664,9 @@ model EQTestQuestion {
 }
 
 model EQTestAnswer {
-  id         String   @id @default(uuid())
-  userId     String   @map("user_id")
-  questionId String   @map("question_id")
+  id         Int      @id @default(autoincrement())
+  userId     Int      @map("user_id")
+  questionId Int      @map("question_id")
   answer     Json
   score      Int
   createdAt  DateTime @default(now()) @map("created_at")
@@ -662,8 +681,8 @@ model EQTestAnswer {
 }
 
 model EQTestResult {
-  id                     String          @id @default(uuid())
-  userId                 String          @map("user_id")
+  id                     Int             @id @default(autoincrement())
+  userId                 Int             @map("user_id")
   totalScore             Int             @map("total_score")
   empathyScore           Int             @map("empathy_score")
   selfAwarenessScore     Int             @map("self_awareness_score")
@@ -686,18 +705,18 @@ model EQTestResult {
 // ========================================
 
 model Notification {
-  id        String           @id @default(uuid())
-  userId    String           @map("user_id")
+  id        Int              @id @default(autoincrement())
+  userId    Int              @map("user_id")
   type      NotificationType
   title     Json             // 다국어 지원
   message   Json             // 다국어 지원
   data      Json?
 
   // 원본 데이터 연결
-  relatedUserId        String? @map("related_user_id")
-  relatedChatRequestId String? @map("related_chat_request_id")
-  relatedMessageId     String? @map("related_message_id")
-  relatedMatchingId    String? @map("related_matching_id")
+  relatedUserId        Int? @map("related_user_id")
+  relatedChatRequestId Int? @map("related_chat_request_id")
+  relatedMessageId     Int? @map("related_message_id")
+  relatedMatchingId    Int? @map("related_matching_id")
 
   // 읽음 상태
   isRead    Boolean   @default(false) @map("is_read")
@@ -726,9 +745,9 @@ model Notification {
 }
 
 model MessageReadStatus {
-  id        String   @id @default(uuid())
-  messageId String   @map("message_id")
-  userId    String   @map("user_id")
+  id        Int      @id @default(autoincrement())
+  messageId Int      @map("message_id")
+  userId    Int      @map("user_id")
   readAt    DateTime @default(now()) @map("read_at")
 
   message ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
@@ -742,8 +761,8 @@ model MessageReadStatus {
 }
 
 model DeviceToken {
-  id         String         @id @default(uuid())
-  userId     String         @map("user_id")
+  id         Int            @id @default(autoincrement())
+  userId     Int            @map("user_id")
   token      String         @unique
   platform   DevicePlatform
   isActive   Boolean        @default(true) @map("is_active")
@@ -758,8 +777,8 @@ model DeviceToken {
 }
 
 model NotificationSettings {
-  id     String @id @default(uuid())
-  userId String @unique @map("user_id")
+  id     Int @id @default(autoincrement())
+  userId Int @unique @map("user_id")
 
   // 매칭 알림
   matchLikeEnabled        Boolean @default(true) @map("match_like_enabled")

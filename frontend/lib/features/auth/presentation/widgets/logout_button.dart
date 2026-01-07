@@ -25,7 +25,7 @@ class LogoutButton extends ConsumerWidget {
               color: AppColors.primary,
               size: AppTheme.iconSizeLarge,
             ),
-            SizedBox(width: AppTheme.spacingSmall),
+            const SizedBox(width: AppTheme.spacingSmall),
             Text(l10n.logout, style: AppTextStyles.titleLarge),
           ],
         ),
@@ -74,9 +74,7 @@ class LogoutButton extends ConsumerWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
           : const Icon(Icons.logout),
-      onPressed: authState.isLoading
-          ? null
-          : () => _handleLogout(context, ref),
+      onPressed: authState.isLoading ? null : () => _handleLogout(context, ref),
       tooltip: l10n.logout,
     );
   }

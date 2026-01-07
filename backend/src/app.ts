@@ -13,6 +13,8 @@ import balanceGameRoutes from './modules/balance-game/balance-game.routes';
 import profileFieldRoutes from './modules/profile-field/profile-field.routes';
 import eqTestRoutes from './modules/eq-test/eq-test.routes';
 import chatRoutes from './modules/chat/chat.routes';
+import matchingRoutes from './modules/matching/matching.routes';
+import notificationsRoutes from './modules/notifications/notifications.routes';
 
 // 국가별 환경 설정 자동 로드
 // .env.{DEPLOY_COUNTRY} 파일을 우선적으로 로드합니다.
@@ -51,6 +53,8 @@ app.use('/api/balance-games', balanceGameRoutes);
 app.use('/api/profile-fields', profileFieldRoutes);
 app.use('/api/eq-test', eqTestRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/matching', matchingRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error('Error:', err);

@@ -1,24 +1,27 @@
 import 'chat_message_model.dart';
 
 class ChatUserSummary {
-  final String id;
+  final int id;
   final String displayName;
+  final String? imageUrl;
 
   ChatUserSummary({
     required this.id,
     required this.displayName,
+    this.imageUrl,
   });
 
   factory ChatUserSummary.fromJson(Map<String, dynamic> json) {
     return ChatUserSummary(
-      id: json['id'] as String,
+      id: _parseId(json['id']),
       displayName: json['displayName'] as String? ?? '',
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 }
 
 class ChatRoomSummaryModel {
-  final String id;
+  final int id;
   final String roomType;
   final String? name;
   final String status;
@@ -46,7 +49,7 @@ class ChatRoomSummaryModel {
 
   factory ChatRoomSummaryModel.fromJson(Map<String, dynamic> json) {
     return ChatRoomSummaryModel(
-      id: json['id'] as String,
+      id: _parseId(json['id']),
       roomType: json['roomType'] as String? ?? 'direct',
       name: json['name'] as String?,
       status: json['status'] as String? ?? 'ACTIVE',
@@ -65,4 +68,10 @@ class ChatRoomSummaryModel {
       unreadCount: json['unreadCount'] as int? ?? 0,
     );
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

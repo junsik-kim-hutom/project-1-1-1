@@ -1,5 +1,5 @@
 import prisma from '../../config/database';
-import { EQCategory, PersonalityType } from '@prisma/client';
+import { AnswerType, EQCategory, PersonalityType } from '@prisma/client';
 
 interface CreateEQQuestionDto {
   questionKey: string;
@@ -9,15 +9,15 @@ interface CreateEQQuestionDto {
     ja: string;
     en: string;
   };
-  answerType: string;
+  answerType: AnswerType;
   options?: any;
   scoring: any;
   displayOrder: number;
 }
 
 interface SubmitAnswerDto {
-  userId: string;
-  questionId: string;
+  userId: number;
+  questionId: number;
   answer: any;
 }
 
@@ -25,16 +25,16 @@ export class EQTestService {
   // EQ 테스트 질문 초기 데이터 생성
   async seedQuestions() {
     const questions: CreateEQQuestionDto[] = [
-      // 공감 능력 (Empathy) - 5문항
+      // 공감 능력 (Empathy) - 4문항
       {
         questionKey: 'empathy_1',
         category: EQCategory.EMPATHY,
         questionText: {
-          ko: '친구가 슬퍼하면 나도 함께 슬퍼집니다',
-          ja: '友達が悲しんでいると、私も一緒に悲しくなります',
-          en: 'When a friend is sad, I feel sad too',
+          ko: '친구가 힘든 일을 털어놓으면, 해결책보다 먼저 감정을 공감해줍니다',
+          ja: '友達が悩みを打ち明けた時、解決策より先に気持ちに寄り添います',
+          en: 'When a friend vents, I empathize with their feelings before offering solutions',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
         displayOrder: 1,
       },
@@ -42,11 +42,11 @@ export class EQTestService {
         questionKey: 'empathy_2',
         category: EQCategory.EMPATHY,
         questionText: {
-          ko: '다른 사람의 감정을 쉽게 알아챌 수 있습니다',
-          ja: '他の人の感情を簡単に察することができます',
-          en: 'I can easily sense how others are feeling',
+          ko: '메시지(카톡/DM)에서도 상대의 감정 변화를 비교적 잘 알아챕니다',
+          ja: 'メッセージ（LINE/DM）でも相手の感情の変化を比較的よく察します',
+          en: 'I can often pick up emotional shifts even through messages (chat/DM)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
         displayOrder: 2,
       },
@@ -54,11 +54,11 @@ export class EQTestService {
         questionKey: 'empathy_3',
         category: EQCategory.EMPATHY,
         questionText: {
-          ko: '상대방의 입장에서 생각하려고 노력합니다',
-          ja: '相手の立場で考えようと努力します',
-          en: 'I try to see things from others\' perspectives',
+          ko: '상대와 의견이 달라도, 왜 그렇게 느끼는지 이유를 이해하려고 합니다',
+          ja: '意見が違っても、なぜそう感じるのか理由を理解しようとします',
+          en: 'Even when I disagree, I try to understand why they feel that way',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
         displayOrder: 3,
       },
@@ -66,273 +66,213 @@ export class EQTestService {
         questionKey: 'empathy_4',
         category: EQCategory.EMPATHY,
         questionText: {
-          ko: '다른 사람이 힘들어할 때 도와주고 싶은 마음이 듭니다',
-          ja: '他の人が困っている時に助けたい気持ちになります',
-          en: 'I feel compelled to help when someone is struggling',
+          ko: '주변 사람이 지쳐 보이면, 부담되지 않는 방식으로 도움을 제안합니다',
+          ja: '周りの人が疲れていそうなら、負担にならない形で助けを提案します',
+          en: 'If someone looks drained, I offer support in a non-pushy way',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
         displayOrder: 4,
       },
-      {
-        questionKey: 'empathy_5',
-        category: EQCategory.EMPATHY,
-        questionText: {
-          ko: '영화나 드라마를 볼 때 등장인물의 감정에 몰입합니다',
-          ja: '映画やドラマを見る時、登場人物の感情に没入します',
-          en: 'I get emotionally involved with characters in movies or dramas',
-        },
-        answerType: 'scale_5',
-        scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 5,
-      },
 
-      // 자기 인식 (Self Awareness) - 5문항
+      // 자기 인식 (Self Awareness) - 4문항
       {
         questionKey: 'self_awareness_1',
         category: EQCategory.SELF_AWARENESS,
         questionText: {
-          ko: '내 감정이 왜 생기는지 이해합니다',
-          ja: '自分の感情がなぜ生じるのか理解しています',
-          en: 'I understand why I feel the way I do',
+          ko: '내 감정을 말로 정확히 표현(예: 서운함/불안/짜증)할 수 있습니다',
+          ja: '自分の感情を言葉で正確に表現できます（例：寂しさ/不安/苛立ち）',
+          en: 'I can accurately name my emotions (e.g., hurt, anxious, irritated)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 6,
+        displayOrder: 5,
       },
       {
         questionKey: 'self_awareness_2',
         category: EQCategory.SELF_AWARENESS,
         questionText: {
-          ko: '나의 강점과 약점을 잘 알고 있습니다',
-          ja: '自分の強みと弱みをよく知っています',
-          en: 'I am well aware of my strengths and weaknesses',
+          ko: '내가 스트레스를 받는 신호(수면/식욕/집중 변화 등)를 비교적 빨리 알아챕니다',
+          ja: '自分がストレスを受けているサイン（睡眠/食欲/集中の変化など）に早めに気づきます',
+          en: 'I notice early signs of stress (sleep, appetite, focus changes)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 7,
+        displayOrder: 6,
       },
       {
         questionKey: 'self_awareness_3',
         category: EQCategory.SELF_AWARENESS,
         questionText: {
-          ko: '나의 행동이 다른 사람에게 어떤 영향을 미치는지 생각합니다',
-          ja: '自分の行動が他の人にどんな影響を与えるか考えます',
-          en: 'I think about how my actions affect others',
+          ko: 'SNS/뉴스를 많이 본 날, 내 기분이 어떻게 달라지는지 인식하고 조절합니다',
+          ja: 'SNS/ニュースをたくさん見た日は、気分の変化に気づき調整します',
+          en: 'I notice how heavy social/news consumption affects my mood and adjust',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 8,
+        displayOrder: 7,
       },
       {
         questionKey: 'self_awareness_4',
         category: EQCategory.SELF_AWARENESS,
         questionText: {
-          ko: '내가 어떤 상황에서 스트레스를 받는지 알고 있습니다',
-          ja: 'どんな状況でストレスを受けるか知っています',
-          en: 'I know what situations stress me out',
+          ko: '나에게 중요한 경계(시간/에너지/관계)를 스스로 정하고 지키려 합니다',
+          ja: '自分にとって大切な境界（時間/エネルギー/関係）を決めて守ろうとします',
+          en: 'I set and try to maintain boundaries (time, energy, relationships)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 9,
-      },
-      {
-        questionKey: 'self_awareness_5',
-        category: EQCategory.SELF_AWARENESS,
-        questionText: {
-          ko: '나의 가치관과 신념을 명확히 알고 있습니다',
-          ja: '自分の価値観と信念を明確に知っています',
-          en: 'I have a clear understanding of my values and beliefs',
-        },
-        answerType: 'scale_5',
-        scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 10,
+        displayOrder: 8,
       },
 
-      // 사회적 기술 (Social Skills) - 5문항
+      // 사회적 기술 (Social Skills) - 4문항
       {
         questionKey: 'social_skills_1',
         category: EQCategory.SOCIAL_SKILLS,
         questionText: {
-          ko: '새로운 사람들과 쉽게 친해질 수 있습니다',
-          ja: '新しい人たちと簡単に親しくなれます',
-          en: 'I can easily connect with new people',
+          ko: '오해가 생기면 톤을 부드럽게 하며 사실과 감정을 분리해 대화합니다',
+          ja: '誤解が生じたら、トーンを柔らかくして事実と感情を分けて話します',
+          en: 'When misunderstandings happen, I separate facts and feelings and keep a calm tone',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 11,
+        displayOrder: 9,
       },
       {
         questionKey: 'social_skills_2',
         category: EQCategory.SOCIAL_SKILLS,
         questionText: {
-          ko: '갈등 상황에서 중재하고 해결하는 것을 잘합니다',
-          ja: '葛藤状況で仲裁し解決するのが得意です',
-          en: 'I am good at mediating and resolving conflicts',
+          ko: '피드백을 줄 때, 상대가 방어적이 되지 않도록 배려하며 전달합니다',
+          ja: 'フィードバックを伝える時、相手が防衛的にならないよう配慮します',
+          en: 'I give feedback in a way that helps the other person stay open',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 12,
+        displayOrder: 10,
       },
       {
         questionKey: 'social_skills_3',
         category: EQCategory.SOCIAL_SKILLS,
         questionText: {
-          ko: '팀워크를 발휘하여 협력하는 것을 좋아합니다',
-          ja: 'チームワークを発揮して協力するのが好きです',
-          en: 'I enjoy working collaboratively with others',
+          ko: '모임/회의에서 말수가 적은 사람도 자연스럽게 참여하도록 분위기를 만듭니다',
+          ja: '集まり/会議で、口数が少ない人も自然に参加できる雰囲気を作ります',
+          en: 'I help quieter people feel included in group conversations',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 13,
+        displayOrder: 11,
       },
       {
         questionKey: 'social_skills_4',
         category: EQCategory.SOCIAL_SKILLS,
         questionText: {
-          ko: '다른 사람의 의견을 경청하고 존중합니다',
-          ja: '他の人の意見を傾聴し尊重します',
-          en: 'I listen to and respect others\' opinions',
+          ko: '실수했을 때 빠르게 사과하고 관계를 회복하려고 노력합니다',
+          ja: '間違えた時、素早く謝り関係を修復しようとします',
+          en: 'When I mess up, I apologize quickly and try to repair the relationship',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 14,
-      },
-      {
-        questionKey: 'social_skills_5',
-        category: EQCategory.SOCIAL_SKILLS,
-        questionText: {
-          ko: '상황에 맞게 대화 주제를 조절할 수 있습니다',
-          ja: '状況に合わせて会話のテーマを調整できます',
-          en: 'I can adjust conversation topics to suit the situation',
-        },
-        answerType: 'scale_5',
-        scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 15,
+        displayOrder: 12,
       },
 
-      // 동기부여 (Motivation) - 5문항
+      // 동기부여 (Motivation) - 4문항
       {
         questionKey: 'motivation_1',
         category: EQCategory.MOTIVATION,
         questionText: {
-          ko: '목표를 달성하기 위해 꾸준히 노력합니다',
-          ja: '目標を達成するために継続的に努力します',
-          en: 'I consistently work towards achieving my goals',
+          ko: '목표를 큰 계획보다 작은 습관(루틴)으로 쪼개서 꾸준히 실행합니다',
+          ja: '目標を大きな計画より小さな習慣（ルーティン）に分けて継続します',
+          en: 'I break goals into small habits and keep showing up consistently',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 16,
+        displayOrder: 13,
       },
       {
         questionKey: 'motivation_2',
         category: EQCategory.MOTIVATION,
         questionText: {
-          ko: '실패해도 다시 도전하는 편입니다',
-          ja: '失敗してもまた挑戦する方です',
-          en: 'I tend to try again even after failure',
+          ko: '실패하거나 평가를 낮게 받아도, 원인을 분석하고 다시 시도합니다',
+          ja: '失敗したり評価が低くても、原因を分析して再挑戦します',
+          en: 'Even after failure or criticism, I analyze what happened and try again',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 17,
+        displayOrder: 14,
       },
       {
         questionKey: 'motivation_3',
         category: EQCategory.MOTIVATION,
         questionText: {
-          ko: '새로운 것을 배우는 것에 열정이 있습니다',
-          ja: '新しいことを学ぶことに情熱があります',
-          en: 'I am passionate about learning new things',
+          ko: '새로운 환경(이직/이사/새 팀)에서도 빠르게 적응하려 노력합니다',
+          ja: '新しい環境（転職/引っ越し/新しいチーム）でも早く適応しようとします',
+          en: 'I actively adapt when I enter a new environment (job/team/life change)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 18,
+        displayOrder: 15,
       },
       {
         questionKey: 'motivation_4',
         category: EQCategory.MOTIVATION,
         questionText: {
-          ko: '어려운 상황에서도 긍정적인 면을 찾으려 합니다',
-          ja: '困難な状況でも肯定的な面を探そうとします',
-          en: 'I try to find the positive even in difficult situations',
+          ko: '동기가 떨어질 때도, 스스로를 격려하며 다시 페이스를 찾습니다',
+          ja: 'やる気が落ちた時も、自分を励ましてペースを取り戻します',
+          en: 'When my motivation dips, I encourage myself and regain momentum',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 19,
-      },
-      {
-        questionKey: 'motivation_5',
-        category: EQCategory.MOTIVATION,
-        questionText: {
-          ko: '나만의 내적 동기로 움직이는 편입니다',
-          ja: '自分だけの内的動機で動く方です',
-          en: 'I am driven by my own internal motivation',
-        },
-        answerType: 'scale_5',
-        scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 20,
+        displayOrder: 16,
       },
 
-      // 감정 조절 (Emotion Regulation) - 5문항
+      // 감정 조절 (Emotion Regulation) - 4문항
       {
         questionKey: 'emotion_regulation_1',
         category: EQCategory.EMOTION_REGULATION,
         questionText: {
-          ko: '화가 나도 침착하게 대처할 수 있습니다',
-          ja: '怒っても冷静に対処できます',
-          en: 'I can stay calm even when I am angry',
+          ko: '감정이 올라올 때 바로 반응하기보다, 잠깐 멈추고 생각한 뒤 행동합니다',
+          ja: '感情が高ぶった時、すぐ反応せず少し立ち止まってから行動します',
+          en: 'When emotions rise, I pause and think before responding',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 21,
+        displayOrder: 17,
       },
       {
         questionKey: 'emotion_regulation_2',
         category: EQCategory.EMOTION_REGULATION,
         questionText: {
-          ko: '스트레스를 해소하는 나만의 방법이 있습니다',
-          ja: 'ストレスを解消する自分なりの方法があります',
-          en: 'I have my own ways of managing stress',
+          ko: '예민해질 때도 타인에게 감정을 쏟아내기보다 건강한 방식으로 해소합니다',
+          ja: 'イライラしても他人にぶつけず、健全な方法で発散します',
+          en: 'Even when irritable, I regulate without dumping it on others',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 22,
+        displayOrder: 18,
       },
       {
         questionKey: 'emotion_regulation_3',
         category: EQCategory.EMOTION_REGULATION,
         questionText: {
-          ko: '부정적인 감정을 적절히 표현할 수 있습니다',
-          ja: '否定的な感情を適切に表現できます',
-          en: 'I can express negative emotions appropriately',
+          ko: '갈등이 있어도 감정이 가라앉은 뒤에 차분히 대화로 풀어갑니다',
+          ja: '葛藤があっても気持ちが落ち着いてから冷静に話し合います',
+          en: 'After cooling down, I can talk through conflicts calmly',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 23,
+        displayOrder: 19,
       },
       {
         questionKey: 'emotion_regulation_4',
         category: EQCategory.EMOTION_REGULATION,
         questionText: {
-          ko: '감정적으로 힘들 때 주변에 도움을 요청할 수 있습니다',
-          ja: '感情的に辛い時、周りに助けを求めることができます',
-          en: 'I can ask for help when I am emotionally struggling',
+          ko: '감정적으로 지칠 때, 휴식/운동/상담 등 도움을 요청할 수 있습니다',
+          ja: '感情的に疲れた時、休息/運動/相談など助けを求められます',
+          en: 'When emotionally drained, I can seek support (rest, exercise, talking it out)',
         },
-        answerType: 'scale_5',
+        answerType: AnswerType.SCALE_5,
         scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 24,
-      },
-      {
-        questionKey: 'emotion_regulation_5',
-        category: EQCategory.EMOTION_REGULATION,
-        questionText: {
-          ko: '급한 결정을 내리기 전에 한 번 더 생각합니다',
-          ja: '急な決定をする前にもう一度考えます',
-          en: 'I think twice before making hasty decisions',
-        },
-        answerType: 'scale_5',
-        scoring: { '1': 1, '2': 2, '3': 3, '4': 4, '5': 5 },
-        displayOrder: 25,
+        displayOrder: 20,
       },
     ];
 
@@ -385,9 +325,17 @@ export class EQTestService {
       throw new Error('Question not found');
     }
 
-    // 점수 계산
+    // 점수 계산 (호환: { "1": 1 } 또는 { scale: [1..] })
     const scoring = question.scoring as any;
-    const score = scoring[data.answer.toString()] || 0;
+    const answerValue = typeof data.answer === 'number' ? data.answer : Number(data.answer);
+    let score = 0;
+    if (scoring && typeof scoring === 'object') {
+      const mapped = scoring[data.answer?.toString?.() ?? ''];
+      if (typeof mapped === 'number') score = mapped;
+      if (score === 0 && Array.isArray(scoring.scale) && Number.isFinite(answerValue)) {
+        score = answerValue;
+      }
+    }
 
     const answer = await prisma.eQTestAnswer.upsert({
       where: {
@@ -412,7 +360,7 @@ export class EQTestService {
   }
 
   // 사용자 EQ 테스트 결과 계산
-  async calculateResults(userId: string) {
+  async calculateResults(userId: number) {
     // 모든 답변 가져오기
     const answers = await prisma.eQTestAnswer.findMany({
       where: { userId },
@@ -423,62 +371,48 @@ export class EQTestService {
       throw new Error('No answers found for this user');
     }
 
-    // 카테고리별 점수 계산
-    const categoryScores: { [key: string]: number[] } = {
-      empathy: [],
-      self_awareness: [],
-      social_skills: [],
-      motivation: [],
-      emotion_regulation: [],
+    const categoryScores: Record<EQCategory, number[]> = {
+      [EQCategory.EMPATHY]: [],
+      [EQCategory.SELF_AWARENESS]: [],
+      [EQCategory.SOCIAL_SKILLS]: [],
+      [EQCategory.MOTIVATION]: [],
+      [EQCategory.EMOTION_REGULATION]: [],
     };
 
-    answers.forEach((answer) => {
-      const category = answer.question.category;
-      if (categoryScores[category]) {
-        categoryScores[category].push(answer.score);
-      }
-    });
+    for (const answer of answers) {
+      categoryScores[answer.question.category].push(answer.score);
+    }
 
-    // 각 카테고리 평균 점수
-    const empathyScore = this.calculateAverage(categoryScores.empathy);
-    const selfAwarenessScore = this.calculateAverage(categoryScores.self_awareness);
-    const socialSkillsScore = this.calculateAverage(categoryScores.social_skills);
-    const motivationScore = this.calculateAverage(categoryScores.motivation);
-    const emotionRegulationScore = this.calculateAverage(categoryScores.emotion_regulation);
+    const scores: Record<EQCategory, number> = {
+      [EQCategory.EMPATHY]: this.calculateAverage(categoryScores[EQCategory.EMPATHY]),
+      [EQCategory.SELF_AWARENESS]: this.calculateAverage(categoryScores[EQCategory.SELF_AWARENESS]),
+      [EQCategory.SOCIAL_SKILLS]: this.calculateAverage(categoryScores[EQCategory.SOCIAL_SKILLS]),
+      [EQCategory.MOTIVATION]: this.calculateAverage(categoryScores[EQCategory.MOTIVATION]),
+      [EQCategory.EMOTION_REGULATION]: this.calculateAverage(categoryScores[EQCategory.EMOTION_REGULATION]),
+    };
 
     const totalScore = Math.round(
-      (empathyScore + selfAwarenessScore + socialSkillsScore + motivationScore + emotionRegulationScore) / 5
+      (scores[EQCategory.EMPATHY] +
+        scores[EQCategory.SELF_AWARENESS] +
+        scores[EQCategory.SOCIAL_SKILLS] +
+        scores[EQCategory.MOTIVATION] +
+        scores[EQCategory.EMOTION_REGULATION]) /
+        5
     );
 
-    // 성격 유형 결정
-    const personalityType = this.determinePersonalityType({
-      empathy: empathyScore,
-      selfAwareness: selfAwarenessScore,
-      socialSkills: socialSkillsScore,
-      motivation: motivationScore,
-      emotionRegulation: emotionRegulationScore,
-    });
-
-    // 인사이트 생성
-    const insights = this.generateInsights({
-      empathy: empathyScore,
-      selfAwareness: selfAwarenessScore,
-      socialSkills: socialSkillsScore,
-      motivation: motivationScore,
-      emotionRegulation: emotionRegulationScore,
-      personalityType,
-    });
+    const personalityType = this.determinePersonalityType(scores);
+    const insights = this.generateInsights(scores, personalityType);
 
     // 결과 저장
     const result = await prisma.eQTestResult.create({
       data: {
         userId,
         totalScore,
-        empathyScore,
-        selfAwarenessScore,
-        socialSkillsScore,
-        motivationScore,
-        emotionRegulationScore,
+        empathyScore: scores[EQCategory.EMPATHY],
+        selfAwarenessScore: scores[EQCategory.SELF_AWARENESS],
+        socialSkillsScore: scores[EQCategory.SOCIAL_SKILLS],
+        motivationScore: scores[EQCategory.MOTIVATION],
+        emotionRegulationScore: scores[EQCategory.EMOTION_REGULATION],
         personalityType,
         insights: insights as any,
       },
@@ -488,7 +422,7 @@ export class EQTestService {
   }
 
   // 사용자 EQ 테스트 결과 조회
-  async getResults(userId: string) {
+  async getResults(userId: number) {
     const result = await prisma.eQTestResult.findFirst({
       where: { userId },
       orderBy: { completedAt: 'desc' },
@@ -510,30 +444,33 @@ export class EQTestService {
 
   // 성격 유형 결정
   private determinePersonalityType(scores: {
-    empathy: number;
-    selfAwareness: number;
-    socialSkills: number;
-    motivation: number;
-    emotionRegulation: number;
+    [EQCategory.EMPATHY]: number;
+    [EQCategory.SELF_AWARENESS]: number;
+    [EQCategory.SOCIAL_SKILLS]: number;
+    [EQCategory.MOTIVATION]: number;
+    [EQCategory.EMOTION_REGULATION]: number;
   }): PersonalityType {
     const maxScore = Math.max(
-      scores.empathy,
-      scores.selfAwareness,
-      scores.socialSkills,
-      scores.motivation,
-      scores.emotionRegulation
+      scores[EQCategory.EMPATHY],
+      scores[EQCategory.SELF_AWARENESS],
+      scores[EQCategory.SOCIAL_SKILLS],
+      scores[EQCategory.MOTIVATION],
+      scores[EQCategory.EMOTION_REGULATION]
     );
 
     // 가장 높은 점수의 카테고리로 성격 유형 결정
-    if (scores.empathy === maxScore && scores.empathy >= 4) {
+    if (scores[EQCategory.EMPATHY] === maxScore && scores[EQCategory.EMPATHY] >= 4) {
       return PersonalityType.EMPATHETIC; // 공감형
-    } else if (scores.selfAwareness === maxScore && scores.selfAwareness >= 4) {
+    } else if (scores[EQCategory.SELF_AWARENESS] === maxScore && scores[EQCategory.SELF_AWARENESS] >= 4) {
       return PersonalityType.INTROSPECTIVE; // 성찰형
-    } else if (scores.socialSkills === maxScore && scores.socialSkills >= 4) {
+    } else if (scores[EQCategory.SOCIAL_SKILLS] === maxScore && scores[EQCategory.SOCIAL_SKILLS] >= 4) {
       return PersonalityType.SOCIAL; // 사교형
-    } else if (scores.motivation === maxScore && scores.motivation >= 4) {
+    } else if (scores[EQCategory.MOTIVATION] === maxScore && scores[EQCategory.MOTIVATION] >= 4) {
       return PersonalityType.ACHIEVER; // 성취형
-    } else if (scores.emotionRegulation === maxScore && scores.emotionRegulation >= 4) {
+    } else if (
+      scores[EQCategory.EMOTION_REGULATION] === maxScore &&
+      scores[EQCategory.EMOTION_REGULATION] >= 4
+    ) {
       return PersonalityType.RATIONAL; // 이성형
     } else {
       return PersonalityType.BALANCED; // 균형형
@@ -541,34 +478,27 @@ export class EQTestService {
   }
 
   // 인사이트 생성
-  private generateInsights(data: {
-    empathy: number;
-    selfAwareness: number;
-    socialSkills: number;
-    motivation: number;
-    emotionRegulation: number;
-    personalityType: PersonalityType;
-  }) {
+  private generateInsights(scores: Record<EQCategory, number>, personalityType: PersonalityType) {
     const strengths = [];
     const improvements = [];
     const matchingTips = [];
 
     // 강점 분석
-    if (data.empathy >= 4) {
+    if (scores[EQCategory.EMPATHY] >= 4) {
       strengths.push({
         ko: '타인의 감정을 잘 이해하고 공감하는 능력이 뛰어납니다',
         ja: '他人の感情をよく理解し共感する能力が優れています',
         en: 'Excellent ability to understand and empathize with others',
       });
     }
-    if (data.selfAwareness >= 4) {
+    if (scores[EQCategory.SELF_AWARENESS] >= 4) {
       strengths.push({
         ko: '자신의 감정과 행동을 객관적으로 파악할 수 있습니다',
         ja: '自分の感情と行動を客観的に把握できます',
         en: 'Can objectively understand your own emotions and behaviors',
       });
     }
-    if (data.socialSkills >= 4) {
+    if (scores[EQCategory.SOCIAL_SKILLS] >= 4) {
       strengths.push({
         ko: '대인관계에서 원활한 소통과 협력이 가능합니다',
         ja: '対人関係で円滑なコミュニケーションと協力が可能です',
@@ -577,21 +507,21 @@ export class EQTestService {
     }
 
     // 개선점 분석
-    if (data.empathy < 3) {
+    if (scores[EQCategory.EMPATHY] < 3) {
       improvements.push({
         ko: '상대방의 입장에서 생각해보는 연습이 필요합니다',
         ja: '相手の立場で考えてみる練習が必要です',
         en: 'Practice seeing things from others\' perspectives',
       });
     }
-    if (data.emotionRegulation < 3) {
+    if (scores[EQCategory.EMOTION_REGULATION] < 3) {
       improvements.push({
         ko: '감정 조절 능력을 키우면 더 안정적인 관계를 유지할 수 있습니다',
         ja: '感情調節能力を高めればより安定した関係を維持できます',
         en: 'Improving emotion regulation can lead to more stable relationships',
       });
     }
-    if (data.motivation < 3) {
+    if (scores[EQCategory.MOTIVATION] < 3) {
       improvements.push({
         ko: '목표 설정과 달성 경험이 자신감을 높여줄 것입니다',
         ja: '目標設定と達成経験が自信を高めてくれます',
@@ -600,7 +530,7 @@ export class EQTestService {
     }
 
     // 매칭 팁
-    switch (data.personalityType) {
+    switch (personalityType) {
       case PersonalityType.EMPATHETIC:
         matchingTips.push({
           ko: '감정적 교류를 중요하게 생각하는 상대와 잘 맞습니다',
@@ -660,7 +590,7 @@ export class EQTestService {
   }
 
   // EQ 질문 수정 (관리자용)
-  async updateQuestion(questionId: string, data: Partial<CreateEQQuestionDto>) {
+  async updateQuestion(questionId: number, data: Partial<CreateEQQuestionDto>) {
     return prisma.eQTestQuestion.update({
       where: { id: questionId },
       data: data as any,
@@ -668,7 +598,7 @@ export class EQTestService {
   }
 
   // EQ 질문 활성화/비활성화 (관리자용)
-  async toggleQuestion(questionId: string) {
+  async toggleQuestion(questionId: number) {
     const question = await prisma.eQTestQuestion.findUnique({
       where: { id: questionId },
     });

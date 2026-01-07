@@ -66,7 +66,7 @@ export class BalanceGameService {
     return games.sort(() => Math.random() - 0.5);
   }
 
-  async submitAnswer(userId: string, gameId: string, selectedOption: 'A' | 'B') {
+  async submitAnswer(userId: number, gameId: number, selectedOption: 'A' | 'B') {
     const answer = await prisma.userBalanceGameAnswer.upsert({
       where: {
         userId_gameId: {
@@ -88,7 +88,7 @@ export class BalanceGameService {
     return answer;
   }
 
-  async getUserAnswers(userId: string) {
+  async getUserAnswers(userId: number) {
     const answers = await prisma.userBalanceGameAnswer.findMany({
       where: { userId },
       include: {
@@ -100,7 +100,7 @@ export class BalanceGameService {
     return answers;
   }
 
-  async calculateCompatibility(user1Id: string, user2Id: string) {
+  async calculateCompatibility(user1Id: number, user2Id: number) {
     const [user1Answers, user2Answers] = await Promise.all([
       prisma.userBalanceGameAnswer.findMany({
         where: { userId: user1Id },
@@ -139,7 +139,7 @@ export class BalanceGameService {
     };
   }
 
-  async updateBalanceGame(gameId: string, data: Partial<CreateBalanceGameDto>) {
+  async updateBalanceGame(gameId: number, data: Partial<CreateBalanceGameDto>) {
     const game = await prisma.balanceGame.update({
       where: { id: gameId },
       data: {
@@ -153,7 +153,7 @@ export class BalanceGameService {
     return game;
   }
 
-  async toggleBalanceGame(gameId: string) {
+  async toggleBalanceGame(gameId: number) {
     const game = await prisma.balanceGame.findUnique({
       where: { id: gameId },
     });

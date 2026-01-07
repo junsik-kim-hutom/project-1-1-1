@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/custom_card.dart';
 import '../../providers/profile_provider.dart';
 import '../../../../core/models/profile_model.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/profile_info_section.dart';
+import '../widgets/profile_gallery.dart';
+import '../widgets/profile_menu_item.dart';
 
 class MyProfilePage extends ConsumerStatefulWidget {
   const MyProfilePage({super.key});
@@ -29,43 +31,40 @@ class _MyProfilePageState extends ConsumerState<MyProfilePage> {
         profileState.profile == null &&
         profileState.error == null) {
       _requestedProfile = true;
-      Future.microtask(() => ref.read(profileProvider.notifier).loadMyProfile());
+      Future.microtask(
+          () => ref.read(profileProvider.notifier).loadMyProfile());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
     final profileState = ref.watch(profileProvider);
     final profile = profileState.profile;
 
     final errorMessage = profileState.error ?? '';
+    // Error States
     if (errorMessage.contains('PROFILE_NOT_FOUND')) {
       return Scaffold(
+        backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: Text(l10n.myProfile),
-        ),
+            title: Text(l10n.myProfile), backgroundColor: Colors.transparent),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.account_circle_outlined,
-                  size: 64,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                const Icon(Icons.account_circle_outlined,
+                    size: 80, color: AppColors.textHint),
                 const SizedBox(height: 16),
                 Text(
                   l10n.profileNotFoundMessage,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                  style: AppTextStyles.bodyMedium
+                      .copyWith(color: AppColors.textSecondary),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () => context.push('/profile/create'),
                   child: Text(l10n.createProfile),
@@ -79,12 +78,20 @@ class _MyProfilePageState extends ConsumerState<MyProfilePage> {
 
     if (profileState.error != null && profile == null) {
       return Scaffold(
+        backgroundColor: AppColors.background,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(l10n.failedToLoadProfile),
-              const SizedBox(height: 12),
+              const Icon(Icons.error_outline_rounded,
+                  size: 64, color: AppColors.error),
+              const SizedBox(height: 16),
+              Text(
+                l10n.failedToLoadProfile,
+                style: AppTextStyles.bodyMedium
+                    .copyWith(color: AppColors.textSecondary),
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
                   ref.read(profileProvider.notifier).loadMyProfile(force: true);
@@ -99,12 +106,16 @@ class _MyProfilePageState extends ConsumerState<MyProfilePage> {
 
     if (profileState.isLoading && profile == null) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        backgroundColor: AppColors.background,
+        body:
+            Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
-    final displayName =
-        (profile?.displayName.isNotEmpty ?? false) ? profile!.displayName : l10n.user;
+    // Prepare Data
+    final displayName = (profile?.displayName.isNotEmpty ?? false)
+        ? profile!.displayName
+        : l10n.user;
     final subtitleParts = <String>[];
     if (profile != null) {
       subtitleParts.add('${profile.calculatedAge}${l10n.years}');
@@ -112,159 +123,134 @@ class _MyProfilePageState extends ConsumerState<MyProfilePage> {
         subtitleParts.add(_occupationLabel(l10n, profile.occupation!));
       }
     }
-    final subtitleText = subtitleParts.isNotEmpty ? subtitleParts.join(' • ') : '';
-    final items = _buildProfileItems(l10n, profile);
-    final visibleItems = _showAllDetails ? items : items.take(3).toList();
+    final subtitleText =
+        subtitleParts.isNotEmpty ? subtitleParts.join(' • ') : '';
     final avatarUrl = _preferredAvatarUrl(profile);
 
+    final infoItems = _buildProfileItems(l10n, profile);
+
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 200,
-            pinned: true,
-            actions: [
-              IconButton(
-                tooltip: l10n.editProfile,
-                icon: const Icon(Icons.edit_outlined),
-                onPressed: profile == null ? null : () => context.push('/profile/edit'),
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 40),
-                      _ProfileAvatar(imageUrl: avatarUrl),
-                    ],
-                  ),
-                ),
-              ),
+      backgroundColor: AppColors.background,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Header
+            ProfileHeader(
+              imageUrl: avatarUrl,
+              displayName: displayName,
+              subtitle: subtitleText,
+              onEditTap: (profile == null)
+                  ? () {}
+                  : () => context.push('/profile/edit'),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingMedium),
+
+            const SizedBox(height: 24),
+
+            // Photos Gallery
+            if (profile != null && profile.images != null)
+              ProfileGallery(
+                imageUrls: profile.images!
+                    .where((img) =>
+                        !img.isMain) // Exclude main if preferred, or show all
+                    .map((img) => img.imageUrl)
+                    .toList(),
+                onAddPhoto: () => context
+                    .push('/profile/edit'), // Redirect to edit for adding
+              ),
+
+            const SizedBox(height: 24),
+
+            // Info Section
+            ProfileInfoSection(
+              title: l10n.myProfile, // Using 'myProfile' instead of 'aboutMe'
+              items: infoItems,
+              showMore: _showAllDetails,
+              onToggleShowMore: () {
+                setState(() {
+                  _showAllDetails = !_showAllDetails;
+                });
+              },
+            ),
+
+            const SizedBox(height: 24),
+
+            // Settings / Account
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppTheme.spacingSmall),
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          displayName,
-                          style: AppTextStyles.headlineMedium.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        if (subtitleText.isNotEmpty)
-                          Text(
-                            subtitleText,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppTheme.spacingLarge),
                   Text(
-                    l10n.myProfile,
+                    l10n.settings,
                     style: AppTextStyles.titleMedium.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
                   ),
-                  const SizedBox(height: AppTheme.spacingMedium),
-                  CustomCard(
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.border),
+                    ),
                     child: Column(
                       children: [
-                        for (var i = 0; i < visibleItems.length; i++) ...[
-                          if (i > 0) const Divider(height: 1),
-                          _ProfileItem(
-                            icon: visibleItems[i].icon,
-                            label: visibleItems[i].label,
-                            value: visibleItems[i].value,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  if (items.length > 3)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Center(
-                          child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _showAllDetails = !_showAllDetails;
-                            });
-                          },
-                          child: Text(_showAllDetails ? l10n.seeLess : l10n.seeMore),
+                        ProfileMenuItem(
+                          icon: Icons.settings_rounded,
+                          title: l10n.settings,
+                          iconColor: AppColors.textSecondary,
+                          onTap: () => context.push('/settings'),
                         ),
-                      ),
-                    ),
-                  const SizedBox(height: AppTheme.spacingLarge),
-                  CustomCard(
-                    child: ListTile(
-                      leading: const Icon(Icons.settings_outlined),
-                      title: Text(l10n.settings),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        context.push('/settings');
-                      },
+                        // Add more menu items if needed (Help, etc.)
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 40),
+          ],
+        ),
       ),
     );
   }
 
-  List<_ProfileItemData> _buildProfileItems(
+  List<ProfileInfoItem> _buildProfileItems(
     AppLocalizations l10n,
     ProfileModel? profile,
   ) {
     return [
-      _ProfileItemData(
-        icon: Icons.work_outline,
+      ProfileInfoItem(
+        icon: Icons.work_outline_rounded,
         label: l10n.occupation,
         value: profile?.occupation != null
             ? _occupationLabel(l10n, profile!.occupation!)
             : null,
       ),
-      _ProfileItemData(
+      ProfileInfoItem(
         icon: Icons.school_outlined,
         label: l10n.education,
         value: profile?.education != null
             ? _educationLabel(l10n, profile!.education!)
             : null,
       ),
-      _ProfileItemData(
-        icon: Icons.height,
+      ProfileInfoItem(
+        icon: Icons.height_rounded,
         label: l10n.height,
         value: profile?.heightText,
       ),
-      _ProfileItemData(
+      ProfileInfoItem(
         icon: Icons.smoking_rooms_outlined,
         label: l10n.smoking,
         value: _yesNoSometimesLabel(l10n, profile?.smoking),
       ),
-      _ProfileItemData(
+      ProfileInfoItem(
         icon: Icons.local_bar_outlined,
         label: l10n.drinking,
         value: _yesNoSometimesLabel(l10n, profile?.drinking),
       ),
-      _ProfileItemData(
+      ProfileInfoItem(
         icon: Icons.notes_rounded,
         label: l10n.bio,
         value: profile?.bio,
@@ -342,93 +328,5 @@ class _MyProfilePageState extends ConsumerState<MyProfilePage> {
       default:
         return value;
     }
-  }
-}
-
-class _ProfileAvatar extends StatelessWidget {
-  final String? imageUrl;
-
-  const _ProfileAvatar({required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    if (imageUrl != null && imageUrl!.isNotEmpty) {
-      return CircleAvatar(
-        radius: 50,
-        backgroundColor: colorScheme.surface,
-        backgroundImage: NetworkImage(imageUrl!),
-      );
-    }
-
-    return CircleAvatar(
-      radius: 50,
-      backgroundColor: colorScheme.surface,
-      child: const Icon(
-        Icons.person,
-        size: 60,
-        color: AppColors.primary,
-      ),
-    );
-  }
-}
-
-class _ProfileItemData {
-  final IconData icon;
-  final String label;
-  final String? value;
-
-  const _ProfileItemData({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-}
-
-class _ProfileItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String? value;
-
-  const _ProfileItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final displayValue =
-        (value != null && value!.trim().isNotEmpty) ? value! : l10n.notEntered;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.primary, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: AppTextStyles.labelSmall.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  displayValue,
-                  style: AppTextStyles.bodyMedium,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

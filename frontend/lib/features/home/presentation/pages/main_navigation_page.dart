@@ -8,8 +8,8 @@ import 'home_page.dart';
 import '../../../matching/presentation/pages/matching_list_page.dart';
 import '../../../chat/presentation/pages/chat_list_page.dart';
 import '../../../profile/presentation/pages/my_profile_page.dart';
-
-final selectedIndexProvider = StateProvider<int>((ref) => 0);
+import '../../../notifications/presentation/pages/notifications_page.dart';
+import '../providers/main_navigation_provider.dart';
 
 class MainNavigationPage extends ConsumerWidget {
   const MainNavigationPage({super.key});
@@ -22,6 +22,7 @@ class MainNavigationPage extends ConsumerWidget {
       const HomePage(),
       const MatchingListPage(),
       const ChatListPage(),
+      const NotificationsPage(),
       const MyProfilePage(),
     ];
 
@@ -92,10 +93,16 @@ class _ModernBottomNavBar extends StatelessWidget {
                 onTap: () => onItemSelected(2),
               ),
               _NavBarItem(
-                icon: Icons.person_rounded,
-                label: l10n.profile,
+                icon: Icons.notifications_rounded,
+                label: l10n.notifications,
                 isSelected: selectedIndex == 3,
                 onTap: () => onItemSelected(3),
+              ),
+              _NavBarItem(
+                icon: Icons.person_rounded,
+                label: l10n.profile,
+                isSelected: selectedIndex == 4,
+                onTap: () => onItemSelected(4),
               ),
             ],
           ),

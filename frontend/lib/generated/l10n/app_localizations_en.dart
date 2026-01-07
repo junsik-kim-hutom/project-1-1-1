@@ -122,6 +122,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sometimes => 'Sometimes';
 
   @override
+  String get all => 'All';
+
+  @override
   String get bio => 'Bio';
 
   @override
@@ -221,10 +224,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileViews => 'Profile Views';
 
   @override
+  String get likesSent => 'Sent Likes';
+
+  @override
   String get likesReceived => 'Likes Received';
 
   @override
+  String get boostsSent => 'Sent Super Likes';
+
+  @override
+  String get boostsReceived => 'Super Likes Received';
+
+  @override
   String get ongoingChats => 'Ongoing Chats';
+
+  @override
+  String get noNotifications => 'No notifications.';
+
+  @override
+  String get noActivity => 'No activity to show.';
 
   @override
   String get recommendedMatches => 'Recommended Matches';
@@ -244,6 +262,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get startTest => 'Start Test';
+
+  @override
+  String get eqTestResultTitle => 'EQ Test Results';
+
+  @override
+  String get eqTestNoQuestions => 'No questions available.';
+
+  @override
+  String get eqTestAutoAdvanceHint =>
+      'Selecting an option will move to the next question automatically.';
+
+  @override
+  String get eqTestCategoryEmpathy => 'Empathy';
+
+  @override
+  String get eqTestCategorySelfAwareness => 'Self-awareness';
+
+  @override
+  String get eqTestCategorySocialSkills => 'Social skills';
+
+  @override
+  String get eqTestCategoryMotivation => 'Motivation';
+
+  @override
+  String get eqTestCategoryEmotionRegulation => 'Emotion regulation';
+
+  @override
+  String get eqTestCategoryEQ => 'EQ';
+
+  @override
+  String get eqTestLikert1 => 'Strongly disagree';
+
+  @override
+  String get eqTestLikert2 => 'Disagree';
+
+  @override
+  String get eqTestLikert3 => 'Neutral';
+
+  @override
+  String get eqTestLikert4 => 'Agree';
+
+  @override
+  String get eqTestLikert5 => 'Strongly agree';
+
+  @override
+  String get eqTestAllAnsweredTitle => 'You’ve answered all questions!';
+
+  @override
+  String get eqTestCalculatingResult => 'Calculating your results...';
+
+  @override
+  String get eqTestViewResult => 'View results';
+
+  @override
+  String get eqTestResultCalculationError => 'Result calculation error';
+
+  @override
+  String get eqTestStrengthsTitle => 'Your strengths';
+
+  @override
+  String get eqTestImprovementsTitle => 'Areas to improve';
+
+  @override
+  String get eqTestMatchingTipsTitle => 'Matching tips';
+
+  @override
+  String get eqTestPersonalityType => 'Personality type';
+
+  @override
+  String get eqTestOverallScore => 'Overall score';
+
+  @override
+  String get eqTestDetailedScores => 'Detailed scores';
+
+  @override
+  String get eqTestScoreEmpathy => 'Empathy';
+
+  @override
+  String get eqTestScoreSelfAwareness => 'Self-awareness';
+
+  @override
+  String get eqTestScoreSocialSkills => 'Social skills';
+
+  @override
+  String get eqTestScoreMotivation => 'Motivation';
+
+  @override
+  String get eqTestScoreEmotionRegulation => 'Emotion regulation';
 
   @override
   String get years => 'years old';
@@ -269,6 +375,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get filterSettings => 'Filter Settings';
 
   @override
+  String get matchingActionGuideTitle => 'How matching works';
+
+  @override
+  String get matchingActionGuideInterest => 'Like: Like a profile.';
+
+  @override
+  String get matchingActionGuideBoost =>
+      'Super Like: A stronger signal that may be shown with higher priority.';
+
+  @override
+  String get matchingActionGuideChat => 'Message: Start a chat.';
+
+  @override
   String get age => 'Age';
 
   @override
@@ -287,10 +406,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pass => 'Pass';
 
   @override
-  String get interest => 'Interest';
+  String get interest => 'Like';
 
   @override
-  String get boost => 'Boost';
+  String get boost => 'Super Like';
 
   @override
   String get swipeHint => 'Swipe to browse';
@@ -308,10 +427,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewAgain => 'View Again';
 
   @override
-  String get superLike => 'Boost sent!';
+  String get superLike => 'Super Like sent!';
 
   @override
-  String get likeSent => 'Interest sent';
+  String get likeSent => 'Like sent';
 
   @override
   String get nextMatch => 'Moved to next profile';
@@ -420,6 +539,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get manageLocations => 'Manage Locations';
+
+  @override
+  String get locationMyNeighborhoodSettings => 'My Neighborhood Settings';
+
+  @override
+  String get locationSearchHint => 'Search by neighborhood name';
+
+  @override
+  String get locationFindByCurrentLocation => 'Find by current location';
+
+  @override
+  String get locationFinding => 'Finding...';
+
+  @override
+  String get locationNearbyNeighborhoods => 'Nearby neighborhoods';
+
+  @override
+  String get locationSearchResults => 'Search results';
+
+  @override
+  String get locationNoSearchResults => 'No results found.';
+
+  @override
+  String get locationFailedToLoadNearby =>
+      'Couldn\'t load nearby neighborhoods.';
+
+  @override
+  String get locationCurrentLocationFailed =>
+      'Couldn\'t get your current location.';
+
+  @override
+  String get locationSearchFailed => 'Search failed.';
+
+  @override
+  String get locationMaxTwoAreas => 'You can add up to 2 areas.';
+
+  @override
+  String get locationMyNeighborhood => 'My neighborhood';
+
+  @override
+  String get locationMyNeighborhoodSubtitle =>
+      'You\'ll see posts based on the selected neighborhood.';
+
+  @override
+  String get locationHelpBody =>
+      '• You can set up to 2 active areas.\n• Content is shown based on the selected neighborhood.\n• Long-press an area chip to change it.';
+
+  @override
+  String get locationMapSetupRequiredTitle => 'Map setup required';
+
+  @override
+  String get locationMapSetupRequiredBody =>
+      'Google Maps API Key is not configured, so the map can\'t be displayed.\n\niOS: Set `GOOGLE_MAPS_API_KEY` in `frontend/ios/Flutter/Secrets.xcconfig`.\nAndroid: Set `GOOGLE_MAPS_API_KEY` in `frontend/android/local.properties` (or export it as an env var).';
+
+  @override
+  String get locationMapCannotShowTitle => 'Can\'t show the map';
+
+  @override
+  String get locationMapCannotShowBody =>
+      'Google Maps API Key is not configured.\nTap below to see how to set it up.';
+
+  @override
+  String get locationViewSetupGuide => 'View setup guide';
 
   @override
   String get languageSettings => 'Language Settings';

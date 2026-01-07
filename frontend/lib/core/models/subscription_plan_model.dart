@@ -4,7 +4,7 @@
 /// v2.0에서 신규 추가됨 (하드코딩에서 DB 기반으로 변경)
 class SubscriptionPlanModel {
   /// 플랜 ID
-  final String id;
+  final int id;
 
   /// 플랜 이름 (다국어 지원)
   /// { "ko": "프리미엄", "ja": "プレミアム", "en": "Premium" }
@@ -74,7 +74,7 @@ class SubscriptionPlanModel {
   /// JSON → Model
   factory SubscriptionPlanModel.fromJson(Map<String, dynamic> json) {
     return SubscriptionPlanModel(
-      id: json['id'] as String,
+      id: _parseId(json['id']),
       name: json['name'] as Map<String, dynamic>,
       description: json['description'] as Map<String, dynamic>,
       price: (json['price'] as num).toDouble(),
@@ -179,7 +179,7 @@ class SubscriptionPlanModel {
 
   /// copyWith
   SubscriptionPlanModel copyWith({
-    String? id,
+    int? id,
     Map<String, dynamic>? name,
     Map<String, dynamic>? description,
     double? price,
@@ -220,4 +220,10 @@ class SubscriptionPlanModel {
   String toString() {
     return 'SubscriptionPlanModel(id: $id, price: $formattedPrice, durationDays: $durationDays)';
   }
+}
+
+int _parseId(dynamic value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.parse(value.toString());
 }

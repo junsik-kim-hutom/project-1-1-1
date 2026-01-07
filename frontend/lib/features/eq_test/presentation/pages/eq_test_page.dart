@@ -1,21 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:marriage_matching_app/generated/l10n/app_localizations.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../providers/eq_test_provider.dart';
-import 'eq_test_result_page.dart';
 
-class EQTestPage extends ConsumerWidget {
+class EQTestPage extends ConsumerStatefulWidget {
   const EQTestPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EQTestPage> createState() => _EQTestPageState();
+}
+
+class _EQTestPageState extends ConsumerState<EQTestPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(eqTestProvider.notifier).reset());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final questionsAsync = ref.watch(eqQuestionsProvider);
     final testState = ref.watch(eqTestProvider);
+    final localeCode = Localizations.localeOf(context).languageCode;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('EQ 감성 지능 테스트'),
-        backgroundColor: AppColors.primary,
+        title: Text(l10n.eqTestTitle),
+        backgroundColor: AppColors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (testState.currentQuestionIndex > 0) {
+              ref.read(eqTestProvider.notifier).previousQuestion();
+            } else {
+              context.pop();
+            }
+          },
+        ),
       ),
       body: questionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -25,19 +50,19 @@ class EQTestPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
-              Text('오류가 발생했습니다: $error'),
+              Text('${l10n.error}: $error'),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => ref.refresh(eqQuestionsProvider),
-                child: const Text('다시 시도'),
+                child: Text(l10n.retry),
               ),
             ],
           ),
         ),
         data: (questions) {
           if (questions.isEmpty) {
-            return const Center(
-              child: Text('질문이 없습니다.'),
+            return Center(
+              child: Text(l10n.eqTestNoQuestions),
             );
           }
 
@@ -49,163 +74,242 @@ class EQTestPage extends ConsumerWidget {
           final currentQuestion = questions[testState.currentQuestionIndex];
           final progress =
               (testState.currentQuestionIndex + 1) / questions.length;
+          final categoryMeta = _categoryMeta(currentQuestion.category, l10n);
 
-          return Column(
-            children: [
-              // 진행 상황 표시
-              LinearProgressIndicator(
-                value: progress,
-                backgroundColor: AppColors.border,
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.white, AppColors.background],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  '${testState.currentQuestionIndex + 1} / ${questions.length}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 카테고리 표시
-                      _buildCategoryChip(currentQuestion.category),
-                      const SizedBox(height: 24),
-                      // 질문 텍스트
-                      Text(
-                        currentQuestion.getQuestionText('ko'),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          height: 1.5,
-                        ),
-                        textAlign: TextAlign.center,
+            ),
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                child: Column(
+                  children: [
+                    // Progress
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.border),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: AppColors.shadowLight,
+                            blurRadius: 10,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 40),
-                      // 답변 옵션 (5점 척도)
-                      _buildAnswerOptions(
-                        context,
-                        ref,
-                        currentQuestion.id,
-                        testState.answers[currentQuestion.id],
-                      ),
-                      const SizedBox(height: 40),
-                      // 네비게이션 버튼
-                      Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          if (testState.currentQuestionIndex > 0)
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  ref
-                                      .read(eqTestProvider.notifier)
-                                      .previousQuestion();
-                                },
-                                child: const Text('이전'),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: categoryMeta.color
+                                      .withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      categoryMeta.icon,
+                                      size: 16,
+                                      color: categoryMeta.color,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      categoryMeta.label,
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: categoryMeta.color,
+                                        letterSpacing: 0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          if (testState.currentQuestionIndex > 0)
-                            const SizedBox(width: 16),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: testState
-                                          .answers[currentQuestion.id] !=
-                                      null
-                                  ? () async {
-                                      try {
-                                        await ref
-                                            .read(eqTestProvider.notifier)
-                                            .submitAnswer(
-                                              currentQuestion.id,
-                                              testState
-                                                  .answers[currentQuestion.id]!,
-                                            );
-                                        ref
-                                            .read(eqTestProvider.notifier)
-                                            .nextQuestion();
-                                      } catch (e) {
-                                        if (!context.mounted) return;
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(content: Text('오류: $e')),
-                                        );
-                                      }
-                                    }
-                                  : null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: Colors.white,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                              const Spacer(),
+                              Text(
+                                '${testState.currentQuestionIndex + 1} / ${questions.length}',
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
-                              child: Text(
-                                testState.currentQuestionIndex ==
-                                        questions.length - 1
-                                    ? '완료'
-                                    : '다음',
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(999),
+                            child: LinearProgressIndicator(
+                              value: progress,
+                              minHeight: 10,
+                              backgroundColor: AppColors.border,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                categoryMeta.color,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 220),
+                        switchInCurve: Curves.easeOutCubic,
+                        switchOutCurve: Curves.easeInCubic,
+                        child: Container(
+                          key: ValueKey(currentQuestion.id),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.border),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: AppColors.shadowLight,
+                                blurRadius: 14,
+                                offset: Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                currentQuestion.getQuestionText(localeCode),
+                                style: AppTextStyles.headlineSmall.copyWith(
+                                  color: AppColors.textPrimary,
+                                  height: 1.35,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                l10n.eqTestAutoAdvanceHint,
+                                style: AppTextStyles.bodySmall.copyWith(
+                                  color: AppColors.textSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 18),
+                              Expanded(
+                                child: AbsorbPointer(
+                                  absorbing: testState.isAnswerSubmitting,
+                                  child: Stack(
+                                    children: [
+                                      _buildAnswerOptions(
+                                        context,
+                                        ref,
+                                        currentQuestion.id,
+                                        testState.answers[currentQuestion.id],
+                                        isEnabled:
+                                            !testState.isAnswerSubmitting,
+                                        accentColor: categoryMeta.color,
+                                      ),
+                                      if (testState.isAnswerSubmitting)
+                                        Positioned.fill(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: AppColors.white
+                                                  .withValues(alpha: 0.55),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: const Center(
+                                              child: SizedBox(
+                                                width: 22,
+                                                height: 22,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                        strokeWidth: 2),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildCategoryChip(String category) {
-    final categoryLabels = {
-      'empathy': '공감 능력',
-      'self_awareness': '자기 인식',
-      'social_skills': '사회적 기술',
-      'motivation': '동기부여',
-      'emotion_regulation': '감정 조절',
-    };
-
-    final categoryColors = {
-      'empathy': AppColors.primary,
-      'self_awareness': AppColors.accent,
-      'social_skills': AppColors.secondary,
-      'motivation': AppColors.warning,
-      'emotion_regulation': AppColors.info,
-    };
-
-    return Center(
-      child: Chip(
-        label: Text(
-          categoryLabels[category] ?? category,
-          style: const TextStyle(color: Colors.white),
-        ),
-        backgroundColor: categoryColors[category] ?? AppColors.primary,
-      ),
-    );
+  _EQCategoryMeta _categoryMeta(String category, AppLocalizations l10n) {
+    switch (category) {
+      case 'empathy':
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategoryEmpathy,
+          icon: Icons.favorite_rounded,
+          color: AppColors.primary,
+        );
+      case 'self_awareness':
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategorySelfAwareness,
+          icon: Icons.self_improvement_rounded,
+          color: AppColors.accent,
+        );
+      case 'social_skills':
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategorySocialSkills,
+          icon: Icons.people_alt_rounded,
+          color: AppColors.secondary,
+        );
+      case 'motivation':
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategoryMotivation,
+          icon: Icons.emoji_events_rounded,
+          color: AppColors.warning,
+        );
+      case 'emotion_regulation':
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategoryEmotionRegulation,
+          icon: Icons.spa_rounded,
+          color: AppColors.info,
+        );
+      default:
+        return _EQCategoryMeta(
+          label: l10n.eqTestCategoryEQ,
+          icon: Icons.psychology_rounded,
+          color: AppColors.primary,
+        );
+    }
   }
 
-  Widget _buildAnswerOptions(
-    BuildContext context,
-    WidgetRef ref,
-    String questionId,
-    int? selectedAnswer,
-  ) {
+  Widget _buildAnswerOptions(BuildContext context, WidgetRef ref,
+      int questionId, int? selectedAnswer,
+      {required bool isEnabled, required Color accentColor}) {
+    final l10n = AppLocalizations.of(context)!;
     final labels = [
-      '전혀 아니다',
-      '아니다',
-      '보통이다',
-      '그렇다',
-      '매우 그렇다',
+      l10n.eqTestLikert1,
+      l10n.eqTestLikert2,
+      l10n.eqTestLikert3,
+      l10n.eqTestLikert4,
+      l10n.eqTestLikert5,
     ];
 
     return Column(
@@ -214,60 +318,90 @@ class EQTestPage extends ConsumerWidget {
         final isSelected = selectedAnswer == value;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
+          padding: const EdgeInsets.only(bottom: 10.0),
           child: InkWell(
-            onTap: () {
-              ref.read(eqTestProvider.notifier).setAnswer(questionId, value);
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            onTap: !isEnabled
+                ? null
+                : () async {
+                    try {
+                      await ref
+                          .read(eqTestProvider.notifier)
+                          .submitAnswerAndAdvance(questionId, value);
+                    } catch (e) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${l10n.error}: $e')),
+                      );
+                    }
+                  },
+            borderRadius: BorderRadius.circular(16),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOut,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.primary.withValues(alpha: 0.12)
-                    : Colors.white,
+                    ? accentColor.withValues(alpha: 0.10)
+                    : AppColors.white,
                 border: Border.all(
-                  color: isSelected ? AppColors.primary : AppColors.border,
+                  color: isSelected ? accentColor : AppColors.border,
                   width: isSelected ? 2 : 1,
                 ),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: accentColor.withValues(alpha: 0.18),
+                          blurRadius: 14,
+                          offset: const Offset(0, 6),
+                        ),
+                      ]
+                    : const [],
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 24,
-                    height: 24,
+                    width: 28,
+                    height: 28,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color:
-                            isSelected ? AppColors.primary : AppColors.border,
-                        width: 2,
-                      ),
                       color:
-                          isSelected ? AppColors.primary : Colors.transparent,
+                          isSelected ? accentColor : AppColors.surfaceVariant,
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(
+                        color: isSelected ? accentColor : AppColors.border,
+                        width: 1,
+                      ),
                     ),
-                    child: isSelected
-                        ? const Icon(
-                            Icons.check,
-                            size: 16,
-                            color: Colors.white,
-                          )
-                        : null,
+                    child: Center(
+                      child: Text(
+                        '$value',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: isSelected
+                              ? AppColors.white
+                              : AppColors.textPrimary,
+                          letterSpacing: 0,
+                        ),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       labels[index],
-                      style: TextStyle(
-                        fontSize: 16,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        color: isSelected ? accentColor : AppColors.textPrimary,
                         fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected
-                            ? AppColors.primary
-                            : AppColors.textPrimary,
+                            isSelected ? FontWeight.w700 : FontWeight.w600,
+                        letterSpacing: 0,
                       ),
                     ),
+                  ),
+                  Icon(
+                    isSelected
+                        ? Icons.check_circle_rounded
+                        : Icons.chevron_right_rounded,
+                    color: isSelected ? accentColor : AppColors.textHint,
+                    size: 20,
                   ),
                 ],
               ),
@@ -280,6 +414,7 @@ class EQTestPage extends ConsumerWidget {
 
   Widget _buildCompletionView(BuildContext context, WidgetRef ref) {
     final testState = ref.watch(eqTestProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -293,18 +428,18 @@ class EQTestPage extends ConsumerWidget {
               color: AppColors.success,
             ),
             const SizedBox(height: 24),
-            const Text(
-              '모든 질문에 답변하셨습니다!',
-              style: TextStyle(
+            Text(
+              l10n.eqTestAllAnsweredTitle,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            const Text(
-              '결과를 계산하고 있습니다...',
-              style: TextStyle(fontSize: 16),
+            Text(
+              l10n.eqTestCalculatingResult,
+              style: const TextStyle(fontSize: 16),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
@@ -320,16 +455,14 @@ class EQTestPage extends ConsumerWidget {
 
                     if (!context.mounted) return;
 
-                    // 결과 페이지로 이동
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => EQTestResultPage(result: result),
-                      ),
-                    );
+                    context.pushReplacement('/eq-test/result', extra: result);
                   } catch (e) {
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('결과 계산 오류: $e')),
+                      SnackBar(
+                        content:
+                            Text('${l10n.eqTestResultCalculationError}: $e'),
+                      ),
                     );
                   }
                 },
@@ -341,9 +474,9 @@ class EQTestPage extends ConsumerWidget {
                     vertical: 16,
                   ),
                 ),
-                child: const Text(
-                  '결과 보기',
-                  style: TextStyle(fontSize: 18),
+                child: Text(
+                  l10n.eqTestViewResult,
+                  style: const TextStyle(fontSize: 18),
                 ),
               ),
           ],
@@ -351,4 +484,16 @@ class EQTestPage extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _EQCategoryMeta {
+  final String label;
+  final IconData icon;
+  final Color color;
+
+  const _EQCategoryMeta({
+    required this.label,
+    required this.icon,
+    required this.color,
+  });
 }

@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../constants/api_constants.dart';
+import 'dart:async';
 
 class ApiClient {
   late final Dio _dio;
   final FlutterSecureStorage _storage;
-  bool _isRefreshing = false;
+  Completer<bool>? _refreshCompleter;
 
   ApiClient(this._storage) {
     _dio = Dio(
@@ -44,22 +45,27 @@ class ApiClient {
                     error.requestOptions.extra['skipAuthRefresh'] == true;
 
             print('[API_CLIENT] Should skip refresh: $shouldSkipRefresh');
-            print('[API_CLIENT] Is refreshing: $_isRefreshing');
+            print('[API_CLIENT] Is refreshing: ${_refreshCompleter != null}');
 
-            if (!shouldSkipRefresh && !_isRefreshing) {
-              _isRefreshing = true;
-              print('[API_CLIENT] Attempting to refresh token...');
-              final refreshed = await _refreshToken();
-              _isRefreshing = false;
+            if (!shouldSkipRefresh) {
+              final alreadyRetried =
+                  error.requestOptions.extra['retriedAfterRefresh'] == true;
+              if (alreadyRetried) {
+                return handler.next(error);
+              }
+
+              final refreshed = await _refreshOrWait();
               print('[API_CLIENT] Token refresh result: $refreshed');
 
               if (refreshed) {
-                print('[API_CLIENT] Retrying original request...');
-                return handler.resolve(await _retry(error.requestOptions));
-              } else {
-                print('[API_CLIENT] Token refresh failed, clearing tokens');
-                await _storage.deleteAll();
+                print('[API_CLIENT] Retrying original request after refresh...');
+                final retryOptions = error.requestOptions;
+                retryOptions.extra['retriedAfterRefresh'] = true;
+                return handler.resolve(await _retry(retryOptions));
               }
+
+              print('[API_CLIENT] Token refresh failed, clearing tokens');
+              await _storage.deleteAll();
             }
           }
           return handler.next(error);
@@ -102,6 +108,27 @@ class ApiClient {
     } catch (e) {
       print('[API_CLIENT] _refreshToken: Exception occurred: $e');
       return false;
+    }
+  }
+
+  Future<bool> _refreshOrWait() async {
+    final existing = _refreshCompleter;
+    if (existing != null) {
+      return existing.future;
+    }
+
+    final completer = Completer<bool>();
+    _refreshCompleter = completer;
+    try {
+      print('[API_CLIENT] Attempting to refresh token...');
+      final refreshed = await _refreshToken();
+      completer.complete(refreshed);
+      return refreshed;
+    } catch (_) {
+      completer.complete(false);
+      return false;
+    } finally {
+      _refreshCompleter = null;
     }
   }
 
